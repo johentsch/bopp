@@ -20,6 +20,7 @@ from .payload import (
     pitch_class,
     pitch_contour_hz,
     pitch_midi,
+    score_note,
     segment_multi,
     segment_open,
     tag_open,
@@ -39,6 +40,7 @@ type AnyPayload = Annotated[
     | pitch_class.PitchClassPayload
     | pitch_contour_hz.PitchContourPayload
     | pitch_midi.PitchMidiPayload
+    | score_note.ScoreNotePayload
     | segment_multi.MultiSegmentPayload
     | segment_open.SegmentOpenPayload
     | tag_open.TagOpenPayload
