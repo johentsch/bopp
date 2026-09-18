@@ -10,6 +10,7 @@ from msgspec import Meta
 from .payload import (
     beat,
     chord,
+    dcml_harmony,
     key_mode,
     mood_thayer,
     note_hz,
@@ -28,6 +29,7 @@ from .payload import (
 type AnyPayload = Annotated[
     beat.BeatPositionPayload
     | chord.ChordPayload
+    | dcml_harmony.DcmlHarmonyPayload
     | key_mode.KeyModePayload
     | mood_thayer.MoodThayerPayload
     | note_hz.NoteHzPayload

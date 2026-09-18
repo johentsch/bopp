@@ -6,6 +6,7 @@
   "oneOf": [
     { "$ref": "extent/times.json" },
     { "$ref": "extent/time_interval.json" },
+    { "$ref": "extent/quarter_interval.json" },
     { "$ref": "extent/time_frequency_box.json" }
   ],
   "discriminator": {

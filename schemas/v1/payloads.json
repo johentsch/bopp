@@ -6,6 +6,7 @@
   "oneOf": [
     { "$ref": "payload/beat.json" },
     { "$ref": "payload/chord.json" },
+    { "$ref": "payload/dcml_harmony.json" },
     { "$ref": "payload/key_mode.json" },
     { "$ref": "payload/mood_thayer.json" },
     { "$ref": "payload/note_hz.json" },
