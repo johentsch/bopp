@@ -46,4 +46,7 @@ tmp/
 pip-log.txt # Installer logs
 *.mo #Translations
 .mr.developer.cfg #Mr Developer
+
+# Virtual environments
+venv/
 .aider*
