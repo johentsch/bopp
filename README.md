@@ -30,6 +30,35 @@ Example Use Cases
 - **Data Analysis & Querying**: Instantly convert annotations to Pandas DataFrames or Apache Arrow tables via `bopp.util.to_dataframe` or `bopp.io.read_bopp_csv` for data manipulation, filtering, and visualization.
 - **Interoperability & Interchange**: Export annotations losslessly to CSV or MessagePack for compact storage, sharing, or downstream consumption.
 
+Coordinates (proposal)
+----------------------
+
+Extents are expressed as **coordinates** following the [timetoalign](https://timetoalign.github.io) model: a
+coordinate is a columnar array of values measured in a *unit*, and every unit is coupled to exactly one number type
+(`schemas/v1/coordinate.json`, a `oneOf` discriminated by `unit`):
+
+| unit class          | units                                                                     | number type | buffer                                     |
+|---------------------|---------------------------------------------------------------------------|-------------|--------------------------------------------|
+| discrete            | `ticks`, `samples`, `frames`, `pixels`                                    | `int`       | `Int64Buffer`                              |
+| continuous symbolic | `quarters`, `whole_note`                                                  | `fraction`  | `FractionBuffer` (`numerator[]`, `denominator[]`) |
+| continuous          | `seconds`, `milliseconds`, `minutes`, `floating_measures`, `number`, `meters`, `centimeters`, `millimeters`, `inches`, `points` | `float` | `Float64Buffer` |
+
+`timestamps` carries one coordinate (`time`); `time_interval` and `TimeFrequencyBox` carry two (`start`, `duration`),
+which must share a unit. Because the unit tag fully determines the buffer type, readers never guess precision from
+the data, and non-second timelines no longer need a dedicated extent type (`quarter_interval` is now
+`time_interval` + `unit: quarters`). See `coordinates_demo.ipynb`.
+
+Objects (proposal)
+------------------
+
+The root of a BOPP file is an **`Object`** (`schemas/v1/object.json`, discriminated by `object_type`):
+
+- **`Annotation`** – one timeline, one extent + one payload (+ confidence) as parallel arrays.
+- **`ScoreObject`** – one media, one timeline, many **`EventBlock`s**. Each block is an extent/payload pair with its
+  own strictly typed payload schema (e.g. `score_chord`, `score_dynamic`, `score_tempo`), yet all blocks live in the
+  same file. `to_dataframe` / `to_csv` union the blocks into a sparse table with a `payload_type` column, which
+  `load_bopp_csv` reads back into the typed blocks. See `distant_listening_chords_bopp.ipynb`.
+
 When updating the schema, run 
 
 ```

@@ -20,7 +20,14 @@ from .payload import (
     pitch_class,
     pitch_contour_hz,
     pitch_midi,
+    score_chord,
+    score_dynamic,
+    score_figured_bass,
     score_note,
+    score_spanner,
+    score_staff_text,
+    score_system_text,
+    score_tempo,
     segment_multi,
     segment_open,
     tag_open,
@@ -44,7 +51,14 @@ type AnyPayload = Annotated[
     | segment_multi.MultiSegmentPayload
     | segment_open.SegmentOpenPayload
     | tag_open.TagOpenPayload
-    | tempo.TempoPayload,
+    | tempo.TempoPayload
+    | score_chord.ScoreChordPayload
+    | score_dynamic.ScoreDynamicPayload
+    | score_spanner.ScoreSpannerPayload
+    | score_figured_bass.ScoreFiguredBassPayload
+    | score_staff_text.ScoreStaffTextPayload
+    | score_system_text.ScoreSystemTextPayload
+    | score_tempo.ScoreTempoPayload,
     Meta(
         description="A discriminated union of all supported columnar payload types.",
         title="Any Payload",

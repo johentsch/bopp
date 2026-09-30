@@ -1,27 +1,19 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "extents/time_frequency_box.json",
+  "$id": "extent/time_frequency_box.json",
   "title": "Time-Frequency Box Extent",
   "type": "object",
   "properties": {
     "extent_type": {
       "const": "TimeFrequencyBox"
     },
-    "time": {
-      "$ref": "../core.json#/$defs/Float32Buffer",
-      "description": "Array of start time timestamps in seconds.",
-      "items": {
-        "type": "number",
-        "minimum": 0.0
-      }
+    "start": {
+      "$ref": "../coordinate.json",
+      "description": "N box start positions."
     },
     "duration": {
-      "$ref": "../core.json#/$defs/Float32Buffer",
-      "description": "Array of box durations in seconds.",
-      "items": {
-        "type": "number",
-        "minimum": 0.0
-      }
+      "$ref": "../coordinate.json",
+      "description": "N box durations, same unit as start."
     },
     "freq_min": {
       "$ref": "../core.json#/$defs/Float32Buffer",
@@ -40,5 +32,11 @@
       }
     }
   },
-  "required": ["extent_type", "time", "duration", "freq_min", "freq_max"]
+  "required": [
+    "extent_type",
+    "start",
+    "duration",
+    "freq_min",
+    "freq_max"
+  ]
 }

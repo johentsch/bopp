@@ -6,10 +6,15 @@ from __future__ import annotations
 from typing import Annotated
 
 from msgspec import Meta, Struct
-from pyarrow import Array
+
+from .. import coordinate
 
 
 class Timestamps(Struct, tag_field="extent_type", tag="timestamps"):
+    """
+    Instants: one coordinate per observation.
+    """
+
     time: Annotated[
-        Annotated[Array, "float32"], Meta(description="An N array of time values.")
+        coordinate.Coordinate, Meta(description="N positions on the timeline.")
     ]

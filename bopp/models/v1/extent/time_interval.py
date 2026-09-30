@@ -6,15 +6,19 @@ from __future__ import annotations
 from typing import Annotated
 
 from msgspec import Meta, Struct
-from pyarrow import Array
+
+from .. import coordinate
 
 
 class TimeIntervalExtent(Struct, tag_field="extent_type", tag="time_interval"):
-    time: Annotated[
-        Annotated[Array, "float32"],
-        Meta(description="Array of start time timestamps in seconds."),
+    """
+    Left-inclusive, right-exclusive intervals [start, start + duration), expressed as two coordinates that must share the same unit.
+    """
+
+    start: Annotated[
+        coordinate.Coordinate, Meta(description="N interval start positions.")
     ]
     duration: Annotated[
-        Annotated[Array, "float32"],
-        Meta(description="Array of interval durations in seconds."),
+        coordinate.Coordinate,
+        Meta(description="N interval durations (elapsed extents), same unit as start."),
     ]

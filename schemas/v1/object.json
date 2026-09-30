@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "object.json",
+  "title": "Any Object",
+  "description": "The root of a BOPP file: a discriminated union of all top-level object types.",
+  "oneOf": [
+    {
+      "$ref": "annotation.json"
+    },
+    {
+      "$ref": "score_object.json"
+    }
+  ],
+  "discriminator": {
+    "propertyName": "object_type"
+  }
+}

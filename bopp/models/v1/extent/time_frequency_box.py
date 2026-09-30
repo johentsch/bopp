@@ -8,15 +8,13 @@ from typing import Annotated
 from msgspec import Meta, Struct
 from pyarrow import Array
 
+from .. import coordinate
+
 
 class TimeFrequencyBoxExtent(Struct, tag_field="extent_type", tag="TimeFrequencyBox"):
-    time: Annotated[
-        Annotated[Array, "float32"],
-        Meta(description="Array of start time timestamps in seconds."),
-    ]
+    start: Annotated[coordinate.Coordinate, Meta(description="N box start positions.")]
     duration: Annotated[
-        Annotated[Array, "float32"],
-        Meta(description="Array of box durations in seconds."),
+        coordinate.Coordinate, Meta(description="N box durations, same unit as start.")
     ]
     freq_min: Annotated[
         Annotated[Array, "float32"],

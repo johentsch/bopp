@@ -6,25 +6,75 @@
     "Float32Buffer": {
       "type": "array",
       "x-python-type": "typing.Annotated[pyarrow.Array, 'float32']",
-      "items": { "type": "number", "format": "float" },
+      "items": {
+        "type": "number",
+        "format": "float"
+      },
       "description": "A dense columnar array buffer of 32-bit floats."
     },
     "Int8Buffer": {
       "type": "array",
       "x-python-type": "typing.Annotated[pyarrow.Array, 'int8']",
-      "items": { "type": "integer" },
+      "items": {
+        "type": "integer"
+      },
       "description": "A dense columnar array buffer of 8-bit signed integers."
     },
     "UInt8Buffer": {
       "type": "array",
       "x-python-type": "typing.Annotated[pyarrow.Array, 'uint8']",
-      "items": { "type": "integer" },
+      "items": {
+        "type": "integer"
+      },
       "description": "A dense columnar array buffer of 8-bit unsigned integers."
     },
     "GenericBuffer": {
       "type": "array",
       "x-python-type": "pyarrow.Array",
       "description": "A dense columnar array buffer. Instantiated as pyarrow.Array."
+    },
+    "Float64Buffer": {
+      "type": "array",
+      "x-python-type": "typing.Annotated[pyarrow.Array, 'float64']",
+      "items": {
+        "type": "number",
+        "format": "double"
+      },
+      "description": "A dense columnar array buffer of 64-bit floats. Used for continuous coordinates (seconds, minutes, ...)."
+    },
+    "Int64Buffer": {
+      "type": "array",
+      "x-python-type": "typing.Annotated[pyarrow.Array, 'int64']",
+      "items": {
+        "type": "integer"
+      },
+      "description": "A dense columnar array buffer of 64-bit signed integers. Used for discrete coordinates (samples, ticks, frames, pixels)."
+    },
+    "FractionBuffer": {
+      "type": "object",
+      "title": "Fraction Buffer",
+      "description": "A columnar buffer of exact rationals stored as two parallel int64 arrays (struct-of-arrays). Element i is numerator[i]/denominator[i]. Used for continuous symbolic coordinates (quarters, whole notes) whose values are rational by construction (a triplet eighth is 1/3 of a quarter, not 0.333...).",
+      "properties": {
+        "numerator": {
+          "$ref": "#/$defs/Int64Buffer",
+          "description": "Numerators.",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "denominator": {
+          "$ref": "#/$defs/Int64Buffer",
+          "description": "Denominators; strictly positive.",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator"
+      ]
     }
   }
 }

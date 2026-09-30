@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "event_block.json",
+  "title": "Event Block",
+  "description": "One homogeneous block of events inside a ScoreObject: parallel extent/payload/confidence arrays for a single payload type. Structurally an Annotation without the file-level header.",
+  "type": "object",
+  "properties": {
+    "extent": {
+      "$ref": "extents.json",
+      "description": "The parallel array of time boundaries."
+    },
+    "payload": {
+      "$ref": "payloads.json",
+      "description": "The parallel array of values."
+    },
+    "confidence": {
+      "$ref": "confidences.json",
+      "description": "Optional parallel array of likelihoods or votes."
+    }
+  },
+  "required": [
+    "extent",
+    "payload"
+  ]
+}

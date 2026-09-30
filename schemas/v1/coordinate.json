@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "coordinate.json",
+  "title": "Coordinate",
+  "description": "A columnar array of positions (or elapsed extents) on a timeline, following the timetoalign model: a coordinate is a value measured in a unit, and every unit is coupled to exactly one number type. Discrete units (ticks, samples, frames, pixels) are int; continuous symbolic units (quarters, whole_note) are exact fractions; all other continuous units are float. The `unit` tag therefore fully determines the buffer type, so consumers never guess precision from the data.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/NumberCoordinate"
+    },
+    {
+      "$ref": "#/$defs/FloatingMeasuresCoordinate"
+    },
+    {
+      "$ref": "#/$defs/WholeNoteCoordinate"
+    },
+    {
+      "$ref": "#/$defs/QuartersCoordinate"
+    },
+    {
+      "$ref": "#/$defs/TicksCoordinate"
+    },
+    {
+      "$ref": "#/$defs/MillisecondsCoordinate"
+    },
+    {
+      "$ref": "#/$defs/SecondsCoordinate"
+    },
+    {
+      "$ref": "#/$defs/MinutesCoordinate"
+    },
+    {
+      "$ref": "#/$defs/SamplesCoordinate"
+    },
+    {
+      "$ref": "#/$defs/FramesCoordinate"
+    },
+    {
+      "$ref": "#/$defs/PixelsCoordinate"
+    },
+    {
+      "$ref": "#/$defs/MetersCoordinate"
+    },
+    {
+      "$ref": "#/$defs/CentimetersCoordinate"
+    },
+    {
+      "$ref": "#/$defs/MillimetersCoordinate"
+    },
+    {
+      "$ref": "#/$defs/InchesCoordinate"
+    },
+    {
+      "$ref": "#/$defs/PointsCoordinate"
+    }
+  ],
+  "discriminator": {
+    "propertyName": "unit"
+  },
+  "$defs": {
+    "NumberCoordinate": {
+      "type": "object",
+      "title": "Number Coordinate",
+      "description": "Generic dimensionless number (logical domain escape hatch). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "number"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in number, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "FloatingMeasuresCoordinate": {
+      "type": "object",
+      "title": "FloatingMeasures Coordinate",
+      "description": "Measures, with fractional part denoting position within the measure (logical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "floating_measures"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in floating_measures, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "WholeNoteCoordinate": {
+      "type": "object",
+      "title": "WholeNote Coordinate",
+      "description": "Whole notes (logical domain). Number type: fraction.",
+      "properties": {
+        "unit": {
+          "const": "whole_note"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/FractionBuffer",
+          "description": "Coordinate values in whole_note, stored as fraction."
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "QuartersCoordinate": {
+      "type": "object",
+      "title": "Quarters Coordinate",
+      "description": "Quarter notes / crotchet beats (logical domain). Number type: fraction.",
+      "properties": {
+        "unit": {
+          "const": "quarters"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/FractionBuffer",
+          "description": "Coordinate values in quarters, stored as fraction."
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "TicksCoordinate": {
+      "type": "object",
+      "title": "Ticks Coordinate",
+      "description": "Ticks, MIDI's time unit (logical domain, discrete). Number type: int.",
+      "properties": {
+        "unit": {
+          "const": "ticks"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Int64Buffer",
+          "description": "Coordinate values in ticks, stored as int.",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "MillisecondsCoordinate": {
+      "type": "object",
+      "title": "Milliseconds Coordinate",
+      "description": "Milliseconds (physical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "milliseconds"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in milliseconds, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "SecondsCoordinate": {
+      "type": "object",
+      "title": "Seconds Coordinate",
+      "description": "Seconds (physical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "seconds"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in seconds, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "MinutesCoordinate": {
+      "type": "object",
+      "title": "Minutes Coordinate",
+      "description": "Minutes (physical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "minutes"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in minutes, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "SamplesCoordinate": {
+      "type": "object",
+      "title": "Samples Coordinate",
+      "description": "Audio samples (physical domain, discrete). Number type: int.",
+      "properties": {
+        "unit": {
+          "const": "samples"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Int64Buffer",
+          "description": "Coordinate values in samples, stored as int.",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "FramesCoordinate": {
+      "type": "object",
+      "title": "Frames Coordinate",
+      "description": "Frames, e.g. video or analysis frames (physical domain, discrete). Number type: int.",
+      "properties": {
+        "unit": {
+          "const": "frames"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Int64Buffer",
+          "description": "Coordinate values in frames, stored as int.",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "PixelsCoordinate": {
+      "type": "object",
+      "title": "Pixels Coordinate",
+      "description": "Pixels (graphical domain, discrete). Number type: int.",
+      "properties": {
+        "unit": {
+          "const": "pixels"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Int64Buffer",
+          "description": "Coordinate values in pixels, stored as int.",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "MetersCoordinate": {
+      "type": "object",
+      "title": "Meters Coordinate",
+      "description": "Meters (graphical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "meters"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in meters, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "CentimetersCoordinate": {
+      "type": "object",
+      "title": "Centimeters Coordinate",
+      "description": "Centimeters (graphical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "centimeters"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in centimeters, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "MillimetersCoordinate": {
+      "type": "object",
+      "title": "Millimeters Coordinate",
+      "description": "Millimeters (graphical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "millimeters"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in millimeters, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "InchesCoordinate": {
+      "type": "object",
+      "title": "Inches Coordinate",
+      "description": "Inches (graphical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "inches"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in inches, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    },
+    "PointsCoordinate": {
+      "type": "object",
+      "title": "Points Coordinate",
+      "description": "Typographic points (graphical domain). Number type: float.",
+      "properties": {
+        "unit": {
+          "const": "points"
+        },
+        "values": {
+          "$ref": "core.json#/$defs/Float64Buffer",
+          "description": "Coordinate values in points, stored as float.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "unit",
+        "values"
+      ]
+    }
+  }
+}

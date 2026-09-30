@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/score_tempo.json",
+  "title": "Score Tempo Payload",
+  "description": "Tempo markings with their quarter-per-minute interpretation. One of the event types of the Distant Listening Corpus 'chords' facet (event == 'Tempo'). All columns are parallel arrays; missing values are null.",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "score_tempo"
+    },
+    "mc": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Running count of encoded <Measure> tags which do not necessarily express a full measure (e.g. in case of an anacrusis).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "mn": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Measure number as printed in the score, computed from mc, dont_count and numbering_offset.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quarterbeats": {
+      "$ref": "../core.json#/$defs/FractionBuffer",
+      "description": "Distance from the piece's beginning. By default, only second endings are taken into account to reflect the proportions of a simply playthrough without repeats. Exact fraction."
+    },
+    "mc_onset": {
+      "$ref": "../core.json#/$defs/FractionBuffer",
+      "description": "Distance of an event from the beginning of the <Measure> tag. Exact fraction."
+    },
+    "mn_onset": {
+      "$ref": "../core.json#/$defs/FractionBuffer",
+      "description": "Distance from the beginning of the logical measure. Relevant, for example, to compute the metric position of an event. Exact fraction."
+    },
+    "timesig": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Given as string, e.g. \"4/4\".",
+      "items": {
+        "type": "string"
+      }
+    },
+    "staff": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Number of the staff where an event occurs, 1 designating the top staff.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "voice": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "A number between 1-4 where 1 is MuseScore's default layer (blue), 2 the second layer in green with downward stems, etc.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "duration": {
+      "$ref": "../core.json#/$defs/FractionBuffer",
+      "description": "As fraction of a whole note. Exact fraction."
+    },
+    "volta": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Number of an ending bracket, given as integer.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "slur": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "IDs of active slurs that a chord falls under, as a tuple of integers.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tempo": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Tempo text as printed, e.g. 'Allegro' or a metronome marking.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "qpm": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Tempo in quarter notes per minute.",
+      "items": {
+        "type": "number"
+      }
+    },
+    "tempo_visible": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Whether the tempo marking is printed.",
+      "items": {
+        "type": "boolean"
+      }
+    },
+    "metronome_base": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Note value of the metronome marking (SMuFL glyph).",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metronome_number": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Beats per minute of the metronome marking.",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "mc",
+    "mn",
+    "quarterbeats",
+    "mc_onset",
+    "mn_onset",
+    "timesig",
+    "staff",
+    "voice",
+    "duration",
+    "volta",
+    "slur",
+    "tempo",
+    "qpm",
+    "tempo_visible",
+    "metronome_base",
+    "metronome_number"
+  ]
+}

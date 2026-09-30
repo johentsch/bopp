@@ -1,28 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "extents/time_interval.json",
+  "$id": "extent/time_interval.json",
   "title": "Time Interval Extent",
+  "description": "Left-inclusive, right-exclusive intervals [start, start + duration), expressed as two coordinates that must share the same unit.",
   "type": "object",
   "properties": {
     "extent_type": {
       "const": "time_interval"
     },
-    "time": {
-      "$ref": "../core.json#/$defs/Float32Buffer",
-      "description": "Array of start time timestamps in seconds.",
-      "items": {
-        "type": "number",
-        "minimum": 0.0
-      }
+    "start": {
+      "$ref": "../coordinate.json",
+      "description": "N interval start positions."
     },
     "duration": {
-      "$ref": "../core.json#/$defs/Float32Buffer",
-      "description": "Array of interval durations in seconds.",
-      "items": {
-        "type": "number",
-        "minimum": 0.0
-      }
+      "$ref": "../coordinate.json",
+      "description": "N interval durations (elapsed extents), same unit as start."
     }
   },
-  "required": ["extent_type", "time", "duration"]
+  "required": [
+    "extent_type",
+    "start",
+    "duration"
+  ]
 }

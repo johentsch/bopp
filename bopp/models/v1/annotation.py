@@ -13,7 +13,11 @@ from . import confidences, extents, payloads
 from . import metadata as metadata_1
 
 
-class Annotation(BoppBase):
+class Annotation(BoppBase, tag_field="object_type", tag="annotation"):
+    """
+    A single timeline of observations: one extent + one payload (+ optional confidence) as parallel columnar arrays.
+    """
+
     media_id: Annotated[str, Meta(pattern="^[a-zA-Z0-9]+:.*$")]
     payload: Annotated[
         payloads.AnyPayload,

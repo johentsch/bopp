@@ -4,6 +4,9 @@
   "title": "Annotation",
   "type": "object",
   "properties": {
+    "object_type": {
+      "const": "annotation"
+    },
     "media_id": {
       "type": "string",
       "pattern": "^[a-zA-Z0-9]+:.*$"
@@ -14,21 +17,25 @@
       "description": "The Semantic Version of the BOPP schema (e.g., 1.0.0)"
     },
     "metadata": {
-        "description": "The metadata describing the annotation",
-        "$ref": "metadata.json"
+      "description": "The metadata describing the annotation",
+      "$ref": "metadata.json"
     },
-    "extent": { 
+    "extent": {
       "description": "The parallel array of time/space boundaries (e.g., time_interval, point)",
-      "$ref": "extents.json" 
+      "$ref": "extents.json"
     },
-    "payload": { 
+    "payload": {
       "description": "The parallel array of values (e.g., beat, chord)",
-      "$ref": "payloads.json" 
+      "$ref": "payloads.json"
     },
-    "confidence": { 
+    "confidence": {
       "description": "Optional parallel array of likelihoods or votes",
-      "$ref": "confidences.json" 
+      "$ref": "confidences.json"
     }
   },
-  "required": ["media_id", "payload"]
+  "required": [
+    "media_id",
+    "payload"
+  ],
+  "description": "A single timeline of observations: one extent + one payload (+ optional confidence) as parallel columnar arrays."
 }

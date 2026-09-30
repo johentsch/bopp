@@ -5,7 +5,8 @@ from __future__ import annotations
 
 from typing import Annotated, Any
 
-from msgspec import Meta
+from msgspec import Meta, Struct
+from pyarrow import Array
 
 type BoppCorePrimitives = Annotated[Any, Meta(title="BOPP Core Primitives")]
 
@@ -43,3 +44,36 @@ type GenericBuffer = Annotated[
 """
 A dense columnar array buffer. Instantiated as pyarrow.Array.
 """
+
+
+type Float64Buffer = Annotated[
+    list[float],
+    Meta(
+        description="A dense columnar array buffer of 64-bit floats. Used for continuous coordinates (seconds, minutes, ...)."
+    ),
+]
+"""
+A dense columnar array buffer of 64-bit floats. Used for continuous coordinates (seconds, minutes, ...).
+"""
+
+
+type Int64Buffer = Annotated[
+    list[int],
+    Meta(
+        description="A dense columnar array buffer of 64-bit signed integers. Used for discrete coordinates (samples, ticks, frames, pixels)."
+    ),
+]
+"""
+A dense columnar array buffer of 64-bit signed integers. Used for discrete coordinates (samples, ticks, frames, pixels).
+"""
+
+
+class FractionBuffer(Struct):
+    """
+    A columnar buffer of exact rationals stored as two parallel int64 arrays (struct-of-arrays). Element i is numerator[i]/denominator[i]. Used for continuous symbolic coordinates (quarters, whole notes) whose values are rational by construction (a triplet eighth is 1/3 of a quarter, not 0.333...).
+    """
+
+    numerator: Annotated[Annotated[Array, "int64"], Meta(description="Numerators.")]
+    denominator: Annotated[
+        Annotated[Array, "int64"], Meta(description="Denominators; strictly positive.")
+    ]

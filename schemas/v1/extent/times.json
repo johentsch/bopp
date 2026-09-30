@@ -1,20 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "extents/times.json",
+  "$id": "extent/times.json",
   "title": "Timestamps",
+  "description": "Instants: one coordinate per observation.",
   "type": "object",
   "properties": {
     "extent_type": {
       "const": "timestamps"
     },
     "time": {
-      "$ref": "../core.json#/$defs/Float32Buffer",
-      "description": "An N array of time values.",
-      "items": {
-        "type": "number",
-        "minimum": 0.0
-      }
+      "$ref": "../coordinate.json",
+      "description": "N positions on the timeline."
     }
   },
-  "required": ["extent_type", "time"]
+  "required": [
+    "extent_type",
+    "time"
+  ]
 }
