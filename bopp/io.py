@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import ast
+import math
 import msgspec
+import numpy as np
 import pandas as pd
 import pyarrow as pa
 import yaml
@@ -80,6 +82,22 @@ def to_csv(ann: Annotation, filepath: str | Path) -> None:
     
     df = to_dataframe(ann)
     metadata = extract_header(ann)
+
+    # Normalize list-like cells (e.g. numpy arrays materialized from Arrow list
+    # columns) to plain Python lists, so they serialize as valid Python literals
+    # ("[0, 4, 1]") that read_bopp_csv can parse back with ast.literal_eval.
+    # Without this, numpy reprs ("[0 4 1]") end up in the CSV and reimport crashes.
+    for col in df.columns:
+        if df[col].dtype == object:
+            sample = df[col].dropna()
+            if len(sample) and isinstance(sample.iloc[0], (np.ndarray, tuple)):
+                df[col] = df[col].map(
+                    lambda v: v.tolist()
+                    if isinstance(v, np.ndarray)
+                    else list(v)
+                    if isinstance(v, tuple)
+                    else v
+                )
 
     # 1. Convert the metadata dictionary to a YAML string
     yaml_text = yaml.dump(metadata, sort_keys=False, default_flow_style=False)
@@ -174,14 +192,28 @@ def read_bopp_csv(filepath: str | Path) -> pd.DataFrame:
 
         # 2. Hand the open file pointer directly to Pandas
         df = pd.read_csv(f)
-        
-    # 3. Handle Polyphonic / List Data safely
-    # If a payload contains lists (e.g., ["C", "E", "G"]), the CSV writer saves them 
+
+    # 3. Restore nulls: to_csv writes missing values as empty fields, which
+    # Pandas reads back as NaN. Map them back to None so Arrow columns regain
+    # proper nulls (this mirrors the write path, which maps every NaN to None
+    # before constructing the Annotation). The astype(object) detour is needed
+    # because float blocks cannot hold None.
+    df = df.astype(object).where(df.notna(), None)
+
+    # 4. Handle Polyphonic / List Data safely
+    # If a payload contains lists (e.g., ["C", "E", "G"]), the CSV writer saves them
     # as literal strings. We evaluate them back to actual Python lists here.
+    def _parse_cell(v):
+        if v is None or (isinstance(v, float) and math.isnan(v)):
+            return None
+        if isinstance(v, str):
+            return ast.literal_eval(v)
+        return v
+
     payload_cols = [c for c in df.columns if c.startswith("payload:")]
     for col in payload_cols:
         if df[col].dtype == object and df[col].astype(str).str.startswith('[').any():
-            df[col] = df[col].apply(ast.literal_eval)
+            df[col] = df[col].apply(_parse_cell)
 
     # Attach the singleton fields directly to the DataFrame attributes
     df.attrs = metadata

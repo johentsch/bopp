@@ -10,6 +10,7 @@ from msgspec import Meta
 from .payload import (
     beat,
     chord,
+    dcml_harmony,
     key_mode,
     mood_thayer,
     note_hz,
@@ -19,6 +20,7 @@ from .payload import (
     pitch_class,
     pitch_contour_hz,
     pitch_midi,
+    score_note,
     segment_multi,
     segment_open,
     tag_open,
@@ -28,6 +30,7 @@ from .payload import (
 type AnyPayload = Annotated[
     beat.BeatPositionPayload
     | chord.ChordPayload
+    | dcml_harmony.DcmlHarmonyPayload
     | key_mode.KeyModePayload
     | mood_thayer.MoodThayerPayload
     | note_hz.NoteHzPayload
@@ -37,6 +40,7 @@ type AnyPayload = Annotated[
     | pitch_class.PitchClassPayload
     | pitch_contour_hz.PitchContourPayload
     | pitch_midi.PitchMidiPayload
+    | score_note.ScoreNotePayload
     | segment_multi.MultiSegmentPayload
     | segment_open.SegmentOpenPayload
     | tag_open.TagOpenPayload

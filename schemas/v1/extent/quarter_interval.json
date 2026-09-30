@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "extent/quarter_interval.json",
+  "title": "Quarter Interval Extent",
+  "description": "Interval extents measured in quarter notes (crotchet beats) rather than seconds. The unit is carried by the extent_type tag and these descriptions: BOPP extent structs have no separate unit field, so a dedicated tagged type is the idiomatic way to indicate non-second coordinates.",
+  "type": "object",
+  "properties": {
+    "extent_type": {
+      "const": "quarter_interval"
+    },
+    "start": {
+      "$ref": "../core.json#/$defs/Float32Buffer",
+      "description": "Array of start positions in quarter notes, converted from quarterbeats_all_endings fractions.",
+      "items": {
+        "type": "number",
+        "minimum": 0.0
+      }
+    },
+    "duration": {
+      "$ref": "../core.json#/$defs/Float32Buffer",
+      "description": "Array of interval durations in quarter notes (from duration_qb).",
+      "items": {
+        "type": "number",
+        "minimum": 0.0
+      }
+    }
+  },
+  "required": ["extent_type", "start", "duration"]
+}

@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/dcml_harmony.json",
+  "title": "DCML Harmony Payload",
+  "description": "Columnar DCML harmony annotation labels from the 'expanded' facet of the Distant Listening Corpus (all descriptor columns from 'label' onwards, each as a parallel array).",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "dcml_harmony"
+    },
+    "label": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "String corresponding to the entire annotation label.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "globalkey": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The key of the entire piece as note name, lowercase designating a minor key.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "localkey": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The key that a Roman numeral is relative to, expressed as a Roman numeral relative to the global key.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pedal": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Pedal point, specified as Roman numeral.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "chord": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The part of an annotation label that corresponds to the actual chord label.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "special": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Special labels such as \"Fr6\" or \"Ger65\" which are converted internally to Roman numerals.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "numeral": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The Roman numeral part of a DCML label, lowercase for all chords with a minor third.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "form": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Chord category: %, o, +, M, +M.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "figbass": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Chord inversion: 7, 65, 43, 2, 64, 6 or empty for root position.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "changes": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Alterations, suspensions, additions, and omissions, written within parentheses in the chord label.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relativeroot": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The Roman numeral following the / in applied chords. Can itself include a /. For example, V/V if the label pertains to the major scale on the second scale degree.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cadence": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Cadence: PAC, IAC, EC, DC, PC, HC, and HC subtypes such as HC.SIM.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "phraseend": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The phrase annotation part of a DCML label, can be {, }, or }{.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "chord_type": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Chord type: 'M', 'm', 'o', '+', 'mm7', 'Mm7', 'MM7', 'mM7', 'o7', '%7', '+7', '+M7'.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "globalkey_is_minor": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Boolean that is 1 if the piece is in minor and 0 if it is in major.",
+      "items": {
+        "type": "boolean"
+      }
+    },
+    "localkey_is_minor": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Boolean that is 1 if the local key is minor and 0 if it is major.",
+      "items": {
+        "type": "boolean"
+      }
+    },
+    "chord_tones": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Tones expressed by the label, as fifth intervals relative to the local tonic. The datapackage descriptor declares strings, but dimcat materializes tuples of integers; BOPP stores them as variable-length integer arrays.",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
+      }
+    },
+    "added_tones": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Chord tones considered as added, expressed as fifth intervals relative to the local tonic. The datapackage descriptor declares strings, but dimcat materializes tuples of integers; BOPP stores them as variable-length integer arrays.",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
+      }
+    },
+    "root": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Root, pertaining to MuseScore encoding.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "bass_note": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Lowest note designated by the chord label, expressed as fifth intervals relative to the local tonic.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "alt_label": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Another interpretation of the same chord which the annotator finds equally or slightly less convincing.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "volta": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Number of an ending bracket, given as integer.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "placement": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Placement of the annotation label in the score (e.g. above/below).",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "label",
+    "globalkey",
+    "localkey",
+    "pedal",
+    "chord",
+    "special",
+    "numeral",
+    "form",
+    "figbass",
+    "changes",
+    "relativeroot",
+    "cadence",
+    "phraseend",
+    "chord_type",
+    "globalkey_is_minor",
+    "localkey_is_minor",
+    "chord_tones",
+    "added_tones",
+    "root",
+    "bass_note",
+    "alt_label",
+    "volta",
+    "placement"
+  ]
+}

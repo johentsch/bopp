@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/score_note.json",
+  "title": "Score Note Payload",
+  "description": "Columnar note events from the 'notes' facet of the Distant Listening Corpus (all descriptor columns except the row identifiers and the two extent columns, each as a parallel array).",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "score_note"
+    },
+    "mc": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Running count of encoded <Measure> tags which do not necessarily express a full measure (e.g. in case of an anacrusis).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "mn": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Measure number as printed in the score, computed from mc, dont_count and numbering_offset.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quarterbeats": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Distance from the piece's beginning, leaving out alternative endings. The descriptor declares fraction strings; dimcat materializes Fractions, which BOPP stores as floats (quarter notes).",
+      "items": {
+        "type": "number"
+      }
+    },
+    "mc_onset": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Distance of an event from the beginning of the <Measure> tag. The descriptor declares fraction strings; dimcat materializes Fractions, which BOPP stores as floats (quarter notes).",
+      "items": {
+        "type": "number"
+      }
+    },
+    "mn_onset": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Distance from the beginning of the logical measure. The descriptor declares fraction strings; dimcat materializes Fractions, which BOPP stores as floats (quarter notes).",
+      "items": {
+        "type": "number"
+      }
+    },
+    "timesig": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Time signature, given as string, e.g. \"4/4\".",
+      "items": {
+        "type": "string"
+      }
+    },
+    "staff": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Number of the staff where an event occurs, 1 designating the top staff.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "voice": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Notational layer, a number between 1-4 where 1 is MuseScore's default layer.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "duration": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Duration as fraction of a whole note. The descriptor declares fraction strings; dimcat materializes Fractions, which BOPP stores as floats (whole notes).",
+      "items": {
+        "type": "number"
+      }
+    },
+    "gracenote": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Name given to a type of grace note in the MuseScore encoding, e.g. \"grace16\".",
+      "items": {
+        "type": "string"
+      }
+    },
+    "nominal_duration": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "The duration corresponding to a note/rest value without applying any dots or n-tuplets, as fraction of a whole note. The descriptor declares fraction strings; dimcat materializes Fractions, which BOPP stores as floats (whole notes).",
+      "items": {
+        "type": "number"
+      }
+    },
+    "scalar": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Decimal value reflecting all dots and n-tuplets modifying the duration of a note/rest. The descriptor declares fraction strings; dimcat materializes Fractions, which BOPP stores as floats.",
+      "items": {
+        "type": "number"
+      }
+    },
+    "tied": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "1 if a note is tied to the following one, -1 if it is being tied to by the previous one, 0 if both.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "tpc": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Tonal pitch class, specified on the line of fifths such that 0 = C, 1 = G, -1 = F, etc.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "midi": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "MIDI pitch, value between 0 and 127 where 60 = C4, 61 = C#4/Db4, etc.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "name": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Note name with octave, e.g. \"C4\".",
+      "items": {
+        "type": "string"
+      }
+    },
+    "octave": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Octave number where 4 is the middle octave (' in Helmholtz notation).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "chord_id": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Row in the chords table.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "tremolo": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Tremolo marking from the MuseScore encoding.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "volta": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Number of an ending bracket, given as integer.",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "tuning": {
+      "$ref": "../core.json#/$defs/GenericBuffer",
+      "description": "Detuning information from the MuseScore encoding.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "mc",
+    "mn",
+    "quarterbeats",
+    "mc_onset",
+    "mn_onset",
+    "timesig",
+    "staff",
+    "voice",
+    "duration",
+    "gracenote",
+    "nominal_duration",
+    "scalar",
+    "tied",
+    "tpc",
+    "midi",
+    "name",
+    "octave",
+    "chord_id",
+    "tremolo",
+    "volta",
+    "tuning"
+  ]
+}
