@@ -99,7 +99,8 @@ def to_csv(obj: Annotation | ScoreObject, filepath: str | Path) -> None:
 
     for col in df.columns:
         if df[col].dtype == object:
-            df[col] = df[col].map(_csv_cell)
+            # Series.map would re-infer int + None columns as float; keep Python values.
+            df[col] = pd.Series([_csv_cell(v) for v in df[col]], dtype=object, index=df.index)
 
     # 1. Convert the metadata dictionary to a YAML string
     yaml_text = yaml.dump(metadata, sort_keys=False, default_flow_style=False)
