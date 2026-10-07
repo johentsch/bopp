@@ -37,6 +37,14 @@ test = [
 benchmark = [
     "pytest-benchmark"
 ]
+experiments = [
+    "pandas>=2.0.0",
+    "polars>=0.20.0",
+    "pyarrow>=12.0.0",
+    "openpyxl>=3.1",
+    "pytest-benchmark",
+    "psutil>=5.9",
+]
 
 [tool.hatch.version]
 path = "bopp/_version.py"
@@ -44,6 +52,7 @@ path = "bopp/_version.py"
 [tool.pytest.ini_options]
 addopts = "--cov=bopp --cov-report=term-missing --cov-branch --cov-report=xml"
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.numpydoc_validation]
 checks = [
