@@ -48,3 +48,11 @@ pip-log.txt # Installer logs
 *.mo #Translations
 .mr.developer.cfg #Mr Developer
 .aider*
+
+# Local experiments artifacts
+venv/
+.ruff_cache/
+.benchmarks/
+dlc_bopp_exports*/
+distant_listening_corpus.*
+coordinates_demo.bopp.csv
