@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/score_note.json",
+  "title": "Score Note Payload",
+  "description": "Score notes, one row per note. Shared by all symbolic datasets; only midi and tpc are required.",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "score_note"
+    },
+    "midi": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "MIDI note numbers (0-127).",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 127
+      }
+    },
+    "tpc": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Tonal pitch classes as positions on the line of fifths with C = 0 (G = 1, F = -1, C# = 7, Bb = -2).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "name": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Note names with octave in scientific pitch notation, e.g. 'C#4'.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "octave": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Octave numbers in scientific pitch notation (C4 is middle C).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "staff": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Staff numbers, 1 = top staff.",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "voice": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Voice (layer) numbers within the staff, 1-based.",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "mc": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Measure counts: 1-based index of the measure unit in the encoded score (ms3 'mc').",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "mn": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Measure numbers as printed in the score (ms3 'mn'; 0 for an anacrusis).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "measure": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Measure numbers in the source dataset's own convention, for datasets that distinguish neither mc nor mn (e.g. BPS-FH).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "tied": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Tie status: 1 = a tie starts here, 0 = tied from and to another note, -1 = a tie ends here; null = not tied.",
+      "items": {
+        "type": ["integer", "null"],
+        "minimum": -1,
+        "maximum": 1
+      }
+    },
+    "gracenote": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Grace note type (e.g. 'acciaccatura', 'appoggiatura', 'grace16'); null for regular notes.",
+      "items": {
+        "type": ["string", "null"]
+      }
+    },
+    "nominal_duration": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Notated durations as fractions of a whole note before dots and tuplets are applied (e.g. [1, 4] for a quarter note).",
+      "items": {
+        "$ref": "../core.json#/$defs/FractionNonnegative"
+      }
+    },
+    "scalar": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Factors that dots and tuplets apply to nominal_duration (e.g. [3, 2] for a dotted note, [2, 3] inside a triplet).",
+      "items": {
+        "$ref": "../core.json#/$defs/FractionNonnegative"
+      }
+    },
+    "chord_id": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Identifier of the chord (stem) the note belongs to, unique within the piece.",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "tremolo": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Tremolo specification as encoded by the source (e.g. '1/2_r16_0'); null when absent.",
+      "items": {
+        "type": ["string", "null"]
+      }
+    },
+    "volta": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Volta (ending) number of the measure the note belongs to; null outside voltas.",
+      "items": {
+        "type": ["integer", "null"],
+        "minimum": 1
+      }
+    },
+    "tuning": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Tuning offset in cents; null when not specified.",
+      "items": {
+        "type": ["number", "null"]
+      }
+    },
+    "anchor": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Identifier of the note in its source document, e.g. a match-file anchor such as 'n238'.",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "midi",
+    "tpc"
+  ]
+}
