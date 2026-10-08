@@ -166,7 +166,7 @@ def test_csv_roundtrip_nested_extent_polars(tmp_path):
     ann = create(
         bopp_version="1.0",
         media_id="track:csv_extent_polars",
-        extent_kind="score_interval",
+        extent_kind="quarters_interval.fraction",
         payload_kind="chord",
         quarter=[(0, 1), (1, 2)],
         duration=[(1, 2), (1, 4)],
@@ -187,11 +187,11 @@ def test_csv_roundtrip_nested_extent_polars(tmp_path):
 @pytest.mark.parametrize(
     "ann_factory",
     [
-        # score_quarter extent with fractional tuple (quarter)
+        # quarters_time.fraction extent with fractional tuple (quarter)
         lambda: create(
             bopp_version="1.0",
-            media_id="track:score_quarter_polars",
-            extent_kind="score_quarter",
+            media_id="track:quarters_time_fraction_polars",
+            extent_kind="quarters_time.fraction",
             payload_kind="chord",
             quarter=[(0, 1), (3, 4)],
             value=["C:maj", "G:7"],
@@ -538,8 +538,8 @@ def test_build_csv_converters_error_and_edge_cases():
     assert _build_csv_converters(header, "1.0") == {}
 
     # Valid complex and string columns map to respective parsers
-    converters = _build_csv_converters("extent:score_interval:quarter,payload:tag_open:value", "1.0")
-    assert converters["extent:score_interval:quarter"] is _parse_complex_cell
+    converters = _build_csv_converters("extent:quarters_interval.fraction:quarter,payload:tag_open:value", "1.0")
+    assert converters["extent:quarters_interval.fraction:quarter"] is _parse_complex_cell
 
 
 def test_prepare_annotation_for_save_id_variations():

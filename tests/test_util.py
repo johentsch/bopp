@@ -11,7 +11,7 @@ from bopp.core import BoppArgumentError, BoppIOError, BoppValidationError, creat
 from bopp.io import _type_to_polars_dtype
 from bopp.models.v1.annotation import Annotation
 from bopp.models.v1.confidence.likelihood import LikelihoodConfidence
-from bopp.models.v1.extent.score_interval import ScoreInterval
+from bopp.models.v1.extent.quarters_interval_fraction import QuartersIntervalFraction
 from bopp.models.v1.extent.times import Times
 from bopp.models.v1.payload.object import ObjectPayload
 from bopp.models.v1.payload.onset import OnsetPayload
@@ -142,19 +142,19 @@ def test_to_dataframe_encode_complex():
         media_id="track:complex_test",
         bopp_version="1.0",
         payload=ObjectPayload(value=[{"k": "v"}]),
-        extent=ScoreInterval(quarter=[[0, 1]], duration=[[1, 2]]),
+        extent=QuartersIntervalFraction(quarter=[[0, 1]], duration=[[1, 2]]),
     )
 
     # With encode_complex=False, columns contain raw Python lists/dicts
     df_raw = to_dataframe(ann, backend="pandas", encode_complex=False)
     assert df_raw["payload:object:value"][0] == {"k": "v"}
-    assert df_raw["extent:score_interval:quarter"][0] == [0, 1]
+    assert df_raw["extent:quarters_interval.fraction:quarter"][0] == [0, 1]
 
     # With encode_complex=True, columns contain JSON-encoded strings
     df_encoded = to_dataframe(ann, backend="pandas", encode_complex=True)
     assert df_encoded["payload:object:value"][0] == '{"k":"v"}'
-    assert df_encoded["extent:score_interval:quarter"][0] == "[0,1]"
-    assert df_encoded["extent:score_interval:duration"][0] == "[1,2]"
+    assert df_encoded["extent:quarters_interval.fraction:quarter"][0] == "[0,1]"
+    assert df_encoded["extent:quarters_interval.fraction:duration"][0] == "[1,2]"
 
 
 def test_validate_dataframe_columns_invalid_format():
