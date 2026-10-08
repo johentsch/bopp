@@ -809,11 +809,11 @@ def test_to_times_incompatible_extent():
 
 
 def test_to_times_incompatible_extent_types():
-    """Verify to_times rejects unsupported extent types like midi_tick or score_quarter."""
+    """Verify to_times rejects unsupported extent types like midi_ticks or quarters_time.fraction."""
     ann_midi = create(
         media_id="track",
         payload_kind="tag_open",
-        extent_kind="midi_tick",
+        extent_kind="midi_ticks",
         tick=[0, 480],
         value=["a", "b"],
     )
@@ -823,7 +823,7 @@ def test_to_times_incompatible_extent_types():
     ann_score = create(
         media_id="track",
         payload_kind="tag_open",
-        extent_kind="score_quarter",
+        extent_kind="quarters_time.fraction",
         quarter=[0.0, 1.0],
         value=["a", "b"],
     )
