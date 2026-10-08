@@ -19,7 +19,8 @@
     { "$ref": "payload/segment_multi.json" },
     { "$ref": "payload/segment_open.json" },
     { "$ref": "payload/tag_open.json" },
-    { "$ref": "payload/tempo.json" }
+    { "$ref": "payload/tempo.json" },
+    { "$ref": "payload/score_note.json" }
   ],
   "discriminator": {
     "propertyName": "payload_type"
