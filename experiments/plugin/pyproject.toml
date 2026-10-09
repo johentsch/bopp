@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bopp-score-ext"
+version = "0.1.0"
+description = "Proof-of-concept bopp extension registering score note observations (bmcfee/bopp#8)."
+requires-python = ">=3.12"
+dependencies = ["msgspec>=0.18.0"]
+
+[project.entry-points."bopp_extension"]
+"io.github.johentsch.score_note:v1" = "bopp_score_ext.models:ScoreNote"
+
+[tool.hatch.build.targets.wheel]
+packages = ["bopp_score_ext"]
