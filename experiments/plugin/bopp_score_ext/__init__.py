@@ -1,6 +1,55 @@
-"""Proof-of-concept bopp extension registering score note observations (bmcfee/bopp#8)."""
+"""Score note and control-event extensions for bopp (bmcfee/bopp#8)."""
 
 from .convert import from_ext, to_ext
+from .events import (
+    EVENT_EXT_SCHEMAS,
+    EVENT_KINDS,
+    EVENT_ROW_TYPES,
+    EVENT_TAGS,
+    MIXED_EXT_SCHEMA,
+    ChordEvent,
+    DynamicEvent,
+    FiguredBassEvent,
+    ScoreChord,
+    ScoreControlEvent,
+    ScoreDynamic,
+    ScoreFiguredBass,
+    ScoreSpanner,
+    ScoreStaffText,
+    ScoreSystemText,
+    ScoreTempo,
+    SpannerEvent,
+    StaffTextEvent,
+    SystemTextEvent,
+    TempoEvent,
+    decode_mixed,
+)
 from .models import EXT_SCHEMA, ScoreNote
 
-__all__ = ["EXT_SCHEMA", "ScoreNote", "from_ext", "to_ext"]
+__all__ = [
+    "EVENT_EXT_SCHEMAS",
+    "EVENT_KINDS",
+    "EVENT_ROW_TYPES",
+    "EVENT_TAGS",
+    "EXT_SCHEMA",
+    "MIXED_EXT_SCHEMA",
+    "ChordEvent",
+    "DynamicEvent",
+    "FiguredBassEvent",
+    "ScoreChord",
+    "ScoreControlEvent",
+    "ScoreDynamic",
+    "ScoreFiguredBass",
+    "ScoreNote",
+    "ScoreSpanner",
+    "ScoreStaffText",
+    "ScoreSystemText",
+    "ScoreTempo",
+    "SpannerEvent",
+    "StaffTextEvent",
+    "SystemTextEvent",
+    "TempoEvent",
+    "decode_mixed",
+    "from_ext",
+    "to_ext",
+]
