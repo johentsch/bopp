@@ -1,82 +1,87 @@
 # bopp-score-ext
 
-A proof-of-concept `bopp` extension for [bmcfee/bopp#8](https://github.com/bmcfee/bopp/pull/8),
-answering Brian's request for an example plugin that defines score element
-types. It registers a `ScoreNote` observation struct that mirrors the columns
-of the built-in `score_note` payload, so a `score_note` annotation can be
-re-encoded as an `ext` annotation (and back) without losing any information
-or changing its deterministic id.
+A proof-of-concept extension for [bmcfee/bopp#8](https://github.com/bmcfee/bopp/pull/8)
+that represents score notes and control events as row observations. Install with
+`pip install experiments/plugin` from a checkout with bopp available.
 
-## Install
+## Registered schemas
 
-From the repository root, with `bopp` itself available from this checkout:
-
-```bash
-pip install -e .                  # bopp
-pip install experiments/plugin    # this plugin
-```
-
-The entry point it registers:
+These eight entry points register individual row types:
 
 ```toml
 [project.entry-points."bopp_extension"]
 "io.github.johentsch.score_note:v1" = "bopp_score_ext.models:ScoreNote"
+"io.github.johentsch.score_control_event.chord:v1" = "bopp_score_ext.events:ScoreChord"
+"io.github.johentsch.score_control_event.dynamic:v1" = "bopp_score_ext.events:ScoreDynamic"
+"io.github.johentsch.score_control_event.spanner:v1" = "bopp_score_ext.events:ScoreSpanner"
+"io.github.johentsch.score_control_event.figured_bass:v1" = "bopp_score_ext.events:ScoreFiguredBass"
+"io.github.johentsch.score_control_event.staff_text:v1" = "bopp_score_ext.events:ScoreStaffText"
+"io.github.johentsch.score_control_event.system_text:v1" = "bopp_score_ext.events:ScoreSystemText"
+"io.github.johentsch.score_control_event.tempo:v1" = "bopp_score_ext.events:ScoreTempo"
 ```
 
-## Usage
+`to_ext(annotation, resolve_ext=True)` converts any of these columnar payloads
+into an `ext` annotation. `from_ext(annotation)` restores its columnar form.
+Both preserve the other facets and compute a new id for the new representation.
+A round trip restores the original columnar id, except for entirely null columns.
 
 ```python
 import bopp
 from bopp.io import load_bopp_json, save_bopp_json
-import bopp_score_ext
+from bopp_score_ext import EVENT_EXT_SCHEMAS, ScoreDynamic, from_ext, to_ext
 
 ann = bopp.create(
-    media_id="track:1",
-    payload_kind="ext",
-    ext_schema=bopp_score_ext.EXT_SCHEMA,
-    value=[{"midi": 60, "tpc": 0}, {"midi": 64, "tpc": 4}],
-    extent_kind="quarters_interval.fraction",
-    quarter=[[0, 1], [1, 1]],
-    duration=[[1, 1], [1, 1]],
+    media_id="track:1", payload_kind="ext",
+    ext_schema=EVENT_EXT_SCHEMAS["dynamic"],
+    value=[{"staff": 1, "voice": 1, "mc": 1, "mn": 0, "dynamics": "mf"}],
 )
-save_bopp_json(ann, "notes.json")
-
-# With the plugin installed, rows resolve to ScoreNote instances.
-with_plugin = load_bopp_json("notes.json")
-assert isinstance(with_plugin.payload.value[0], bopp_score_ext.ScoreNote)
-
-# Without it (e.g. resolve_ext=False), rows stay as plain dicts; the id is
-# unchanged either way.
-without_plugin = load_bopp_json("notes.json", resolve_ext=False)
-assert with_plugin.id == without_plugin.id
+assert isinstance(ann.payload.value[0], ScoreDynamic)
+assert to_ext(from_ext(ann)).id == ann.id
+save_bopp_json(ann, "dynamics.json")
+assert load_bopp_json("dynamics.json", resolve_ext=False).id == ann.id
 ```
 
-`bopp_score_ext.convert.to_ext`/`from_ext` convert between this encoding and
-the columnar `score_note` payload directly.
+## Mixed experiment
 
-## Invariants
+`io.github.johentsch.score_control_event:v1` holds all seven event kinds in one
+annotation, in original piece order. Each row begins with `event`, using the DLC
+tags `Chord`, `Dynamic`, `Spanner`, `FiguredBass`, `StaffText`, `SystemText`, or
+`Tempo`. `ScoreControlEvent` is the union of the corresponding tagged subclasses
+(`ChordEvent`, etc.).
 
-- A missing value is represented only by an absent key. Every optional
-  `ScoreNote` field defaults to `msgspec.UNSET`, not `None`; an explicit
-  `null` on the wire is invalid for this schema and is rejected at
-  resolution (`msgspec.ValidationError`), it never silently decodes to
-  `msgspec.UNSET`. This keeps a resolved row's re-serialized bytes, and
-  therefore the annotation's id, independent of whether this plugin is
-  installed: a row that resolves at all always re-serializes byte for byte.
-- `ScoreNote` uses `omit_defaults=True` so a resolved row and its dict form
-  serialize identically (`msgspec.UNSET` fields are omitted on encoding
-  regardless of this flag; it is kept to document the intent).
-- `tuning` is always written as a float on the wire, since `msgspec` would
-  otherwise promote an int to a float during strict conversion and change
-  the serialized bytes.
-- `ScoreNote` uses `forbid_unknown_fields=True`, so unexpected keys fail
-  loudly instead of being silently dropped.
+**Finding for Brian:** on this branch, an entry point or
+`REGISTRY.register_entry(name, "module:Union")` fails on lookup with
+`TypeError: Resolved extension for '...' must be a type, got UnionType`.
+Assigning the union directly with `REGISTRY[name] = ScoreControlEvent` bypasses
+that check, and resolution then works because msgspec converts tagged unions
+fine. The mixed schema is therefore not registered as an entry point;
+`decode_mixed` decodes it explicitly:
 
-## Known limitations
+```python
+from experiments.dlc_chords import read_chords_tsv, chords_to_mixed_ext
+from bopp_score_ext import decode_mixed
 
-- CSV round trips of `ext` payloads are not id-stable upstream yet (verified
-  2026-10-09 on PR #8's head), so this plugin's tests cover JSON and MsgPack
-  only.
-- A column that is entirely `None` across all rows does not survive
-  `to_ext`: it is indistinguishable from an absent column, so it cannot be
-  reconstructed by `from_ext`.
+mixed = chords_to_mixed_ext(read_chords_tsv("chords.tsv"))
+events = decode_mixed(mixed)
+# The annotation retains dict rows; events is a separate typed list.
+```
+
+The reader works without this plugin and creates mixed annotations with
+`resolve_ext=False`. Loading mixed JSON/MsgPack with default resolution warns
+"No extension registered", retaining dicts and the same id. Use
+`load_bopp_json(path, resolve_ext=False)` followed by `decode_mixed` to avoid it.
+
+## Wire contract and limitations
+
+- Optional fields use `UNSET`; missing keys encode absence. Explicit nulls and
+  unknown fields fail strict row validation. Nullable column cells become absent
+  row keys. Entirely null columns cannot survive conversion back to columns.
+- Row fields follow generated payload order. Mixed rows put `event` first.
+  Producer floats (`tuning`, `qpm`, `metronome_number`) must be floats on the
+  wire: msgspec promotes integers even with strict conversion, changing bytes.
+- Fraction columns reuse the array-like `FractionPair`, preserving two-element
+  integer lists. Canonically produced dict rows and resolved structs serialize
+  identically in JSON, preserving ids across plugin installation and JSON/MsgPack I/O.
+  MsgPack map headers may differ between structs and dicts; decoded values agree.
+- CSV round trips of `ext` payloads are not id-stable upstream yet; this
+  experiment tests JSON and MsgPack.

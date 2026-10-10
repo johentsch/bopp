@@ -10,7 +10,7 @@ from msgspec import UNSET, Meta, UnsetType
 EXT_SCHEMA = "io.github.johentsch.score_note:v1"
 
 
-class FractionPair(msgspec.Struct, array_like=True, frozen=True):
+class FractionPair(msgspec.Struct, array_like=True, frozen=True, forbid_unknown_fields=True):
     """
     A ``[numerator, denominator]`` pair, the resolved form of a fraction column.
 
@@ -23,6 +23,8 @@ class FractionPair(msgspec.Struct, array_like=True, frozen=True):
     *list*. An ``array_like`` struct still encodes as a two-element array on
     the wire and under ``msgspec.to_builtins``, but round-trips as a ``list``,
     matching the unresolved dict row exactly.
+    Exactly two elements are required: rejecting trailing elements prevents
+    silent truncation and preserves the wire form and annotation id.
     """
 
     numerator: Annotated[int, Meta(ge=0)]
