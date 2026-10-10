@@ -22,6 +22,7 @@ from .payload import (
     pitch_contour_hz,
     relation,
     score_control_event,
+    score_measure,
     score_note,
     segment_multi,
     segment_open,
@@ -33,6 +34,7 @@ type AnyPayload = Annotated[
     beat.BeatPositionPayload
     | chord.ChordPayload
     | dcml_label.DcmlLabelPayload
+    | score_measure.ScoreMeasurePayload
     | key_mode.KeyModePayload
     | lyrics.LyricsPayload
     | mood_thayer.MoodThayerPayload

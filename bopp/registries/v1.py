@@ -40,6 +40,7 @@ from ..models.v1.payload.score_control_event.spanner import ScoreSpannerPayload
 from ..models.v1.payload.score_control_event.staff_text import ScoreStaffTextPayload
 from ..models.v1.payload.score_control_event.system_text import ScoreSystemTextPayload
 from ..models.v1.payload.score_control_event.tempo import ScoreTempoPayload
+from ..models.v1.payload.score_measure import ScoreMeasurePayload
 from ..models.v1.payload.score_note import ScoreNotePayload
 from ..models.v1.payload.segment_multi import MultiSegmentPayload
 from ..models.v1.payload.segment_open import SegmentOpenPayload
@@ -98,6 +99,7 @@ PAYLOAD_TYPE_REGISTRY = {
     'score_control_event.staff_text': ScoreStaffTextPayload,
     'score_control_event.system_text': ScoreSystemTextPayload,
     'score_control_event.tempo': ScoreTempoPayload,
+    'score_measure': ScoreMeasurePayload,
     'score_note': ScoreNotePayload,
     'segment_open': SegmentOpenPayload,
     'tag_open': TagOpenPayload,
@@ -130,6 +132,7 @@ COMPLEX_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'score_control_event.staff_text': ['volta', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'staff_text'],
         'score_control_event.system_text': ['volta', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal'],
         'score_control_event.tempo': ['volta', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'tempo', 'metronome_base', 'metronome_number'],
+        'score_measure': ['act_dur', 'mc_offset', 'next', 'numbering_offset', 'volta', 'dont_count', 'barline', 'breaks', 'repeats', 'markers', 'jump_bwd', 'jump_fwd', 'play_until'],
         'score_note': ['name', 'octave', 'staff', 'voice', 'mc', 'mn', 'measure', 'tied', 'gracenote', 'nominal_duration', 'scalar', 'chord_id', 'tremolo', 'volta', 'tuning', 'anchor'],
     },
 }
