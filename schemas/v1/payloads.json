@@ -20,7 +20,8 @@
     { "$ref": "payload/segment_open.json" },
     { "$ref": "payload/tag_open.json" },
     { "$ref": "payload/tempo.json" },
-    { "$ref": "payload/score_note.json" }
+    { "$ref": "payload/score_note.json" },
+    { "$ref": "payload/score_control_event.json" }
   ],
   "discriminator": {
     "propertyName": "payload_type"

@@ -32,6 +32,13 @@ from ..models.v1.payload.object import ObjectPayload
 from ..models.v1.payload.onset import OnsetPayload
 from ..models.v1.payload.pitch_contour_hz import PitchContourPayload
 from ..models.v1.payload.relation import RelationPayload
+from ..models.v1.payload.score_control_event.chord import ScoreChordPayload
+from ..models.v1.payload.score_control_event.dynamic import ScoreDynamicPayload
+from ..models.v1.payload.score_control_event.figured_bass import ScoreFiguredBassPayload
+from ..models.v1.payload.score_control_event.spanner import ScoreSpannerPayload
+from ..models.v1.payload.score_control_event.staff_text import ScoreStaffTextPayload
+from ..models.v1.payload.score_control_event.system_text import ScoreSystemTextPayload
+from ..models.v1.payload.score_control_event.tempo import ScoreTempoPayload
 from ..models.v1.payload.score_note import ScoreNotePayload
 from ..models.v1.payload.segment_multi import MultiSegmentPayload
 from ..models.v1.payload.segment_open import SegmentOpenPayload
@@ -82,6 +89,13 @@ PAYLOAD_TYPE_REGISTRY = {
     'onset': OnsetPayload,
     'pitch_contour': PitchContourPayload,
     'relation': RelationPayload,
+    'score_control_event.chord': ScoreChordPayload,
+    'score_control_event.dynamic': ScoreDynamicPayload,
+    'score_control_event.figured_bass': ScoreFiguredBassPayload,
+    'score_control_event.spanner': ScoreSpannerPayload,
+    'score_control_event.staff_text': ScoreStaffTextPayload,
+    'score_control_event.system_text': ScoreSystemTextPayload,
+    'score_control_event.tempo': ScoreTempoPayload,
     'score_note': ScoreNotePayload,
     'segment_open': SegmentOpenPayload,
     'tag_open': TagOpenPayload,
@@ -103,6 +117,8 @@ COMPLEX_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'object': ['value'],
         'onset': ['value'],
         'pitch_contour': ['value'],
+        'score_control_event.chord': ['nominal_duration', 'scalar'],
+        'score_control_event.figured_bass': ['thoroughbass_duration'],
         'score_note': ['nominal_duration', 'scalar'],
     },
 }
@@ -123,6 +139,13 @@ STRING_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'lyrics': ['value'],
         'multi_segment': ['label'],
         'relation': ['performance_id', 'value', 'relation'],
+        'score_control_event.chord': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'gracenote', 'articulation', 'tremolo', 'lyrics_1', 'lyrics_2', 'lyrics_3'],
+        'score_control_event.dynamic': ['dynamics', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal'],
+        'score_control_event.figured_bass': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'thoroughbass_level_1', 'thoroughbass_level_2', 'thoroughbass_level_3', 'thoroughbass_level_4'],
+        'score_control_event.spanner': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal'],
+        'score_control_event.staff_text': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'staff_text'],
+        'score_control_event.system_text': ['system_text', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal'],
+        'score_control_event.tempo': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'tempo', 'metronome_base'],
         'score_note': ['name', 'gracenote', 'tremolo', 'anchor'],
         'segment_open': ['value'],
         'tag_open': ['value'],

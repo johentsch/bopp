@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/score_control_event.json",
+  "title": "Score Control Event Payload",
+  "description": "Homogeneous columnar payloads for DLC score control events: Chord, Dynamic, Spanner, FiguredBass, StaffText, SystemText and Tempo.",
+  "oneOf": [
+    {
+      "$ref": "score_control_event/chord.json"
+    },
+    {
+      "$ref": "score_control_event/dynamic.json"
+    },
+    {
+      "$ref": "score_control_event/spanner.json"
+    },
+    {
+      "$ref": "score_control_event/figured_bass.json"
+    },
+    {
+      "$ref": "score_control_event/staff_text.json"
+    },
+    {
+      "$ref": "score_control_event/system_text.json"
+    },
+    {
+      "$ref": "score_control_event/tempo.json"
+    }
+  ],
+  "discriminator": {
+    "propertyName": "payload_type"
+  }
+}
