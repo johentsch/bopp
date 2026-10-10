@@ -1,0 +1,717 @@
+corpus	piece	i	mc	mn	quarterbeats	quarterbeats_all_endings	duration_qb	volta	mc_onset	mn_onset	event	timesig	staff	voice	duration	gracenote	nominal_duration	scalar	chord_id	dynamics	articulation	staff_text	tempo	qpm	metronome_base	metronome_number	tempo_visible	slur	diminuendo_line	crescendo_line	decrescendo_hairpin	crescendo_hairpin	pedal
+chopin_mazurkas	BI163op67-4	0	1	0	0	0	0.0		0	1/2	Tempo	3/4	1	1	0								Moderatoanimato	114.0			1.0						
+chopin_mazurkas	BI163op67-4	1	1	0	0	0	0.0		0	1/2	Tempo	3/4	1	1	0								𝅘𝅥=138	138.0	𝅘𝅥	138.0	1.0						
+chopin_mazurkas	BI163op67-4	2	1	0	0	0	1.0		0	1/2	Chord	3/4	1	1	1/4		1/4	1	0		articAccentAbove												
+chopin_mazurkas	BI163op67-4	3	2	1	1	1	0.0		0	0	Dynamic	3/4	1	1	0					mf													
+chopin_mazurkas	BI163op67-4	4	2	1	1	1	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	1									0					
+chopin_mazurkas	BI163op67-4	5	2	1	5/2	5/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	2									0, 1					
+chopin_mazurkas	BI163op67-4	6	2	1	3	3	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	3		ornamentShortTrill							0, 1					
+chopin_mazurkas	BI163op67-4	7	2	1	7/2	7/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	4									0					
+chopin_mazurkas	BI163op67-4	8	2	1	1	1	0.0		0	0	Spanner	3/4	2	1	0																		0
+chopin_mazurkas	BI163op67-4	9	2	1	1	1	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	5														0
+chopin_mazurkas	BI163op67-4	10	2	1	2	2	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	6														0
+chopin_mazurkas	BI163op67-4	11	2	1	3	3	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	7														0
+chopin_mazurkas	BI163op67-4	12	3	2	4	4	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	8									0					
+chopin_mazurkas	BI163op67-4	13	3	2	9/2	9/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	9									0					
+chopin_mazurkas	BI163op67-4	14	3	2	5	5	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	10									0					
+chopin_mazurkas	BI163op67-4	15	3	2	6	6	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	11														
+chopin_mazurkas	BI163op67-4	16	3	2	4	4	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	17	3	2	5	5	0.0		1/4	1/4	Spanner	3/4	2	1	0																		1
+chopin_mazurkas	BI163op67-4	18	3	2	5	5	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	12														1
+chopin_mazurkas	BI163op67-4	19	3	2	6	6	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	13														1
+chopin_mazurkas	BI163op67-4	20	4	3	7	7	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	14									2					
+chopin_mazurkas	BI163op67-4	21	4	3	17/2	17/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	15									2, 3					
+chopin_mazurkas	BI163op67-4	22	4	3	9	9	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	16		ornamentShortTrill							2, 3					
+chopin_mazurkas	BI163op67-4	23	4	3	19/2	19/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	17									2					
+chopin_mazurkas	BI163op67-4	24	4	3	7	7	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	25	4	3	7	7	0.0		0	0	Spanner	3/4	2	1	0																		2
+chopin_mazurkas	BI163op67-4	26	4	3	7	7	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	18														2
+chopin_mazurkas	BI163op67-4	27	4	3	8	8	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	19														2
+chopin_mazurkas	BI163op67-4	28	4	3	9	9	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	20														2
+chopin_mazurkas	BI163op67-4	29	5	4	10	10	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	21									2					
+chopin_mazurkas	BI163op67-4	30	5	4	21/2	21/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	22									2					
+chopin_mazurkas	BI163op67-4	31	5	4	11	11	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	23									2					
+chopin_mazurkas	BI163op67-4	32	5	4	12	12	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	24									2					
+chopin_mazurkas	BI163op67-4	33	5	4	10	10	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	34	5	4	11	11	0.0		1/4	1/4	Spanner	3/4	2	1	0																		3
+chopin_mazurkas	BI163op67-4	35	5	4	11	11	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	25														3
+chopin_mazurkas	BI163op67-4	36	5	4	12	12	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	26														3
+chopin_mazurkas	BI163op67-4	37	6	5	13	13	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	27														
+chopin_mazurkas	BI163op67-4	38	6	5	29/2	29/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	28									4					
+chopin_mazurkas	BI163op67-4	39	6	5	15	15	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	29									4					
+chopin_mazurkas	BI163op67-4	40	6	5	31/2	31/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	30									4					
+chopin_mazurkas	BI163op67-4	41	6	5	13	13	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	42	6	5	13	13	0.0		0	0	Spanner	3/4	2	1	0																		4
+chopin_mazurkas	BI163op67-4	43	6	5	13	13	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	31														4
+chopin_mazurkas	BI163op67-4	44	6	5	14	14	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	32														4
+chopin_mazurkas	BI163op67-4	45	7	6	16	16	0.0		0	0	Spanner	3/4	1	1	0													4			0		
+chopin_mazurkas	BI163op67-4	46	7	6	16	16	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	33									4			0		
+chopin_mazurkas	BI163op67-4	47	7	6	33/2	33/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	34									4			0		
+chopin_mazurkas	BI163op67-4	48	7	6	17	17	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	35									4			0		
+chopin_mazurkas	BI163op67-4	49	7	6	18	18	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	36									4			0		
+chopin_mazurkas	BI163op67-4	50	7	6	37/2	37/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	37												0		
+chopin_mazurkas	BI163op67-4	51	7	6	16	16	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	52	8	7	19	19	0.0		0	0	StaffText	3/4	1	1	0							riten.											
+chopin_mazurkas	BI163op67-4	53	8	7	19	19	0.0		0	0	StaffText	3/4	1	1	0							marcato											
+chopin_mazurkas	BI163op67-4	54	8	7	19	19	0.0		0	0	Spanner	3/4	1	1	0																		
+chopin_mazurkas	BI163op67-4	55	8	7	19	19	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	38									5					
+chopin_mazurkas	BI163op67-4	56	8	7	39/2	39/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	39									5					
+chopin_mazurkas	BI163op67-4	57	8	7	20	20	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	40									5					
+chopin_mazurkas	BI163op67-4	58	8	7	21	21	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	41									5					
+chopin_mazurkas	BI163op67-4	59	8	7	19	19	0.0		0	0	Spanner	3/4	2	1	0																		5
+chopin_mazurkas	BI163op67-4	60	8	7	19	19	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	42														5
+chopin_mazurkas	BI163op67-4	61	8	7	20	20	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	43														5
+chopin_mazurkas	BI163op67-4	62	8	7	21	21	0.0		1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	63	8	7	21	21	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	44														
+chopin_mazurkas	BI163op67-4	64	9	8	22	22	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	45														
+chopin_mazurkas	BI163op67-4	65	9	8	24	24	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	46														
+chopin_mazurkas	BI163op67-4	66	9	8	22	22	0.0		0	0	Spanner	3/4	2	1	0																		6
+chopin_mazurkas	BI163op67-4	67	9	8	22	22	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	47														6
+chopin_mazurkas	BI163op67-4	68	9	8	23	23	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	48														6
+chopin_mazurkas	BI163op67-4	69	10	9	25	25	0.0		0	0	StaffText	3/4	1	1	0							a tempo											
+chopin_mazurkas	BI163op67-4	70	10	9	25	25	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	49									6					
+chopin_mazurkas	BI163op67-4	71	10	9	26	26	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	50									6					
+chopin_mazurkas	BI163op67-4	72	10	9	53/2	53/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	51									6					
+chopin_mazurkas	BI163op67-4	73	10	9	27	27	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	52									6					
+chopin_mazurkas	BI163op67-4	74	10	9	55/2	55/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	53									6					
+chopin_mazurkas	BI163op67-4	75	10	9	25	25	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	76	10	9	25	25	0.0		0	0	Spanner	3/4	2	1	0																		7
+chopin_mazurkas	BI163op67-4	77	10	9	25	25	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	54														7
+chopin_mazurkas	BI163op67-4	78	10	9	26	26	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	55														7
+chopin_mazurkas	BI163op67-4	79	10	9	27	27	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	56														7
+chopin_mazurkas	BI163op67-4	80	11	10	28	28	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	57									6					
+chopin_mazurkas	BI163op67-4	81	11	10	57/2	57/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	58									6					
+chopin_mazurkas	BI163op67-4	82	11	10	29	29	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	59									6					
+chopin_mazurkas	BI163op67-4	83	11	10	30	30	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	60														
+chopin_mazurkas	BI163op67-4	84	11	10	28	28	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	85	11	10	29	29	0.0		1/4	1/4	Spanner	3/4	2	1	0																		8
+chopin_mazurkas	BI163op67-4	86	11	10	29	29	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	61														8
+chopin_mazurkas	BI163op67-4	87	11	10	30	30	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	62														8
+chopin_mazurkas	BI163op67-4	88	12	11	31	31	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	63									7					
+chopin_mazurkas	BI163op67-4	89	12	11	65/2	65/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	64									7					
+chopin_mazurkas	BI163op67-4	90	12	11	33	33	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	65									7					
+chopin_mazurkas	BI163op67-4	91	12	11	67/2	67/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	66									7					
+chopin_mazurkas	BI163op67-4	92	12	11	31	31	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	93	12	11	31	31	0.0		0	0	Spanner	3/4	2	1	0																		9
+chopin_mazurkas	BI163op67-4	94	12	11	31	31	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	67														9
+chopin_mazurkas	BI163op67-4	95	12	11	32	32	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	68														9
+chopin_mazurkas	BI163op67-4	96	12	11	33	33	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	69														9
+chopin_mazurkas	BI163op67-4	97	13	12	34	34	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	70									7					
+chopin_mazurkas	BI163op67-4	98	13	12	69/2	69/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	71									7					
+chopin_mazurkas	BI163op67-4	99	13	12	35	35	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	72									7					
+chopin_mazurkas	BI163op67-4	100	13	12	36	36	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	73														
+chopin_mazurkas	BI163op67-4	101	13	12	34	34	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	102	13	12	35	35	0.0		1/4	1/4	Spanner	3/4	2	1	0																		10
+chopin_mazurkas	BI163op67-4	103	13	12	35	35	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	74														10
+chopin_mazurkas	BI163op67-4	104	13	12	36	36	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	75														10
+chopin_mazurkas	BI163op67-4	105	14	13	37	37	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	76														
+chopin_mazurkas	BI163op67-4	106	14	13	77/2	77/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	77									8					
+chopin_mazurkas	BI163op67-4	107	14	13	39	39	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	78									8					
+chopin_mazurkas	BI163op67-4	108	14	13	79/2	79/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	79														
+chopin_mazurkas	BI163op67-4	109	14	13	37	37	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	110	14	13	37	37	0.0		0	0	Spanner	3/4	2	1	0																		11
+chopin_mazurkas	BI163op67-4	111	14	13	37	37	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	80														11
+chopin_mazurkas	BI163op67-4	112	14	13	38	38	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	81														11
+chopin_mazurkas	BI163op67-4	113	15	14	40	40	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	82									9					
+chopin_mazurkas	BI163op67-4	114	15	14	81/2	81/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	83									9					
+chopin_mazurkas	BI163op67-4	115	15	14	41	41	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	84									9					
+chopin_mazurkas	BI163op67-4	116	15	14	83/2	83/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	85									9					
+chopin_mazurkas	BI163op67-4	117	15	14	42	42	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	86									9					
+chopin_mazurkas	BI163op67-4	118	15	14	85/2	85/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	87														
+chopin_mazurkas	BI163op67-4	119	15	14	40	40	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	120	16	15	43	43	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	88									10					
+chopin_mazurkas	BI163op67-4	121	16	15	87/2	87/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	89									10					
+chopin_mazurkas	BI163op67-4	122	16	15	44	44	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	90									10					
+chopin_mazurkas	BI163op67-4	123	16	15	89/2	89/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	91									10					
+chopin_mazurkas	BI163op67-4	124	16	15	45	45	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	92									10					
+chopin_mazurkas	BI163op67-4	125	16	15	91/2	91/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	93									10					
+chopin_mazurkas	BI163op67-4	126	16	15	43	43	0.0		0	0	Spanner	3/4	2	1	0																		12
+chopin_mazurkas	BI163op67-4	127	16	15	43	43	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	94														12
+chopin_mazurkas	BI163op67-4	128	16	15	44	44	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	95														12
+chopin_mazurkas	BI163op67-4	129	16	15	45	45	0.0		1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	130	16	15	45	45	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	96														
+chopin_mazurkas	BI163op67-4	131	17	16	46	46	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	97														
+chopin_mazurkas	BI163op67-4	132	17	16	48	48	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	98														
+chopin_mazurkas	BI163op67-4	133	17	16	46	46	0.0		0	0	Spanner	3/4	2	1	0																		13
+chopin_mazurkas	BI163op67-4	134	17	16	46	46	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	99														13
+chopin_mazurkas	BI163op67-4	135	17	16	47	47	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	100														13
+chopin_mazurkas	BI163op67-4	136	18	17	49	49	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	101									11					
+chopin_mazurkas	BI163op67-4	137	18	17	101/2	101/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	102									11					
+chopin_mazurkas	BI163op67-4	138	18	17	51	51	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	103									11					
+chopin_mazurkas	BI163op67-4	139	18	17	103/2	103/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	104									11					
+chopin_mazurkas	BI163op67-4	140	18	17	49	49	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	141	18	17	49	49	0.0		0	0	Spanner	3/4	2	1	0																		14
+chopin_mazurkas	BI163op67-4	142	18	17	49	49	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	105														14
+chopin_mazurkas	BI163op67-4	143	18	17	50	50	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	106														14
+chopin_mazurkas	BI163op67-4	144	18	17	51	51	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	107														14
+chopin_mazurkas	BI163op67-4	145	19	18	52	52	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	108									11					
+chopin_mazurkas	BI163op67-4	146	19	18	157/3	157/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	109									11					
+chopin_mazurkas	BI163op67-4	147	19	18	158/3	158/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	110									11					
+chopin_mazurkas	BI163op67-4	148	19	18	53	53	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	111									11					
+chopin_mazurkas	BI163op67-4	149	19	18	54	54	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	112														
+chopin_mazurkas	BI163op67-4	150	19	18	52	52	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	151	19	18	53	53	0.0		1/4	1/4	Spanner	3/4	2	1	0																		15
+chopin_mazurkas	BI163op67-4	152	19	18	53	53	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	113														15
+chopin_mazurkas	BI163op67-4	153	19	18	54	54	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	114		articAccentAbove												15
+chopin_mazurkas	BI163op67-4	154	20	19	55	55	0.0		0	0	Spanner	3/4	1	1	0																	0	
+chopin_mazurkas	BI163op67-4	155	20	19	55	55	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	115									12				0	
+chopin_mazurkas	BI163op67-4	156	20	19	113/2	113/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	116									12				0	
+chopin_mazurkas	BI163op67-4	157	20	19	57	57	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	117									12				0	
+chopin_mazurkas	BI163op67-4	158	20	19	115/2	115/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	118									12				0	
+chopin_mazurkas	BI163op67-4	159	20	19	55	55	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	160	20	19	55	55	0.0		0	0	Spanner	3/4	2	1	0																		16
+chopin_mazurkas	BI163op67-4	161	20	19	55	55	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	119														16
+chopin_mazurkas	BI163op67-4	162	20	19	56	56	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	120														16
+chopin_mazurkas	BI163op67-4	163	20	19	57	57	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	121														16
+chopin_mazurkas	BI163op67-4	164	21	20	58	58	0.0		0	0	Spanner	3/4	1	1	0													12					
+chopin_mazurkas	BI163op67-4	165	21	20	58	58	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	122									12					
+chopin_mazurkas	BI163op67-4	166	21	20	175/3	175/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	123									12					
+chopin_mazurkas	BI163op67-4	167	21	20	176/3	176/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	124									12					
+chopin_mazurkas	BI163op67-4	168	21	20	59	59	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	125									12					
+chopin_mazurkas	BI163op67-4	169	21	20	60	60	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	126														
+chopin_mazurkas	BI163op67-4	170	21	20	58	58	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	171	21	20	58	58	0.0		0	0	Spanner	3/4	2	1	0																		17
+chopin_mazurkas	BI163op67-4	172	21	20	58	58	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	127														17
+chopin_mazurkas	BI163op67-4	173	21	20	59	59	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	128														17
+chopin_mazurkas	BI163op67-4	174	21	20	60	60	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	129		articAccentAbove												17
+chopin_mazurkas	BI163op67-4	175	22	21	61	61	0.0		0	0	Spanner	3/4	1	1	0																1		
+chopin_mazurkas	BI163op67-4	176	22	21	61	61	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	130									13			1		
+chopin_mazurkas	BI163op67-4	177	22	21	125/2	125/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	131									13			1		
+chopin_mazurkas	BI163op67-4	178	22	21	63	63	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	132									13			1		
+chopin_mazurkas	BI163op67-4	179	22	21	127/2	127/2	0.0		5/8	5/8	Dynamic	3/4	1	1	0					p								13					
+chopin_mazurkas	BI163op67-4	180	22	21	127/2	127/2	0.0		5/8	5/8	Spanner	3/4	1	1	0													13					
+chopin_mazurkas	BI163op67-4	181	22	21	127/2	127/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	133									13					
+chopin_mazurkas	BI163op67-4	182	22	21	61	61	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	183	22	21	61	61	0.0		0	0	Spanner	3/4	2	1	0																		18
+chopin_mazurkas	BI163op67-4	184	22	21	61	61	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	134														18
+chopin_mazurkas	BI163op67-4	185	22	21	62	62	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	135														18
+chopin_mazurkas	BI163op67-4	186	23	22	64	64	0.0		0	0	Spanner	3/4	1	1	0													13			2		
+chopin_mazurkas	BI163op67-4	187	23	22	64	64	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	136									13			2		
+chopin_mazurkas	BI163op67-4	188	23	22	129/2	129/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	137									13			2		
+chopin_mazurkas	BI163op67-4	189	23	22	65	65	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	138									13			2		
+chopin_mazurkas	BI163op67-4	190	23	22	131/2	131/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	139									13			2		
+chopin_mazurkas	BI163op67-4	191	23	22	66	66	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	140									13			2		
+chopin_mazurkas	BI163op67-4	192	23	22	133/2	133/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	141												2		
+chopin_mazurkas	BI163op67-4	193	23	22	64	64	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	194	23	22	64	64	0.0		0	0	Spanner	3/4	2	1	0																		19
+chopin_mazurkas	BI163op67-4	195	23	22	64	64	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	142														19
+chopin_mazurkas	BI163op67-4	196	23	22	65	65	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	143														19
+chopin_mazurkas	BI163op67-4	197	23	22	66	66	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	144														19
+chopin_mazurkas	BI163op67-4	198	24	23	67	67	0.0		0	0	StaffText	3/4	1	1	0							poco riten.											
+chopin_mazurkas	BI163op67-4	199	24	23	67	67	0.0		0	0	StaffText	3/4	1	1	0							delicatiss.											
+chopin_mazurkas	BI163op67-4	200	24	23	67	67	0.0		0	0	Spanner	3/4	1	1	0																		
+chopin_mazurkas	BI163op67-4	201	24	23	67	67	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	145		articAccentAbove							14					
+chopin_mazurkas	BI163op67-4	202	24	23	68	68	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	146									14					
+chopin_mazurkas	BI163op67-4	203	24	23	137/2	137/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	147									14					
+chopin_mazurkas	BI163op67-4	204	24	23	69	69	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	148									14					
+chopin_mazurkas	BI163op67-4	205	24	23	139/2	139/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	149									14					
+chopin_mazurkas	BI163op67-4	206	24	23	67	67	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	207	24	23	67	67	0.0		0	0	Spanner	3/4	2	1	0																		20
+chopin_mazurkas	BI163op67-4	208	24	23	67	67	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	150														20
+chopin_mazurkas	BI163op67-4	209	24	23	68	68	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	151														20
+chopin_mazurkas	BI163op67-4	210	24	23	69	69	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	152														20
+chopin_mazurkas	BI163op67-4	211	25	24	70	70	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	153									14					
+chopin_mazurkas	BI163op67-4	212	25	24	141/2	141/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	154									14					
+chopin_mazurkas	BI163op67-4	213	25	24	71	71	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	155									14					
+chopin_mazurkas	BI163op67-4	214	25	24	143/2	143/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	156									14					
+chopin_mazurkas	BI163op67-4	215	25	24	72	72	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	157									14					
+chopin_mazurkas	BI163op67-4	216	25	24	145/2	145/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	158														
+chopin_mazurkas	BI163op67-4	217	25	24	70	70	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	218	25	24	70	70	0.0		0	0	Spanner	3/4	2	1	0																		21
+chopin_mazurkas	BI163op67-4	219	25	24	70	70	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	159														21
+chopin_mazurkas	BI163op67-4	220	25	24	71	71	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	160														21
+chopin_mazurkas	BI163op67-4	221	26	25	73	73	0.0		0	0	StaffText	3/4	1	1	0							a tempo											
+chopin_mazurkas	BI163op67-4	222	26	25	73	73	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	161									15					
+chopin_mazurkas	BI163op67-4	223	26	25	149/2	149/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	162									15					
+chopin_mazurkas	BI163op67-4	224	26	25	75	75	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	163									15					
+chopin_mazurkas	BI163op67-4	225	26	25	151/2	151/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	164									15					
+chopin_mazurkas	BI163op67-4	226	26	25	73	73	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	227	26	25	73	73	0.0		0	0	Spanner	3/4	2	1	0																		22
+chopin_mazurkas	BI163op67-4	228	26	25	73	73	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	165														22
+chopin_mazurkas	BI163op67-4	229	26	25	74	74	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	166														22
+chopin_mazurkas	BI163op67-4	230	26	25	75	75	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	167														22
+chopin_mazurkas	BI163op67-4	231	27	26	76	76	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	168									15					
+chopin_mazurkas	BI163op67-4	232	27	26	229/3	229/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	169									15					
+chopin_mazurkas	BI163op67-4	233	27	26	230/3	230/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	170									15					
+chopin_mazurkas	BI163op67-4	234	27	26	77	77	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	171									15					
+chopin_mazurkas	BI163op67-4	235	27	26	78	78	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	172														
+chopin_mazurkas	BI163op67-4	236	27	26	76	76	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	237	27	26	76	76	0.0		0	0	Spanner	3/4	2	1	0																		23
+chopin_mazurkas	BI163op67-4	238	27	26	76	76	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	173														23
+chopin_mazurkas	BI163op67-4	239	27	26	77	77	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	174														23
+chopin_mazurkas	BI163op67-4	240	27	26	78	78	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	175		articAccentAbove												23
+chopin_mazurkas	BI163op67-4	241	28	27	79	79	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	176									16					
+chopin_mazurkas	BI163op67-4	242	28	27	161/2	161/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	177									16					
+chopin_mazurkas	BI163op67-4	243	28	27	81	81	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	178									16					
+chopin_mazurkas	BI163op67-4	244	28	27	163/2	163/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	179									16					
+chopin_mazurkas	BI163op67-4	245	28	27	79	79	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	246	28	27	79	79	0.0		0	0	Spanner	3/4	2	1	0																		24
+chopin_mazurkas	BI163op67-4	247	28	27	80	80	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	180														24
+chopin_mazurkas	BI163op67-4	248	28	27	81	81	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	181														24
+chopin_mazurkas	BI163op67-4	249	29	28	82	82	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	182									16					
+chopin_mazurkas	BI163op67-4	250	29	28	247/3	247/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	183									16					
+chopin_mazurkas	BI163op67-4	251	29	28	248/3	248/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	184									16					
+chopin_mazurkas	BI163op67-4	252	29	28	83	83	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	185									16					
+chopin_mazurkas	BI163op67-4	253	29	28	84	84	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	186		articAccentAbove												
+chopin_mazurkas	BI163op67-4	254	29	28	82	82	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	255	29	28	82	82	0.0		0	0	Spanner	3/4	2	1	0																		25
+chopin_mazurkas	BI163op67-4	256	29	28	82	82	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	187														25
+chopin_mazurkas	BI163op67-4	257	29	28	83	83	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	188														25
+chopin_mazurkas	BI163op67-4	258	29	28	84	84	0.0		1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	259	30	29	85	85	0.0		0	0	Spanner	3/4	1	1	0														0				
+chopin_mazurkas	BI163op67-4	260	30	29	85	85	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	189									17	0				
+chopin_mazurkas	BI163op67-4	261	30	29	171/2	171/2	0.0		1/8	1/8	Spanner	3/4	1	1	0													17					
+chopin_mazurkas	BI163op67-4	262	30	29	171/2	171/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	190									17					
+chopin_mazurkas	BI163op67-4	263	30	29	86	86	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	191									17					
+chopin_mazurkas	BI163op67-4	264	30	29	173/2	173/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	192									17					
+chopin_mazurkas	BI163op67-4	265	30	29	87	87	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	193									17					
+chopin_mazurkas	BI163op67-4	266	30	29	175/2	175/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	194									17					
+chopin_mazurkas	BI163op67-4	267	30	29	85	85	0.0		0	0	Spanner	3/4	2	1	0																		26
+chopin_mazurkas	BI163op67-4	268	30	29	85	85	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	195														26
+chopin_mazurkas	BI163op67-4	269	30	29	86	86	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	196														26
+chopin_mazurkas	BI163op67-4	270	31	30	88	88	0.0		0	0	StaffText	3/4	1	1	0							legatissimo						17					
+chopin_mazurkas	BI163op67-4	271	31	30	88	88	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	197									17					
+chopin_mazurkas	BI163op67-4	272	31	30	177/2	177/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	198									17					
+chopin_mazurkas	BI163op67-4	273	31	30	89	89	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	199									17					
+chopin_mazurkas	BI163op67-4	274	31	30	179/2	179/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	200									17					
+chopin_mazurkas	BI163op67-4	275	31	30	90	90	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	201									17					
+chopin_mazurkas	BI163op67-4	276	31	30	181/2	181/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	202														
+chopin_mazurkas	BI163op67-4	277	32	31	91	91	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	203									18					
+chopin_mazurkas	BI163op67-4	278	32	31	183/2	183/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	204									18					
+chopin_mazurkas	BI163op67-4	279	32	31	92	92	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	205									18					
+chopin_mazurkas	BI163op67-4	280	32	31	185/2	185/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	206									18					
+chopin_mazurkas	BI163op67-4	281	32	31	93	93	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	207									18					
+chopin_mazurkas	BI163op67-4	282	32	31	187/2	187/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	208									18					
+chopin_mazurkas	BI163op67-4	283	32	31	91	91	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	284	32	31	91	91	0.0		0	0	Spanner	3/4	2	1	0																		27
+chopin_mazurkas	BI163op67-4	285	32	31	91	91	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	209														27
+chopin_mazurkas	BI163op67-4	286	32	31	92	92	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	210														27
+chopin_mazurkas	BI163op67-4	287	32	31	93	93	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	211														27
+chopin_mazurkas	BI163op67-4	288	33	32		94	0.5	1	0	0	Chord	3/4	1	1	1/8		1/8	1	212									18					
+chopin_mazurkas	BI163op67-4	289	33	32		189/2	0.5	1	1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	213									18					
+chopin_mazurkas	BI163op67-4	290	33	32		95	2.0	1	1/4	1/4	Chord	3/4	1	1	1/2		1/2	1	214														
+chopin_mazurkas	BI163op67-4	291	33	32		94	0.0	1	0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	292	33	32		94	0.0	1	0	0	Spanner	3/4	2	1	0																		28
+chopin_mazurkas	BI163op67-4	293	33	32		94	1.0	1	0	0	Chord	3/4	2	1	1/4		1/4	1	215														28
+chopin_mazurkas	BI163op67-4	294	33	32		95	0.0	1	1/4	1/4	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	295	33	32		95	0.0	1	1/4	1/4	Spanner	3/4	2	1	0																		29
+chopin_mazurkas	BI163op67-4	296	33	32		95	1.0	1	1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	216														29
+chopin_mazurkas	BI163op67-4	297	33	32		96	1.0	1	1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	217														29
+chopin_mazurkas	BI163op67-4	298	34	32	94	97	0.5	2	0	0	Chord	3/4	1	1	1/8		1/8	1	218									19					
+chopin_mazurkas	BI163op67-4	299	34	32	189/2	195/2	0.5	2	1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	219									19					
+chopin_mazurkas	BI163op67-4	300	34	32	95	98	1.0	2	1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	220														
+chopin_mazurkas	BI163op67-4	301	34	32	94	97	0.0	2	0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	302	34	32	94	97	0.0	2	0	0	Spanner	3/4	2	1	0																		30
+chopin_mazurkas	BI163op67-4	303	34	32	94	97	1.0	2	0	0	Chord	3/4	2	1	1/4		1/4	1	221														30
+chopin_mazurkas	BI163op67-4	304	34	32	95	98	0.0	2	1/4	1/4	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	305	34	32	95	98	0.0	2	1/4	1/4	Spanner	3/4	2	1	0																		31
+chopin_mazurkas	BI163op67-4	306	34	32	95	98	1.0	2	1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	222														31
+chopin_mazurkas	BI163op67-4	307	34	32	96	99	1.0	2	1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	223														31
+chopin_mazurkas	BI163op67-4	308	35	33	97	100	2.0		0	0	Chord	3/4	1	1	1/2		1/2	1	224									20					
+chopin_mazurkas	BI163op67-4	309	35	33	99	102	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	225									20					
+chopin_mazurkas	BI163op67-4	310	35	33	97	100	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	311	35	33	98	101	0.0		1/4	1/4	Spanner	3/4	2	1	0																		32
+chopin_mazurkas	BI163op67-4	312	35	33	98	101	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	226														32
+chopin_mazurkas	BI163op67-4	313	35	33	99	102	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	227														32
+chopin_mazurkas	BI163op67-4	314	36	34	100	103	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	228									20					
+chopin_mazurkas	BI163op67-4	315	36	34	201/2	207/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	229									20					
+chopin_mazurkas	BI163op67-4	316	36	34	101	104	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	230									20					
+chopin_mazurkas	BI163op67-4	317	36	34	203/2	209/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	231									20					
+chopin_mazurkas	BI163op67-4	318	36	34	102	105	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	232									20					
+chopin_mazurkas	BI163op67-4	319	36	34	205/2	211/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	233														
+chopin_mazurkas	BI163op67-4	320	36	34	100	103	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	321	36	34	101	104	0.0		1/4	1/4	Spanner	3/4	2	1	0																		33
+chopin_mazurkas	BI163op67-4	322	36	34	101	104	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	234														33
+chopin_mazurkas	BI163op67-4	323	36	34	102	105	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	235														33
+chopin_mazurkas	BI163op67-4	324	37	35	103	106	2.0		0	0	Chord	3/4	1	1	1/2		1/2	1	236									21					
+chopin_mazurkas	BI163op67-4	325	37	35	105	108	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	237									21					
+chopin_mazurkas	BI163op67-4	326	37	35	103	106	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	327	37	35	104	107	0.0		1/4	1/4	Spanner	3/4	2	1	0																		34
+chopin_mazurkas	BI163op67-4	328	37	35	104	107	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	238														34
+chopin_mazurkas	BI163op67-4	329	37	35	105	108	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	239														34
+chopin_mazurkas	BI163op67-4	330	38	36	106	109	0.0		0	0	Spanner	3/4	1	1	0													21		0			
+chopin_mazurkas	BI163op67-4	331	38	36	106	109	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	240									21		0			
+chopin_mazurkas	BI163op67-4	332	38	36	213/2	219/2	0.0		1/8	1/8	Spanner	3/4	1	1	0													21					
+chopin_mazurkas	BI163op67-4	333	38	36	213/2	219/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	241									21					
+chopin_mazurkas	BI163op67-4	334	38	36	107	110	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	242									21					
+chopin_mazurkas	BI163op67-4	335	38	36	215/2	221/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	243									21					
+chopin_mazurkas	BI163op67-4	336	38	36	108	111	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	244									21					
+chopin_mazurkas	BI163op67-4	337	38	36	217/2	223/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	245														
+chopin_mazurkas	BI163op67-4	338	38	36	106	109	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	339	38	36	106	109	0.0		0	0	Spanner	3/4	2	1	0																		35
+chopin_mazurkas	BI163op67-4	340	38	36	106	109	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	246														35
+chopin_mazurkas	BI163op67-4	341	38	36	107	110	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	247														35
+chopin_mazurkas	BI163op67-4	342	38	36	108	111	0.0		1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	343	38	36	108	111	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	248														
+chopin_mazurkas	BI163op67-4	344	39	37	109	112	2.0		0	0	Chord	3/4	1	1	1/2		1/2	1	249									22					
+chopin_mazurkas	BI163op67-4	345	39	37	111	114	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	250									22					
+chopin_mazurkas	BI163op67-4	346	39	37	109	112	0.0		0	0	Spanner	3/4	2	1	0																		36
+chopin_mazurkas	BI163op67-4	347	39	37	109	112	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	251														36
+chopin_mazurkas	BI163op67-4	348	39	37	110	113	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	252														36
+chopin_mazurkas	BI163op67-4	349	39	37	111	114	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	253														36
+chopin_mazurkas	BI163op67-4	350	40	38	112	115	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	254									22					
+chopin_mazurkas	BI163op67-4	351	40	38	225/2	231/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	255									22					
+chopin_mazurkas	BI163op67-4	352	40	38	113	116	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	256									22					
+chopin_mazurkas	BI163op67-4	353	40	38	227/2	233/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	257									22					
+chopin_mazurkas	BI163op67-4	354	40	38	114	117	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	258									22					
+chopin_mazurkas	BI163op67-4	355	40	38	229/2	235/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	259														
+chopin_mazurkas	BI163op67-4	356	40	38	112	115	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	357	40	38	112	115	0.0		0	0	Spanner	3/4	2	1	0																		37
+chopin_mazurkas	BI163op67-4	358	40	38	113	116	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	260														37
+chopin_mazurkas	BI163op67-4	359	40	38	114	117	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	261														37
+chopin_mazurkas	BI163op67-4	360	41	39	115	118	2.0		0	0	Chord	3/4	1	1	1/2		1/2	1	262									23					
+chopin_mazurkas	BI163op67-4	361	41	39	117	120	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	263									23					
+chopin_mazurkas	BI163op67-4	362	41	39	115	118	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	363	41	39	115	118	0.0		0	0	Spanner	3/4	2	1	0																		38
+chopin_mazurkas	BI163op67-4	364	41	39	116	119	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	264														38
+chopin_mazurkas	BI163op67-4	365	41	39	117	120	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	265														38
+chopin_mazurkas	BI163op67-4	366	42	40	118	121	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	266									23					
+chopin_mazurkas	BI163op67-4	367	42	40	237/2	243/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	267									23					
+chopin_mazurkas	BI163op67-4	368	42	40	119	122	0.0		1/4	1/4	StaffText	3/4	1	1	0							rit.						23					
+chopin_mazurkas	BI163op67-4	369	42	40	119	122	0.0		1/4	1/4	Chord	3/4	1	1	0	acciaccatura	1/8	1	268									23					
+chopin_mazurkas	BI163op67-4	370	42	40	119	122	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	269									23					
+chopin_mazurkas	BI163op67-4	371	42	40	239/2	245/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	270									23					
+chopin_mazurkas	BI163op67-4	372	42	40	120	123	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	271									23					
+chopin_mazurkas	BI163op67-4	373	42	40	241/2	247/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	272														
+chopin_mazurkas	BI163op67-4	374	42	40	120	123	1.0		1/2	1/2	Chord	3/4	1	2	1/4		1/4	1	273														
+chopin_mazurkas	BI163op67-4	375	42	40	118	121	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	376	42	40	118	121	0.0		0	0	Spanner	3/4	2	1	0																		39
+chopin_mazurkas	BI163op67-4	377	42	40	118	121	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	274														39
+chopin_mazurkas	BI163op67-4	378	42	40	119	122	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	275														39
+chopin_mazurkas	BI163op67-4	379	42	40	120	123	0.0		1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	380	42	40	120	123	0.0		1/2	1/2	Spanner	3/4	2	1	0																		40
+chopin_mazurkas	BI163op67-4	381	42	40	120	123	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	276														40
+chopin_mazurkas	BI163op67-4	382	43	41	121	124	0.0		0	0	StaffText	3/4	1	1	0							a tempo											
+chopin_mazurkas	BI163op67-4	383	43	41	121	124	2.0		0	0	Chord	3/4	1	1	1/2		1/2	1	277									24					
+chopin_mazurkas	BI163op67-4	384	43	41	123	126	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	278									24					
+chopin_mazurkas	BI163op67-4	385	43	41	122	125	1.0		1/4	1/4	Chord	3/4	1	2	1/4		1/4	1	279														
+chopin_mazurkas	BI163op67-4	386	43	41	123	126	1.0		1/2	1/2	Chord	3/4	1	2	1/4		1/4	1	280														
+chopin_mazurkas	BI163op67-4	387	43	41	121	124	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	388	43	41	121	124	0.0		0	0	Spanner	3/4	2	1	0																		41
+chopin_mazurkas	BI163op67-4	389	43	41	121	124	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	281														41
+chopin_mazurkas	BI163op67-4	390	43	41	122	125	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	282														41
+chopin_mazurkas	BI163op67-4	391	43	41	123	126	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	283														41
+chopin_mazurkas	BI163op67-4	392	44	42	124	127	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	284									24					
+chopin_mazurkas	BI163op67-4	393	44	42	249/2	255/2	0.0		1/8	1/8	Spanner	3/4	1	1	0													24				1	
+chopin_mazurkas	BI163op67-4	394	44	42	249/2	255/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	285									24				1	
+chopin_mazurkas	BI163op67-4	395	44	42	125	128	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	286									24				1	
+chopin_mazurkas	BI163op67-4	396	44	42	251/2	257/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	287									24				1	
+chopin_mazurkas	BI163op67-4	397	44	42	126	129	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	288									24				1	
+chopin_mazurkas	BI163op67-4	398	44	42	253/2	259/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	289													1	
+chopin_mazurkas	BI163op67-4	399	44	42	125	128	1.0		1/4	1/4	Chord	3/4	1	2	1/4		1/4	1	290													1	
+chopin_mazurkas	BI163op67-4	400	44	42	126	129	1.0		1/2	1/2	Chord	3/4	1	2	1/4		1/4	1	291													1	
+chopin_mazurkas	BI163op67-4	401	44	42	124	127	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	402	44	42	124	127	0.0		0	0	Spanner	3/4	2	1	0																		42
+chopin_mazurkas	BI163op67-4	403	44	42	124	127	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	292														42
+chopin_mazurkas	BI163op67-4	404	44	42	125	128	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	293														42
+chopin_mazurkas	BI163op67-4	405	44	42	126	129	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	294														42
+chopin_mazurkas	BI163op67-4	406	45	43	127	130	0.0		0	0	Spanner	3/4	1	1	0																		
+chopin_mazurkas	BI163op67-4	407	45	43	127	130	2.0		0	0	Chord	3/4	1	1	1/2		1/2	1	295									25					
+chopin_mazurkas	BI163op67-4	408	45	43	129	132	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	296									25					
+chopin_mazurkas	BI163op67-4	409	45	43	128	131	1.0		1/4	1/4	Chord	3/4	1	2	1/4		1/4	1	297														
+chopin_mazurkas	BI163op67-4	410	45	43	129	132	1.0		1/2	1/2	Chord	3/4	1	2	1/4		1/4	1	298														
+chopin_mazurkas	BI163op67-4	411	45	43	127	130	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	412	45	43	127	130	0.0		0	0	Spanner	3/4	2	1	0																		43
+chopin_mazurkas	BI163op67-4	413	45	43	128	131	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	299														43
+chopin_mazurkas	BI163op67-4	414	45	43	129	132	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	300														43
+chopin_mazurkas	BI163op67-4	415	46	44	130	133	0.0		0	0	Spanner	3/4	1	1	0													25				2	
+chopin_mazurkas	BI163op67-4	416	46	44	130	133	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	301									25				2	
+chopin_mazurkas	BI163op67-4	417	46	44	261/2	267/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	302									25				2	
+chopin_mazurkas	BI163op67-4	418	46	44	131	134	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	303									25				2	
+chopin_mazurkas	BI163op67-4	419	46	44	263/2	269/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	304									25				2	
+chopin_mazurkas	BI163op67-4	420	46	44	132	135	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	305									25				2	
+chopin_mazurkas	BI163op67-4	421	46	44	265/2	271/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	306													2	
+chopin_mazurkas	BI163op67-4	422	46	44	130	133	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	423	46	44	130	133	0.0		0	0	Spanner	3/4	2	1	0																		44
+chopin_mazurkas	BI163op67-4	424	46	44	130	133	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	307														44
+chopin_mazurkas	BI163op67-4	425	46	44	131	134	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	308														44
+chopin_mazurkas	BI163op67-4	426	46	44	132	135	0.0		1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	427	47	45	133	136	0.0		0	0	Spanner	3/4	1	1	0																		
+chopin_mazurkas	BI163op67-4	428	47	45	133	136	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	309									26					
+chopin_mazurkas	BI163op67-4	429	47	45	267/2	273/2	0.0		1/8	1/8	Spanner	3/4	1	1	0													26		1			
+chopin_mazurkas	BI163op67-4	430	47	45	267/2	273/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	310									26		1			
+chopin_mazurkas	BI163op67-4	431	47	45	134	137	0.0		1/4	1/4	Spanner	3/4	1	1	0													26					
+chopin_mazurkas	BI163op67-4	432	47	45	134	137	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	311									26					
+chopin_mazurkas	BI163op67-4	433	47	45	269/2	275/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	312									26					
+chopin_mazurkas	BI163op67-4	434	47	45	135	138	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	313									26					
+chopin_mazurkas	BI163op67-4	435	47	45	271/2	277/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	314									26					
+chopin_mazurkas	BI163op67-4	436	47	45	133	136	0.0		0	0	Spanner	3/4	2	1	0																		45
+chopin_mazurkas	BI163op67-4	437	47	45	133	136	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	315														45
+chopin_mazurkas	BI163op67-4	438	47	45	135	138	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	316														45
+chopin_mazurkas	BI163op67-4	439	48	46	136	139	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	317									26					
+chopin_mazurkas	BI163op67-4	440	48	46	273/2	279/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	318									26					
+chopin_mazurkas	BI163op67-4	441	48	46	137	140	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	319									26					
+chopin_mazurkas	BI163op67-4	442	48	46	275/2	281/2	0.0		3/8	3/8	Dynamic	3/4	1	1	0					f								26					
+chopin_mazurkas	BI163op67-4	443	48	46	275/2	281/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	320									26					
+chopin_mazurkas	BI163op67-4	444	48	46	138	141	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	321									26					
+chopin_mazurkas	BI163op67-4	445	48	46	277/2	283/2	0.25		5/8	5/8	Chord	3/4	1	1	1/16		1/16	1	322														
+chopin_mazurkas	BI163op67-4	446	48	46	136	139	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	447	48	46	136	139	0.0		0	0	Spanner	3/4	2	1	0																		46
+chopin_mazurkas	BI163op67-4	448	48	46	136	139	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	323														46
+chopin_mazurkas	BI163op67-4	449	48	46	137	140	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	324														46
+chopin_mazurkas	BI163op67-4	450	49	47	139	142	0.0		0	0	Dynamic	3/4	1	1	0					p													
+chopin_mazurkas	BI163op67-4	451	49	47	139	142	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	325									27					
+chopin_mazurkas	BI163op67-4	452	49	47	279/2	285/2	0.0		1/8	1/8	Chord	3/4	1	1	0	acciaccatura	1/8	1	326									27					
+chopin_mazurkas	BI163op67-4	453	49	47	279/2	285/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	327									27					
+chopin_mazurkas	BI163op67-4	454	49	47	140	143	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	328									27					
+chopin_mazurkas	BI163op67-4	455	49	47	281/2	287/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	329									27					
+chopin_mazurkas	BI163op67-4	456	49	47	141	144	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	330									27					
+chopin_mazurkas	BI163op67-4	457	49	47	283/2	289/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	331									27					
+chopin_mazurkas	BI163op67-4	458	49	47	139	142	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	459	49	47	139	142	0.0		0	0	Spanner	3/4	2	1	0																		47
+chopin_mazurkas	BI163op67-4	460	49	47	139	142	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	332														47
+chopin_mazurkas	BI163op67-4	461	49	47	140	143	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	333														47
+chopin_mazurkas	BI163op67-4	462	49	47	141	144	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	334														47
+chopin_mazurkas	BI163op67-4	463	50	48		145	0.5	1	0	0	Chord	3/4	1	1	1/8		1/8	1	335									27					
+chopin_mazurkas	BI163op67-4	464	50	48		291/2	0.5	1	1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	336									27					
+chopin_mazurkas	BI163op67-4	465	50	48		146	2.0	1	1/4	1/4	Chord	3/4	1	1	1/2		1/2	1	337														
+chopin_mazurkas	BI163op67-4	466	50	48		145	0.0	1	0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	467	50	48		145	0.0	1	0	0	Spanner	3/4	2	1	0																		48
+chopin_mazurkas	BI163op67-4	468	50	48		145	1.0	1	0	0	Chord	3/4	2	1	1/4		1/4	1	338														48
+chopin_mazurkas	BI163op67-4	469	50	48		146	0.0	1	1/4	1/4	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	470	50	48		146	0.0	1	1/4	1/4	Spanner	3/4	2	1	0																		49
+chopin_mazurkas	BI163op67-4	471	50	48		146	1.0	1	1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	339														49
+chopin_mazurkas	BI163op67-4	472	50	48		147	1.0	1	1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	340														49
+chopin_mazurkas	BI163op67-4	473	51	48	142	148	0.5	2	0	0	Chord	3/4	1	1	1/8		1/8	1	341									28					
+chopin_mazurkas	BI163op67-4	474	51	48	285/2	297/2	0.5	2	1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	342									28					
+chopin_mazurkas	BI163op67-4	475	51	48	143	149	1.0	2	1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	343														
+chopin_mazurkas	BI163op67-4	476	51	48	144	150	1.0	2	1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	344		articAccentAbove												
+chopin_mazurkas	BI163op67-4	477	51	48	142	148	0.0	2	0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	478	51	48	142	148	0.0	2	0	0	Spanner	3/4	2	1	0																		50
+chopin_mazurkas	BI163op67-4	479	51	48	142	148	1.0	2	0	0	Chord	3/4	2	1	1/4		1/4	1	345														50
+chopin_mazurkas	BI163op67-4	480	51	48	143	149	1.0	2	1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	346														50
+chopin_mazurkas	BI163op67-4	481	51	48	144	150	0.0	2	1/2	1/2	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	482	51	48	144	150	0.0	2	1/2	1/2	Spanner	3/4	2	1	0																		51
+chopin_mazurkas	BI163op67-4	483	52	49	145	151	0.0		0	0	Dynamic	3/4	1	1	0					mf													
+chopin_mazurkas	BI163op67-4	484	52	49	145	151	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	347									29					
+chopin_mazurkas	BI163op67-4	485	52	49	293/2	305/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	348									29, 30					
+chopin_mazurkas	BI163op67-4	486	52	49	147	153	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	349		ornamentShortTrill							29, 30					
+chopin_mazurkas	BI163op67-4	487	52	49	295/2	307/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	350									29					
+chopin_mazurkas	BI163op67-4	488	52	49	145	151	0.0		0	0	StaffText	3/4	2	1	0							Ped. come sopra											
+chopin_mazurkas	BI163op67-4	489	52	49	145	151	0.0		0	0	Spanner	3/4	2	1	0																		
+chopin_mazurkas	BI163op67-4	490	52	49	145	151	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	351														
+chopin_mazurkas	BI163op67-4	491	52	49	146	152	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	352														
+chopin_mazurkas	BI163op67-4	492	52	49	147	153	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	353														
+chopin_mazurkas	BI163op67-4	493	53	50	148	154	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	354									29					
+chopin_mazurkas	BI163op67-4	494	53	50	297/2	309/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	355									29					
+chopin_mazurkas	BI163op67-4	495	53	50	149	155	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	356									29					
+chopin_mazurkas	BI163op67-4	496	53	50	150	156	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	357														
+chopin_mazurkas	BI163op67-4	497	53	50	149	155	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	358														
+chopin_mazurkas	BI163op67-4	498	53	50	150	156	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	359														
+chopin_mazurkas	BI163op67-4	499	54	51	151	157	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	360									31					
+chopin_mazurkas	BI163op67-4	500	54	51	305/2	317/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	361									31, 32					
+chopin_mazurkas	BI163op67-4	501	54	51	153	159	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	362		ornamentShortTrill							31, 32					
+chopin_mazurkas	BI163op67-4	502	54	51	307/2	319/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	363									31					
+chopin_mazurkas	BI163op67-4	503	54	51	151	157	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	364														
+chopin_mazurkas	BI163op67-4	504	54	51	152	158	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	365														
+chopin_mazurkas	BI163op67-4	505	54	51	153	159	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	366														
+chopin_mazurkas	BI163op67-4	506	55	52	154	160	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	367									31					
+chopin_mazurkas	BI163op67-4	507	55	52	309/2	321/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	368									31					
+chopin_mazurkas	BI163op67-4	508	55	52	155	161	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	369									31					
+chopin_mazurkas	BI163op67-4	509	55	52	156	162	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	370														
+chopin_mazurkas	BI163op67-4	510	55	52	155	161	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	371														
+chopin_mazurkas	BI163op67-4	511	55	52	156	162	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	372														
+chopin_mazurkas	BI163op67-4	512	56	53	157	163	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	373									33					
+chopin_mazurkas	BI163op67-4	513	56	53	317/2	329/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	374									33					
+chopin_mazurkas	BI163op67-4	514	56	53	159	165	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	375									33					
+chopin_mazurkas	BI163op67-4	515	56	53	319/2	331/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	376									33					
+chopin_mazurkas	BI163op67-4	516	56	53	157	163	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	377														
+chopin_mazurkas	BI163op67-4	517	56	53	158	164	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	378														
+chopin_mazurkas	BI163op67-4	518	57	54	160	166	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	379									33					
+chopin_mazurkas	BI163op67-4	519	57	54	321/2	333/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	380									33					
+chopin_mazurkas	BI163op67-4	520	57	54	161	167	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	381									33					
+chopin_mazurkas	BI163op67-4	521	57	54	162	168	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	382									33					
+chopin_mazurkas	BI163op67-4	522	57	54	325/2	337/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	383														
+chopin_mazurkas	BI163op67-4	523	58	55	163	169	0.0		0	0	StaffText	3/4	1	1	0							riten.											
+chopin_mazurkas	BI163op67-4	524	58	55	163	169	0.0		0	0	StaffText	3/4	1	1	0							marcato											
+chopin_mazurkas	BI163op67-4	525	58	55	163	169	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	384									34					
+chopin_mazurkas	BI163op67-4	526	58	55	327/2	339/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	385									34					
+chopin_mazurkas	BI163op67-4	527	58	55	164	170	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	386									34					
+chopin_mazurkas	BI163op67-4	528	58	55	165	171	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	387									34					
+chopin_mazurkas	BI163op67-4	529	58	55	163	169	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	388														
+chopin_mazurkas	BI163op67-4	530	58	55	164	170	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	389														
+chopin_mazurkas	BI163op67-4	531	58	55	165	171	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	390														
+chopin_mazurkas	BI163op67-4	532	59	56	166	172	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	391														
+chopin_mazurkas	BI163op67-4	533	59	56	168	174	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	392														
+chopin_mazurkas	BI163op67-4	534	59	56	166	172	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	393														
+chopin_mazurkas	BI163op67-4	535	59	56	167	173	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	394														
+chopin_mazurkas	BI163op67-4	536	60	57	169	175	0.0		0	0	StaffText	3/4	1	1	0							a tempo											
+chopin_mazurkas	BI163op67-4	537	60	57	169	175	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	395									35					
+chopin_mazurkas	BI163op67-4	538	60	57	170	176	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	396									35					
+chopin_mazurkas	BI163op67-4	539	60	57	341/2	353/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	397									35					
+chopin_mazurkas	BI163op67-4	540	60	57	171	177	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	398									35					
+chopin_mazurkas	BI163op67-4	541	60	57	343/2	355/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	399									35					
+chopin_mazurkas	BI163op67-4	542	60	57	169	175	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	400														
+chopin_mazurkas	BI163op67-4	543	60	57	170	176	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	401														
+chopin_mazurkas	BI163op67-4	544	60	57	171	177	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	402														
+chopin_mazurkas	BI163op67-4	545	61	58	172	178	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	403									35					
+chopin_mazurkas	BI163op67-4	546	61	58	345/2	357/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	404									35					
+chopin_mazurkas	BI163op67-4	547	61	58	173	179	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	405									35					
+chopin_mazurkas	BI163op67-4	548	61	58	174	180	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	406														
+chopin_mazurkas	BI163op67-4	549	61	58	173	179	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	407														
+chopin_mazurkas	BI163op67-4	550	61	58	174	180	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	408														
+chopin_mazurkas	BI163op67-4	551	62	59	175	181	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	409									36					
+chopin_mazurkas	BI163op67-4	552	62	59	353/2	365/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	410									36					
+chopin_mazurkas	BI163op67-4	553	62	59	177	183	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	411									36					
+chopin_mazurkas	BI163op67-4	554	62	59	355/2	367/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	412									36					
+chopin_mazurkas	BI163op67-4	555	62	59	175	181	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	413														
+chopin_mazurkas	BI163op67-4	556	62	59	176	182	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	414														
+chopin_mazurkas	BI163op67-4	557	62	59	177	183	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	415														
+chopin_mazurkas	BI163op67-4	558	63	60	178	184	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	416									36					
+chopin_mazurkas	BI163op67-4	559	63	60	357/2	369/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	417									36					
+chopin_mazurkas	BI163op67-4	560	63	60	179	185	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	418									36					
+chopin_mazurkas	BI163op67-4	561	63	60	180	186	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	419														
+chopin_mazurkas	BI163op67-4	562	63	60	179	185	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	420														
+chopin_mazurkas	BI163op67-4	563	63	60	180	186	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	421														
+chopin_mazurkas	BI163op67-4	564	64	61	181	187	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	422									37					
+chopin_mazurkas	BI163op67-4	565	64	61	365/2	377/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	423									37, 38					
+chopin_mazurkas	BI163op67-4	566	64	61	183	189	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	424									37, 38					
+chopin_mazurkas	BI163op67-4	567	64	61	367/2	379/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	425									37					
+chopin_mazurkas	BI163op67-4	568	64	61	181	187	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	426														
+chopin_mazurkas	BI163op67-4	569	64	61	182	188	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	427														
+chopin_mazurkas	BI163op67-4	570	65	62	184	190	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	428									37					
+chopin_mazurkas	BI163op67-4	571	65	62	369/2	381/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	429									37					
+chopin_mazurkas	BI163op67-4	572	65	62	185	191	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	430									37					
+chopin_mazurkas	BI163op67-4	573	65	62	371/2	383/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	431									37					
+chopin_mazurkas	BI163op67-4	574	65	62	186	192	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	432									37					
+chopin_mazurkas	BI163op67-4	575	65	62	373/2	385/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	433														
+chopin_mazurkas	BI163op67-4	576	66	63	187	193	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	434									39					
+chopin_mazurkas	BI163op67-4	577	66	63	375/2	387/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	435									39					
+chopin_mazurkas	BI163op67-4	578	66	63	188	194	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	436									39					
+chopin_mazurkas	BI163op67-4	579	66	63	377/2	389/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	437									39					
+chopin_mazurkas	BI163op67-4	580	66	63	189	195	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	438									39					
+chopin_mazurkas	BI163op67-4	581	66	63	379/2	391/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	439									39					
+chopin_mazurkas	BI163op67-4	582	66	63	187	193	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	440														
+chopin_mazurkas	BI163op67-4	583	66	63	188	194	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	441														
+chopin_mazurkas	BI163op67-4	584	66	63	189	195	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	442														
+chopin_mazurkas	BI163op67-4	585	67	64	190	196	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	443														
+chopin_mazurkas	BI163op67-4	586	67	64	192	198	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	444														
+chopin_mazurkas	BI163op67-4	587	67	64	190	196	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	445														
+chopin_mazurkas	BI163op67-4	588	67	64	191	197	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	446														
+chopin_mazurkas	BI163op67-4	589	68	65	193	199	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	447									40					
+chopin_mazurkas	BI163op67-4	590	68	65	389/2	401/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	448									40					
+chopin_mazurkas	BI163op67-4	591	68	65	195	201	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	449									40					
+chopin_mazurkas	BI163op67-4	592	68	65	391/2	403/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	450									40					
+chopin_mazurkas	BI163op67-4	593	68	65	193	199	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	451														
+chopin_mazurkas	BI163op67-4	594	68	65	194	200	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	452														
+chopin_mazurkas	BI163op67-4	595	68	65	195	201	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	453														
+chopin_mazurkas	BI163op67-4	596	69	66	196	202	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	454									40					
+chopin_mazurkas	BI163op67-4	597	69	66	589/3	607/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	455									40					
+chopin_mazurkas	BI163op67-4	598	69	66	590/3	608/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	456									40					
+chopin_mazurkas	BI163op67-4	599	69	66	197	203	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	457									40					
+chopin_mazurkas	BI163op67-4	600	69	66	198	204	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	458														
+chopin_mazurkas	BI163op67-4	601	69	66	197	203	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	459														
+chopin_mazurkas	BI163op67-4	602	69	66	198	204	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	460		articAccentAbove												
+chopin_mazurkas	BI163op67-4	603	70	67	199	205	0.0		0	0	Spanner	3/4	1	1	0																	3	
+chopin_mazurkas	BI163op67-4	604	70	67	199	205	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	461									41				3	
+chopin_mazurkas	BI163op67-4	605	70	67	401/2	413/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	462									41				3	
+chopin_mazurkas	BI163op67-4	606	70	67	201	207	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	463									41				3	
+chopin_mazurkas	BI163op67-4	607	70	67	403/2	415/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	464									41				3	
+chopin_mazurkas	BI163op67-4	608	70	67	199	205	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	465														
+chopin_mazurkas	BI163op67-4	609	70	67	200	206	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	466														
+chopin_mazurkas	BI163op67-4	610	70	67	201	207	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	467														
+chopin_mazurkas	BI163op67-4	611	71	68	202	208	0.0		0	0	Spanner	3/4	1	1	0													41					
+chopin_mazurkas	BI163op67-4	612	71	68	202	208	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	468									41					
+chopin_mazurkas	BI163op67-4	613	71	68	607/3	625/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	469									41					
+chopin_mazurkas	BI163op67-4	614	71	68	608/3	626/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	470									41					
+chopin_mazurkas	BI163op67-4	615	71	68	203	209	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	471									41					
+chopin_mazurkas	BI163op67-4	616	71	68	204	210	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	472		articAccentAbove												
+chopin_mazurkas	BI163op67-4	617	71	68	202	208	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	473														
+chopin_mazurkas	BI163op67-4	618	71	68	203	209	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	474														
+chopin_mazurkas	BI163op67-4	619	71	68	204	210	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	475		articAccentAbove												
+chopin_mazurkas	BI163op67-4	620	72	69	205	211	0.0		0	0	Spanner	3/4	1	1	0																3		
+chopin_mazurkas	BI163op67-4	621	72	69	205	211	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	476									42			3		
+chopin_mazurkas	BI163op67-4	622	72	69	413/2	425/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	477									42			3		
+chopin_mazurkas	BI163op67-4	623	72	69	207	213	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	478									42			3		
+chopin_mazurkas	BI163op67-4	624	72	69	415/2	427/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	479									42			3		
+chopin_mazurkas	BI163op67-4	625	72	69	205	211	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	480														
+chopin_mazurkas	BI163op67-4	626	72	69	206	212	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	481														
+chopin_mazurkas	BI163op67-4	627	73	70	208	214	0.0		0	0	Spanner	3/4	1	1	0													42					
+chopin_mazurkas	BI163op67-4	628	73	70	208	214	0.0		0	0	Spanner	3/4	1	1	0													42			4		
+chopin_mazurkas	BI163op67-4	629	73	70	208	214	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	482									42			4		
+chopin_mazurkas	BI163op67-4	630	73	70	417/2	429/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	483									42			4		
+chopin_mazurkas	BI163op67-4	631	73	70	209	215	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	484									42			4		
+chopin_mazurkas	BI163op67-4	632	73	70	419/2	431/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	485									42			4		
+chopin_mazurkas	BI163op67-4	633	73	70	210	216	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	486									42			4		
+chopin_mazurkas	BI163op67-4	634	73	70	421/2	433/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	487												4		
+chopin_mazurkas	BI163op67-4	635	73	70	208	214	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	488														
+chopin_mazurkas	BI163op67-4	636	73	70	209	215	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	489														
+chopin_mazurkas	BI163op67-4	637	73	70	210	216	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	490														
+chopin_mazurkas	BI163op67-4	638	74	71	211	217	0.0		0	0	Spanner	3/4	1	1	0																		
+chopin_mazurkas	BI163op67-4	639	74	71	211	217	1.0		0	0	Chord	3/4	1	1	1/4		1/4	1	491		articAccentAbove							43					
+chopin_mazurkas	BI163op67-4	640	74	71	212	218	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	492									43					
+chopin_mazurkas	BI163op67-4	641	74	71	425/2	437/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	493									43					
+chopin_mazurkas	BI163op67-4	642	74	71	213	219	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	494									43					
+chopin_mazurkas	BI163op67-4	643	74	71	427/2	439/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	495									43					
+chopin_mazurkas	BI163op67-4	644	74	71	211	217	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	496														
+chopin_mazurkas	BI163op67-4	645	74	71	212	218	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	497														
+chopin_mazurkas	BI163op67-4	646	74	71	213	219	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	498														
+chopin_mazurkas	BI163op67-4	647	75	72	214	220	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	499									43					
+chopin_mazurkas	BI163op67-4	648	75	72	429/2	441/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	500									43					
+chopin_mazurkas	BI163op67-4	649	75	72	215	221	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	501									43					
+chopin_mazurkas	BI163op67-4	650	75	72	431/2	443/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	502									43					
+chopin_mazurkas	BI163op67-4	651	75	72	216	222	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	503									43					
+chopin_mazurkas	BI163op67-4	652	75	72	433/2	445/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	504														
+chopin_mazurkas	BI163op67-4	653	75	72	214	220	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	505														
+chopin_mazurkas	BI163op67-4	654	75	72	215	221	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	506														
+chopin_mazurkas	BI163op67-4	655	76	73	217	223	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	507									44					
+chopin_mazurkas	BI163op67-4	656	76	73	437/2	449/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	508									44					
+chopin_mazurkas	BI163op67-4	657	76	73	219	225	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	509									44					
+chopin_mazurkas	BI163op67-4	658	76	73	439/2	451/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	510									44					
+chopin_mazurkas	BI163op67-4	659	76	73	217	223	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	511														
+chopin_mazurkas	BI163op67-4	660	76	73	218	224	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	512														
+chopin_mazurkas	BI163op67-4	661	76	73	219	225	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	513														
+chopin_mazurkas	BI163op67-4	662	77	74	220	226	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	514									44					
+chopin_mazurkas	BI163op67-4	663	77	74	661/3	679/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	515									44					
+chopin_mazurkas	BI163op67-4	664	77	74	662/3	680/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	516									44					
+chopin_mazurkas	BI163op67-4	665	77	74	221	227	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	517									44					
+chopin_mazurkas	BI163op67-4	666	77	74	222	228	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	518														
+chopin_mazurkas	BI163op67-4	667	77	74	220	226	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	519														
+chopin_mazurkas	BI163op67-4	668	77	74	221	227	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	520														
+chopin_mazurkas	BI163op67-4	669	77	74	222	228	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	521		articAccentAbove												
+chopin_mazurkas	BI163op67-4	670	78	75	223	229	1.5		0	0	Chord	3/4	1	1	3/8		1/4	3/2	522									45					
+chopin_mazurkas	BI163op67-4	671	78	75	449/2	461/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	523									45					
+chopin_mazurkas	BI163op67-4	672	78	75	225	231	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	524									45					
+chopin_mazurkas	BI163op67-4	673	78	75	451/2	463/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	525									45					
+chopin_mazurkas	BI163op67-4	674	78	75	224	230	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	526														
+chopin_mazurkas	BI163op67-4	675	78	75	225	231	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	527														
+chopin_mazurkas	BI163op67-4	676	79	76	226	232	0.0		0	0	Spanner	3/4	1	1	0													45		2			
+chopin_mazurkas	BI163op67-4	677	79	76	226	232	0.3333333333333333		0	0	Chord	3/4	1	1	1/12		1/8	2/3	528									45		2			
+chopin_mazurkas	BI163op67-4	678	79	76	679/3	697/3	0.0		1/12	1/12	Spanner	3/4	1	1	0													45					
+chopin_mazurkas	BI163op67-4	679	79	76	679/3	697/3	0.3333333333333333		1/12	1/12	Chord	3/4	1	1	1/12		1/8	2/3	529									45					
+chopin_mazurkas	BI163op67-4	680	79	76	680/3	698/3	0.3333333333333333		1/6	1/6	Chord	3/4	1	1	1/12		1/8	2/3	530									45					
+chopin_mazurkas	BI163op67-4	681	79	76	227	233	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	531									45					
+chopin_mazurkas	BI163op67-4	682	79	76	228	234	1.0		1/2	1/2	Chord	3/4	1	1	1/4		1/4	1	532		articAccentAbove												
+chopin_mazurkas	BI163op67-4	683	79	76	226	232	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	533														
+chopin_mazurkas	BI163op67-4	684	79	76	227	233	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	534														
+chopin_mazurkas	BI163op67-4	685	80	77	229	235	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	535									46					
+chopin_mazurkas	BI163op67-4	686	80	77	459/2	471/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	536									46					
+chopin_mazurkas	BI163op67-4	687	80	77	230	236	0.0		1/4	1/4	Spanner	3/4	1	1	0													46	1				
+chopin_mazurkas	BI163op67-4	688	80	77	230	236	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	537									46	1				
+chopin_mazurkas	BI163op67-4	689	80	77	461/2	473/2	0.0		3/8	3/8	Spanner	3/4	1	1	0													46					
+chopin_mazurkas	BI163op67-4	690	80	77	461/2	473/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	538									46					
+chopin_mazurkas	BI163op67-4	691	80	77	231	237	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	539									46					
+chopin_mazurkas	BI163op67-4	692	80	77	463/2	475/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	540									46					
+chopin_mazurkas	BI163op67-4	693	80	77	229	235	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	541														
+chopin_mazurkas	BI163op67-4	694	80	77	230	236	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	542														
+chopin_mazurkas	BI163op67-4	695	81	78	232	238	0.0		0	0	StaffText	3/4	1	1	0							legatissimo						46					
+chopin_mazurkas	BI163op67-4	696	81	78	232	238	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	543									46					
+chopin_mazurkas	BI163op67-4	697	81	78	465/2	477/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	544									46					
+chopin_mazurkas	BI163op67-4	698	81	78	233	239	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	545									46					
+chopin_mazurkas	BI163op67-4	699	81	78	467/2	479/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	546									46					
+chopin_mazurkas	BI163op67-4	700	81	78	234	240	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	547									46					
+chopin_mazurkas	BI163op67-4	701	81	78	469/2	481/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	548														
+chopin_mazurkas	BI163op67-4	702	82	79	235	241	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	549									47					
+chopin_mazurkas	BI163op67-4	703	82	79	471/2	483/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	550									47					
+chopin_mazurkas	BI163op67-4	704	82	79	236	242	0.5		1/4	1/4	Chord	3/4	1	1	1/8		1/8	1	551									47					
+chopin_mazurkas	BI163op67-4	705	82	79	473/2	485/2	0.5		3/8	3/8	Chord	3/4	1	1	1/8		1/8	1	552									47					
+chopin_mazurkas	BI163op67-4	706	82	79	237	243	0.5		1/2	1/2	Chord	3/4	1	1	1/8		1/8	1	553									47					
+chopin_mazurkas	BI163op67-4	707	82	79	475/2	487/2	0.5		5/8	5/8	Chord	3/4	1	1	1/8		1/8	1	554									47					
+chopin_mazurkas	BI163op67-4	708	82	79	235	241	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	555														
+chopin_mazurkas	BI163op67-4	709	82	79	236	242	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	556														
+chopin_mazurkas	BI163op67-4	710	82	79	237	243	1.0		1/2	1/2	Chord	3/4	2	1	1/4		1/4	1	557														
+chopin_mazurkas	BI163op67-4	711	83	80	238	244	0.5		0	0	Chord	3/4	1	1	1/8		1/8	1	558									47					
+chopin_mazurkas	BI163op67-4	712	83	80	477/2	489/2	0.5		1/8	1/8	Chord	3/4	1	1	1/8		1/8	1	559									47					
+chopin_mazurkas	BI163op67-4	713	83	80	239	245	1.0		1/4	1/4	Chord	3/4	1	1	1/4		1/4	1	560														
+chopin_mazurkas	BI163op67-4	714	83	80	238	244	1.0		0	0	Chord	3/4	2	1	1/4		1/4	1	561														
+chopin_mazurkas	BI163op67-4	715	83	80	239	245	1.0		1/4	1/4	Chord	3/4	2	1	1/4		1/4	1	562														

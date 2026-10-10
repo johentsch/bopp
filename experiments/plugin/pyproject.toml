@@ -5,12 +5,19 @@ build-backend = "hatchling.build"
 [project]
 name = "bopp-score-ext"
 version = "0.1.0"
-description = "Proof-of-concept bopp extension registering score note observations (bmcfee/bopp#8)."
+description = "Proof-of-concept bopp extensions for score notes and control events (bmcfee/bopp#8)."
 requires-python = ">=3.12"
 dependencies = ["msgspec>=0.18.0"]
 
 [project.entry-points."bopp_extension"]
 "io.github.johentsch.score_note:v1" = "bopp_score_ext.models:ScoreNote"
+"io.github.johentsch.score_control_event.chord:v1" = "bopp_score_ext.events:ScoreChord"
+"io.github.johentsch.score_control_event.dynamic:v1" = "bopp_score_ext.events:ScoreDynamic"
+"io.github.johentsch.score_control_event.spanner:v1" = "bopp_score_ext.events:ScoreSpanner"
+"io.github.johentsch.score_control_event.figured_bass:v1" = "bopp_score_ext.events:ScoreFiguredBass"
+"io.github.johentsch.score_control_event.staff_text:v1" = "bopp_score_ext.events:ScoreStaffText"
+"io.github.johentsch.score_control_event.system_text:v1" = "bopp_score_ext.events:ScoreSystemText"
+"io.github.johentsch.score_control_event.tempo:v1" = "bopp_score_ext.events:ScoreTempo"
 
 [tool.hatch.build.targets.wheel]
 packages = ["bopp_score_ext"]
