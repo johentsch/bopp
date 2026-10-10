@@ -40,6 +40,7 @@ from ..models.v1.payload.score_control_event.spanner import ScoreSpannerPayload
 from ..models.v1.payload.score_control_event.staff_text import ScoreStaffTextPayload
 from ..models.v1.payload.score_control_event.system_text import ScoreSystemTextPayload
 from ..models.v1.payload.score_control_event.tempo import ScoreTempoPayload
+from ..models.v1.payload.score_measure import ScoreMeasurePayload
 from ..models.v1.payload.score_note import ScoreNotePayload
 from ..models.v1.payload.segment_multi import MultiSegmentPayload
 from ..models.v1.payload.segment_open import SegmentOpenPayload
@@ -98,6 +99,7 @@ PAYLOAD_TYPE_REGISTRY = {
     'score_control_event.staff_text': ScoreStaffTextPayload,
     'score_control_event.system_text': ScoreSystemTextPayload,
     'score_control_event.tempo': ScoreTempoPayload,
+    'score_measure': ScoreMeasurePayload,
     'score_note': ScoreNotePayload,
     'segment_open': SegmentOpenPayload,
     'tag_open': TagOpenPayload,
@@ -121,6 +123,7 @@ COMPLEX_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'pitch_contour': ['value'],
         'score_control_event.chord': ['nominal_duration', 'scalar'],
         'score_control_event.figured_bass': ['thoroughbass_duration'],
+        'score_measure': ['act_dur', 'mc_offset', 'next'],
         'score_note': ['nominal_duration', 'scalar'],
     },
 }
@@ -149,6 +152,7 @@ STRING_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'score_control_event.staff_text': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'staff_text'],
         'score_control_event.system_text': ['system_text', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal'],
         'score_control_event.tempo': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'tempo', 'metronome_base'],
+        'score_measure': ['timesig', 'barline', 'breaks', 'repeats', 'markers', 'jump_bwd', 'jump_fwd', 'play_until'],
         'score_note': ['name', 'gracenote', 'tremolo', 'anchor'],
         'segment_open': ['value'],
         'tag_open': ['value'],

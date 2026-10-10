@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/score_measure.json",
+  "title": "Score Measure Payload",
+  "description": "One row per measure unit (ms3 'mc') in score order; columns are parallel arrays. Every DLC measure TSV column except quarterbeats, quarterbeats_all_endings and duration_qb is reconstructed exactly from the payload. The quarters_interval.fraction extent start is quarterbeats_all_endings (falling back to quarterbeats), and its duration is 4 * act_dur. The unfolded quarterbeats column (which differs from quarterbeats_all_endings after a volta) and duration_qb (equal to 4 * act_dur in all DLC rows) are not stored, by design.",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "score_measure"
+    },
+    "mc": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Measure counts: 1-based index of the measure unit in the encoded score (ms3 'mc').",
+      "items": { "type": "integer", "minimum": 1 }
+    },
+    "mn": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Printed measure numbers; 0 for an anacrusis, repeated for split measures.",
+      "items": { "type": "integer" }
+    },
+    "keysig": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Key signatures as signed numbers of sharps, with flats negative.",
+      "items": { "type": "integer", "minimum": -7, "maximum": 7 }
+    },
+    "timesig": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Time signatures as notated, e.g. '3/4', '12/16', '33/32'; strings distinguish 6/8 from 3/4.",
+      "items": { "type": "string", "pattern": "^[1-9][0-9]*/[1-9][0-9]*$" }
+    },
+    "act_dur": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Actual lengths of measure units in whole notes, e.g. [1, 4] for a quarter-note anacrusis.",
+      "items": { "$ref": "../core.json#/$defs/FractionNonnegative" }
+    },
+    "mc_offset": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Offsets of each unit's first event from the start of the logical measure, in whole notes; non-zero for anacruses and the second part of split measures; may be negative when a measure unit is longer than its time signature.",
+      "items": { "$ref": "../core.json#/$defs/Fraction" }
+    },
+    "next": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Lists of mc values that can follow each unit in performance order; -1 means end of the piece, e.g. [2], [1, 9], [9, -1]. The minItems: 1 constraint deliberately makes empty next lists (which ms3 can emit for unreachable units) unrepresentable.",
+      "items": {
+        "type": "array",
+        "items": { "type": "integer", "minimum": -1 },
+        "minItems": 1
+      }
+    },
+    "numbering_offset": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "ms3 numbering offsets applied to mn; null when not set.",
+      "items": { "type": ["integer", "null"] }
+    },
+    "volta": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Ending numbers; null outside voltas.",
+      "items": { "type": ["integer", "null"], "minimum": 1 }
+    },
+    "dont_count": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "True when the measure is excluded from the bar count (TSV '1'); null otherwise (TSV empty).",
+      "items": { "type": ["boolean", "null"] }
+    },
+    "barline": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Barline text verbatim; observed: double, end, start-repeat, end-repeat, end-start-repeat, dotted, dashed. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    },
+    "breaks": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Break text verbatim; observed: line, page, section, 'page & section', 'section & page'. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    },
+    "repeats": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Repeat text verbatim; observed: firstMeasure, lastMeasure, start, end, startend. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    },
+    "markers": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Marker text verbatim; observed: fine, segno, coda, codab, 1e, 2e, 3e, 4e. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    },
+    "jump_bwd": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Backward jump text verbatim; observed: start, segno. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    },
+    "jump_fwd": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Forward jump text verbatim; observed: coda, 2e, 3e, 4e. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    },
+    "play_until": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Play-until text verbatim; observed: fine, end, segno, '/'. Null for an empty TSV cell.",
+      "items": { "type": ["string", "null"] }
+    }
+  },
+  "required": ["payload_type", "mc", "mn", "keysig", "timesig", "act_dur", "mc_offset", "next"]
+}
