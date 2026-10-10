@@ -20,6 +20,7 @@ from .payload import (
     onset,
     pitch_contour_hz,
     relation,
+    score_control_event,
     score_note,
     segment_multi,
     segment_open,
@@ -44,7 +45,8 @@ type AnyPayload = Annotated[
     | segment_open.SegmentOpenPayload
     | tag_open.TagOpenPayload
     | tempo.TempoPayload
-    | score_note.ScoreNotePayload,
+    | score_note.ScoreNotePayload
+    | score_control_event.ScoreControlEventPayload,
     Meta(
         description="A discriminated union of all supported columnar payload types.",
         title="Any Payload",
