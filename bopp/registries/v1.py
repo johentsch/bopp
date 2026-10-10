@@ -22,6 +22,7 @@ from ..models.v1.metadata.other import AnnotationMetadataOther
 from ..models.v1.metadata.sensor import SensorAnnotationMetadata
 from ..models.v1.payload.beat import BeatPositionPayload
 from ..models.v1.payload.chord import ChordPayload
+from ..models.v1.payload.dcml_label import DcmlLabelPayload
 from ..models.v1.payload.ext import ExtensionPayload
 from ..models.v1.payload.key_mode import KeyModePayload
 from ..models.v1.payload.lyrics import LyricsPayload
@@ -78,6 +79,7 @@ METADATA_TYPE_REGISTRY = {
 PAYLOAD_TYPE_REGISTRY = {
     'beat': BeatPositionPayload,
     'chord': ChordPayload,
+    'dcml_label': DcmlLabelPayload,
     'ext': ExtensionPayload,
     'key_mode': KeyModePayload,
     'lyrics': LyricsPayload,
@@ -134,6 +136,7 @@ STRING_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
     },
     'payload_type': {
         'chord': ['value'],
+        'dcml_label': ['value'],
         'ext': ['ext_schema'],
         'key_mode': ['value'],
         'lyrics': ['value'],
