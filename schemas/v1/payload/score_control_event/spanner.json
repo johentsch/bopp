@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/score_control_event/spanner.json",
+  "title": "Score Spanner Payload",
+  "description": "Score control events with DLC event value 'Spanner', one row per event. Columns are parallel arrays. DLC quarterbeats, quarterbeats_all_endings, duration_qb and duration are represented by the quarters_interval.fraction extent. mc_onset, mn_onset and timesig are omitted as derivable from the measures facet; event is derived from payload_type.",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "score_control_event.spanner"
+    },
+    "staff": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "Staff numbers, 1 = top staff.",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "voice": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "Voice (layer) numbers within the staff, 1-based.",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "mc": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "Measure counts: 1-based index of the measure unit in the encoded score (ms3 'mc').",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "mn": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "Measure numbers as printed in the score (ms3 'mn'; 0 for an anacrusis).",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "volta": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "Volta (ending) number of the measure containing the event; null outside voltas.",
+      "items": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 1
+      }
+    },
+    "slur": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "ms3 identifiers of slurs active at the event, e.g. '0' or '92, 93'; null when absent.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "crescendo_hairpin": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "ms3 identifiers of crescendo hairpins active at the event, e.g. '0' or '92, 93'; null when absent.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "decrescendo_hairpin": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "ms3 identifiers of decrescendo hairpins active at the event, e.g. '0' or '92, 93'; null when absent.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "crescendo_line": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "ms3 identifiers of crescendo lines active at the event, e.g. '0' or '92, 93'; null when absent.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "diminuendo_line": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "ms3 identifiers of diminuendo lines active at the event, e.g. '0' or '92, 93'; null when absent.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "pedal": {
+      "$ref": "../../core.json#/$defs/Array",
+      "description": "ms3 identifiers of pedal spanners active at the event, e.g. '0' or '92, 93'; null when absent.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "staff",
+    "voice",
+    "mc",
+    "mn"
+  ]
+}
