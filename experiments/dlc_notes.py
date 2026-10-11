@@ -64,6 +64,10 @@ def _column_values(
     df: pd.DataFrame, name: str, convert: Callable[[str], Any]
 ) -> list[Any] | None:
     """Build a score_note column from a TSV column, or None if it is absent."""
+    if name not in df:
+        if name in _NULLABLE_COLUMNS:
+            return None
+        raise BoppArgumentError(f"Column '{name}' is missing")
     cells = df[name]
     non_empty = cells != ""
     if not non_empty.any():
