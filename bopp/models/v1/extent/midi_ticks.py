@@ -9,4 +9,9 @@ from msgspec import Meta, Struct
 
 
 class MidiTicks(Struct, tag_field="extent_type", tag="midi_ticks"):
-    tick: Annotated[list[float], Meta(description="An array of MIDI tick values.")]
+    tick: Annotated[
+        list[int | float],
+        Meta(
+            description="An array of MIDI tick values. MIDI ticks are integers by nature; floats are accepted for quantities derived by scaling or interpolation."
+        ),
+    ]

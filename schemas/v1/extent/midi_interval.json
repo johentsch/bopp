@@ -9,16 +9,16 @@
     },
     "tick": {
       "$ref": "../core.json#/$defs/Array",
-      "description": "Array of interval start times in MIDI ticks.",
+      "description": "Array of interval start times in MIDI ticks. MIDI ticks are integers by nature; floats are accepted for quantities derived by scaling or interpolation.",
       "items": {
-        "type": "number"
+        "type": ["integer", "number"]
       }
     },
     "duration": {
       "$ref": "../core.json#/$defs/Array",
-      "description": "Array of interval durations in MIDI ticks.",
+      "description": "Array of interval durations in MIDI ticks. MIDI ticks are integers by nature; floats are accepted for quantities derived by scaling or interpolation.",
       "items": {
-        "type": "number",
+        "type": ["integer", "number"],
         "minimum": 0.0
       }
     }

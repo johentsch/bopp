@@ -15,10 +15,13 @@ from .payload import (
     key_mode,
     lyrics,
     mood_thayer,
+    music21_chord,
     note_hz,
     note_midi,
     object,
     onset,
+    pedal,
+    performance_note,
     pitch_contour_hz,
     relation,
     score_control_event,
@@ -35,6 +38,9 @@ type AnyPayload = Annotated[
     | chord.ChordPayload
     | dcml_label.DcmlLabelPayload
     | score_measure.ScoreMeasurePayload
+    | music21_chord.Music21ChordPayload
+    | performance_note.PerformanceNotePayload
+    | pedal.PedalPayload
     | key_mode.KeyModePayload
     | lyrics.LyricsPayload
     | mood_thayer.MoodThayerPayload

@@ -27,10 +27,13 @@ from ..models.v1.payload.ext import ExtensionPayload
 from ..models.v1.payload.key_mode import KeyModePayload
 from ..models.v1.payload.lyrics import LyricsPayload
 from ..models.v1.payload.mood_thayer import MoodThayerPayload
+from ..models.v1.payload.music21_chord import Music21ChordPayload
 from ..models.v1.payload.note_hz import NoteHzPayload
 from ..models.v1.payload.note_midi import NoteMidiPayload
 from ..models.v1.payload.object import ObjectPayload
 from ..models.v1.payload.onset import OnsetPayload
+from ..models.v1.payload.pedal import PedalPayload
+from ..models.v1.payload.performance_note import PerformanceNotePayload
 from ..models.v1.payload.pitch_contour_hz import PitchContourPayload
 from ..models.v1.payload.relation import RelationPayload
 from ..models.v1.payload.score_control_event.chord import ScoreChordPayload
@@ -86,10 +89,13 @@ PAYLOAD_TYPE_REGISTRY = {
     'lyrics': LyricsPayload,
     'mood_thayer': MoodThayerPayload,
     'multi_segment': MultiSegmentPayload,
+    'music21_chord': Music21ChordPayload,
     'note_hz': NoteHzPayload,
     'note_midi': NoteMidiPayload,
     'object': ObjectPayload,
     'onset': OnsetPayload,
+    'pedal': PedalPayload,
+    'performance_note': PerformanceNotePayload,
     'pitch_contour': PitchContourPayload,
     'relation': RelationPayload,
     'score_control_event.chord': ScoreChordPayload,
@@ -144,6 +150,9 @@ STRING_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'key_mode': ['value'],
         'lyrics': ['value'],
         'multi_segment': ['label'],
+        'music21_chord': ['value', 'key'],
+        'pedal': ['controller'],
+        'performance_note': ['anchor', 'match'],
         'relation': ['performance_id', 'value', 'relation'],
         'score_control_event.chord': ['slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'gracenote', 'articulation', 'tremolo', 'lyrics_1', 'lyrics_2', 'lyrics_3'],
         'score_control_event.dynamic': ['dynamics', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal'],
