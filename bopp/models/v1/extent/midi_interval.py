@@ -7,14 +7,25 @@ from typing import Annotated
 
 from msgspec import Meta, Struct
 
-type DurationItem = Annotated[float, Meta(ge=0.0)]
+type DurationItemInteger = Annotated[int, Meta(ge=0)]
+
+
+type DurationItemNumber = Annotated[float, Meta(ge=0.0)]
+
+
+type DurationItem = DurationItemInteger | DurationItemNumber
 
 
 class MidiInterval(Struct, tag_field="extent_type", tag="midi_interval"):
     tick: Annotated[
-        list[float], Meta(description="Array of interval start times in MIDI ticks.")
+        list[int | float],
+        Meta(
+            description="Array of interval start times in MIDI ticks. MIDI ticks are integers by nature; floats are accepted for quantities derived by scaling or interpolation."
+        ),
     ]
     duration: Annotated[
         list[DurationItem],
-        Meta(description="Array of interval durations in MIDI ticks."),
+        Meta(
+            description="Array of interval durations in MIDI ticks. MIDI ticks are integers by nature; floats are accepted for quantities derived by scaling or interpolation."
+        ),
     ]

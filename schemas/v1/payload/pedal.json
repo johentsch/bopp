@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/pedal.json",
+  "title": "Pedal Payload",
+  "description": "MIDI pedal controller events, one row per event with parallel-array columns, as in Vienna match sustain(tick, value) and soft(tick, value) records. Used with the midi_ticks extent.",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "pedal"
+    },
+    "controller": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Pedal controller names.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sustain",
+          "soft"
+        ]
+      }
+    },
+    "value": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "MIDI controller values (0-127).",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 127
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "controller",
+    "value"
+  ]
+}

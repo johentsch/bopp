@@ -9,9 +9,9 @@
     },
     "tick": {
       "$ref": "../core.json#/$defs/Array",
-      "description": "An array of MIDI tick values.",
+      "description": "An array of MIDI tick values. MIDI ticks are integers by nature; floats are accepted for quantities derived by scaling or interpolation.",
       "items": {
-        "type": "number"
+        "type": ["integer", "number"]
       }
     }
   },

@@ -27,10 +27,13 @@ from ..models.v1.payload.ext import ExtensionPayload
 from ..models.v1.payload.key_mode import KeyModePayload
 from ..models.v1.payload.lyrics import LyricsPayload
 from ..models.v1.payload.mood_thayer import MoodThayerPayload
+from ..models.v1.payload.music21_chord import Music21ChordPayload
 from ..models.v1.payload.note_hz import NoteHzPayload
 from ..models.v1.payload.note_midi import NoteMidiPayload
 from ..models.v1.payload.object import ObjectPayload
 from ..models.v1.payload.onset import OnsetPayload
+from ..models.v1.payload.pedal import PedalPayload
+from ..models.v1.payload.performance_note import PerformanceNotePayload
 from ..models.v1.payload.pitch_contour_hz import PitchContourPayload
 from ..models.v1.payload.relation import RelationPayload
 from ..models.v1.payload.score_control_event.chord import ScoreChordPayload
@@ -86,10 +89,13 @@ PAYLOAD_TYPE_REGISTRY = {
     'lyrics': LyricsPayload,
     'mood_thayer': MoodThayerPayload,
     'multi_segment': MultiSegmentPayload,
+    'music21_chord': Music21ChordPayload,
     'note_hz': NoteHzPayload,
     'note_midi': NoteMidiPayload,
     'object': ObjectPayload,
     'onset': OnsetPayload,
+    'pedal': PedalPayload,
+    'performance_note': PerformanceNotePayload,
     'pitch_contour': PitchContourPayload,
     'relation': RelationPayload,
     'score_control_event.chord': ScoreChordPayload,
@@ -123,6 +129,7 @@ COMPLEX_FIELDS_REGISTRY: dict[str, dict[str, list[str]]] = {
         'ext': ['value'],
         'object': ['value'],
         'onset': ['value'],
+        'performance_note': ['channel', 'track', 'anchor', 'match'],
         'pitch_contour': ['value'],
         'relation': ['relation'],
         'score_control_event.chord': ['volta', 'slur', 'crescendo_hairpin', 'decrescendo_hairpin', 'crescendo_line', 'diminuendo_line', 'pedal', 'nominal_duration', 'scalar', 'gracenote', 'articulation', 'tremolo', 'lyrics_1', 'lyrics_2', 'lyrics_3'],

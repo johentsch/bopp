@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payload/performance_note.json",
+  "title": "Performance Note Payload",
+  "description": "One row per performed MIDI note, with parallel-array columns, as in Vienna 4x22 match note(id, midi, onset, offset, velocity, channel, track) records. Used with the midi_interval extent: onset tick and duration in ticks.",
+  "type": "object",
+  "properties": {
+    "payload_type": {
+      "const": "performance_note"
+    },
+    "midi": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "MIDI note numbers (0-127).",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 127
+      }
+    },
+    "velocity": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "MIDI note velocities (0-127).",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 127
+      }
+    },
+    "channel": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "MIDI channel numbers (0-15); null when unavailable.",
+      "items": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 0,
+        "maximum": 15
+      }
+    },
+    "track": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Nonnegative MIDI track numbers; null when unavailable.",
+      "items": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 0
+      }
+    },
+    "anchor": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "Identifier of the note in its source document, e.g. a match-file note id such as 'n12'; null when unavailable.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "match": {
+      "$ref": "../core.json#/$defs/Array",
+      "description": "The score_note.anchor of the matched score note, e.g. 'n238', or 'NOMATCH' for an inserted note. Free source strings; null when unavailable.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  },
+  "required": [
+    "payload_type",
+    "midi",
+    "velocity"
+  ]
+}
