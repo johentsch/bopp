@@ -83,5 +83,6 @@ The reader works without this plugin and creates mixed annotations with
   integer lists. Canonically produced dict rows and resolved structs serialize
   identically in JSON, preserving ids across plugin installation and JSON/MsgPack I/O.
   MsgPack map headers may differ between structs and dicts; decoded values agree.
-- CSV round trips of `ext` payloads are not id-stable upstream yet; this
-  experiment tests JSON and MsgPack.
+- Since upstream's polars CSV reader (bmcfee/bopp#12, #24), CSV round trips of
+  `ext` payloads preserve the content id, checked for score_note and every
+  control-event kind, including the mixed union.

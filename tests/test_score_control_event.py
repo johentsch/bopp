@@ -180,8 +180,8 @@ def test_create_and_validate(kind, minimal):
     ids=["json", "msgpack", "csv"],
 )
 def test_roundtrip(tmp_path, kind, save, load, suffix):
-    """All formats preserve payload classes; CSV uses nonnull item values."""
-    columns = NONULL[kind] if suffix == "csv" else FULL[kind]
+    """All formats preserve payload classes and nullable item values."""
+    columns = FULL[kind]
     annotation = create_annotation(kind, columns)
     assert bopp.validate(annotation)
     path = tmp_path / f"{kind}.{suffix}"
@@ -214,7 +214,7 @@ def test_roundtrip(tmp_path, kind, save, load, suffix):
 )
 def test_roundtrip_id(tmp_path, kind, save, load, suffix):
     """Check format-specific ids separately from passing payload round trips."""
-    annotation = create_annotation(kind, NONULL[kind])
+    annotation = create_annotation(kind, FULL[kind])
     path = tmp_path / f"{kind}.{suffix}"
     save(annotation, path)
     loaded = load(path)
@@ -225,12 +225,8 @@ def test_roundtrip_id(tmp_path, kind, save, load, suffix):
         assert loaded.id == annotation.id
 
 
-@pytest.mark.xfail(strict=True,
-    raises=msgspec.ValidationError,
-    reason="Upstream bopp/io.py: pandas NaN for empty CSV cells breaks nullable ints",
-)
 def test_csv_roundtrip_nullable_int(tmp_path):
-    """CSV should preserve null items in nullable integer columns."""
+    """CSV preserves null items in nullable integer columns."""
     columns = {**NONULL["spanner"], "volta": [None, 1, 2]}
     annotation = create_annotation("spanner", columns)
     assert bopp.validate(annotation)
@@ -241,12 +237,8 @@ def test_csv_roundtrip_nullable_int(tmp_path):
     assert_payload("spanner", loaded.payload, columns)
 
 
-@pytest.mark.xfail(strict=True,
-    raises=msgspec.ValidationError,
-    reason="Upstream bopp/io.py: pandas NaN for empty CSV cells breaks nullable strings",
-)
 def test_csv_roundtrip_nullable_string(tmp_path):
-    """CSV should preserve null items in nullable string columns."""
+    """CSV preserves null items in nullable string columns."""
     columns = {**NONULL["spanner"], "slur": [None, "92, 93", "1"]}
     annotation = create_annotation("spanner", columns)
     assert bopp.validate(annotation)
@@ -260,31 +252,13 @@ def test_csv_roundtrip_nullable_string(tmp_path):
 @pytest.mark.parametrize(
     ("kind", "field", "value"),
     [
-        pytest.param(
-            "figured_bass", "thoroughbass_level_1", "(6)",
-            marks=pytest.mark.xfail(strict=True,
-                raises=msgspec.ValidationError,
-                reason=(
-                    "Upstream bopp/io.py: literal_eval on COMPLEX_FIELDS_REGISTRY "
-                    "columns converts figured-bass '(6)' to int"
-                ),
-            ),
-        ),
-        pytest.param(
-            "staff_text", "staff_text", "(sic)",
-            marks=pytest.mark.xfail(strict=True,
-                raises=ValueError,
-                reason=(
-                    "Upstream bopp/io.py: literal_eval on COMPLEX_FIELDS_REGISTRY "
-                    "columns rejects staff text '(sic)' as a malformed node"
-                ),
-            ),
-        ),
+        pytest.param("figured_bass", "thoroughbass_level_1", "(6)"),
+        pytest.param("staff_text", "staff_text", "(sic)"),
     ],
     ids=["figured-bass-symbol", "staff-text"],
 )
 def test_csv_roundtrip_parenthesized_string(tmp_path, kind, field, value):
-    """Parentheses in musical text should survive CSV without evaluation."""
+    """CSV preserves parentheses in musical text without evaluation."""
     columns = {**NONULL[kind], field: [value, *NONULL[kind][field][1:]]}
     annotation = create_annotation(kind, columns)
     assert bopp.validate(annotation)

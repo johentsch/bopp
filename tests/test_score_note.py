@@ -195,9 +195,9 @@ def test_annotation_roundtrip(tmp_path, columns, save, load, suffix):
     assert loaded.id == annotation.id
 
 
-@pytest.mark.parametrize("columns", [MINIMAL, NONULL], ids=["minimal", "full_nonull"])
+@pytest.mark.parametrize("columns", [MINIMAL, FULL], ids=["minimal", "full"])
 def test_csv_roundtrip(tmp_path, columns):
-    """CSV preserves nonnull columns and leaves absent optional columns unset."""
+    """CSV preserves nullable columns and leaves absent optional columns unset."""
     annotation = create_annotation(columns)
     assert_annotation(annotation, columns)
     path = tmp_path / "score_note.csv"
@@ -208,12 +208,12 @@ def test_csv_roundtrip(tmp_path, columns):
 def test_json_to_csv_roundtrip(tmp_path):
     """CSV handles fraction tuples produced by loading a JSON annotation."""
     json_path = tmp_path / "score_note.json"
-    save_bopp_json(create_annotation(NONULL), json_path)
+    save_bopp_json(create_annotation(FULL), json_path)
     annotation = load_bopp_json(json_path)
     assert isinstance(annotation.payload.nominal_duration[0], tuple)
     csv_path = tmp_path / "score_note.csv"
     save_bopp_csv(annotation, csv_path)
-    assert_annotation(load_bopp_csv(csv_path), NONULL)
+    assert_annotation(load_bopp_csv(csv_path), FULL)
 
 
 def test_complex_fields_registry():
