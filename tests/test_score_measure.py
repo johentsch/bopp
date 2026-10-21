@@ -325,9 +325,9 @@ def test_roundtrip(tmp_path, frame, source, save, load, suffix):
     assert wire(loaded) == wire(annotation)
 
 
-@pytest.mark.parametrize("columns", [MINIMAL, NONULL], ids=["minimal", "full_nonull"])
+@pytest.mark.parametrize("columns", [MINIMAL, FULL], ids=["minimal", "full"])
 def test_csv_roundtrip(tmp_path, columns):
-    """CSV retains nested next lists and nonnull columns, but omits the id."""
+    """CSV preserves nested next lists and nullable columns, but omits the id."""
     annotation = create_annotation(columns)
     path = tmp_path / "score_measure.csv"
     save_bopp_csv(annotation, path)
@@ -341,13 +341,8 @@ def test_csv_roundtrip(tmp_path, columns):
 
 
 @pytest.mark.parametrize("name", ["numbering_offset", "volta", "barline", "dont_count"])
-@pytest.mark.xfail(
-    strict=True,
-    raises=msgspec.ValidationError,
-    reason="Upstream bopp/io.py: pandas NaN for empty CSV cells breaks nullable items",
-)
 def test_csv_roundtrip_nulls(tmp_path, name):
-    """CSV should preserve null integers, strings and booleans."""
+    """CSV preserves null integers, strings and booleans."""
     annotation = create_annotation({**MINIMAL, name: FULL[name]})
     assert bopp.validate(annotation)
     path = tmp_path / f"{name}.csv"

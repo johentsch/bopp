@@ -6,14 +6,20 @@ import pytest
 import bopp
 from bopp.exceptions import BoppValidationError
 from bopp.io import (
+    load_bopp_csv,
     load_bopp_json,
     load_bopp_msgpack,
+    save_bopp_csv,
     save_bopp_json,
     save_bopp_msgpack,
 )
 from bopp.models.v1.payload.performance_note import PerformanceNotePayload
 from bopp.models.v1.payloads import AnyPayload
-from bopp.registries.v1 import COMPLEX_FIELDS_REGISTRY, PAYLOAD_TYPE_REGISTRY
+from bopp.registries.v1 import (
+    COMPLEX_FIELDS_REGISTRY,
+    PAYLOAD_TYPE_REGISTRY,
+    STRING_FIELDS_REGISTRY,
+)
 
 MINIMAL = {"midi": [0, 60, 127], "velocity": [0, 64, 127]}
 FULL = {
@@ -45,12 +51,13 @@ def create_annotation(columns, tick_type=float):
 
 
 def test_registry():
-    """Register the payload and its optional columns."""
+    """Register the payload and its string columns without complex columns."""
     assert PAYLOAD_TYPE_REGISTRY["performance_note"] is PerformanceNotePayload
-    assert (
-        set(COMPLEX_FIELDS_REGISTRY["payload_type"]["performance_note"])
-        == FULL.keys() - MINIMAL.keys()
-    )
+    assert "performance_note" not in COMPLEX_FIELDS_REGISTRY["payload_type"]
+    assert set(STRING_FIELDS_REGISTRY["payload_type"]["performance_note"]) == {
+        "anchor",
+        "match",
+    }
 
 
 @pytest.mark.parametrize("columns", [MINIMAL, FULL], ids=["minimal", "full"])
@@ -125,3 +132,19 @@ def test_roundtrip(tmp_path, columns, tick_type, save, load, suffix):
     # Integer ticks must decode back as integers, or the id would not match.
     assert {type(value) for value in loaded.extent.tick} == {tick_type}
     assert {type(value) for value in loaded.extent.duration} == {tick_type}
+
+
+@pytest.mark.xfail(
+    strict=True,
+    reason="polars CSV reader maps the int | float tick columns to Float64, so integer ticks come back as floats",
+)
+def test_csv_roundtrip_integer_ticks(tmp_path):
+    """CSV should preserve integer types for tick and duration values."""
+    annotation = create_annotation(FULL, tick_type=int)
+    assert bopp.validate(annotation)
+    path = tmp_path / "performance_note_integer_ticks.csv"
+    save_bopp_csv(annotation, path)
+    loaded = load_bopp_csv(path)
+    assert bopp.validate(loaded)
+    for name in ("tick", "duration"):
+        assert all(type(value) is int for value in getattr(loaded.extent, name))

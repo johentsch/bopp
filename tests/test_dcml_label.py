@@ -265,8 +265,9 @@ def test_csv_roundtrip(tmp_path):
 
 
 def test_csv_empty_label(tmp_path):
-    """The current CSV reader turns empty cells into floats, which are rejected."""
+    """CSV preserves an empty label as a valid empty string."""
     path = tmp_path / "dcml_label_empty.csv"
     save_bopp_csv(create_annotation([""]), path)
-    with pytest.raises(msgspec.ValidationError, match=r"\$\.payload\.value\[0\]"):
-        load_bopp_csv(path)
+    loaded = load_bopp_csv(path)
+    assert loaded.payload.value == [""]
+    assert bopp.validate(loaded)
