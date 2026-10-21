@@ -7,12 +7,26 @@ Arrow kernels, including parent indices to report nested failures in table row
 units. An entirely null optional column represents an omitted BOPP column. The
 derived schema and the per-column checks are compiled once per kind and reused,
 so repeated validation of many small tables is not dominated by schema work.
+
+An integer/number item union (optionally nullable) maps to float64 because
+Parquet cannot store Arrow unions. The original union remains in ``bopp:items``
+metadata. This mapping cannot distinguish an integral source float such as
+480.0 from an int. ``restore_number_union`` restores integral floats as ints;
+the benchmark's Vienna ticks are integers, so their round trip is exact.
+Integers outside Arrow's exact float64 cast range are rejected, not rounded.
+
+Arrow's type inference from Python lists converts a boolean that follows a
+float to 1.0 or 0.0 (and a NumPy boolean that follows an int to 1 or 0), so an
+order-dependent coercion would accept values that BOPP rejects.
+``annotation_to_arrow`` therefore rejects Python and NumPy booleans in every
+non-boolean scalar position, nested items included, before building a table.
 """
 
 from __future__ import annotations
 
 import json
 import re
+import sys
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from functools import cache
 from pathlib import Path
@@ -171,9 +185,10 @@ def _compile(item: Mapping[str, Any]) -> _Checks:
     if unknown := schema.keys() - _ITEM_KEYWORDS:
         raise ValueError(f"Unsupported item constraints: {sorted(unknown)}")
     types = [t for t in _types(schema) if t != "null"]
-    if len(types) != 1:
+    number_union = len(types) == 2 and set(types) == {"integer", "number"}
+    if len(types) != 1 and not number_union:
         raise ValueError(f"Cannot map JSON item schema: {item}")
-    kind = types[0]
+    kind = "number" if number_union else types[0]
     common = {
         "nullable": "null" in _types(schema),
         "lengths": tuple(
@@ -589,6 +604,79 @@ def validate_table(
     return pa.Table.from_arrays(arrays, schema=schema)
 
 
+def restore_number_union(
+    values: Sequence[int | float | None],
+) -> list[int | float | None]:
+    """
+    Restore integral floats from an Arrow integer/number union column as ints.
+
+    Parameters
+    ----------
+    values : sequence of int, float or None
+        Values from a column whose item schema admits integer and number.
+
+    Returns
+    -------
+    list of int, float or None
+        Integral floats converted to ints; all other values, including nulls
+        and non-finite floats, retained. Source integral floats and integers
+        cannot be distinguished after storage as float64.
+    """
+    return [
+        int(value) if isinstance(value, float) and value.is_integer() else value
+        for value in values
+    ]
+
+
+def _boolean_types() -> tuple[type, ...]:
+    """Return the boolean types a column may hold; NumPy only once imported."""
+    numpy = sys.modules.get("numpy")
+    return (bool,) if numpy is None else (bool, numpy.bool_)
+
+
+def _boolean_rows(
+    values: Sequence[Any], checks: _Checks, booleans: tuple[type, ...]
+) -> set[int]:
+    """
+    Find rows holding a boolean where the item schema admits none.
+
+    Parameters
+    ----------
+    values : sequence
+        Python values of one column, or of one nesting level of it.
+    checks : _Checks
+        Compiled item schema of ``values``.
+    booleans : tuple of type
+        Boolean types to reject.
+
+    Returns
+    -------
+    set of int
+        Indices into ``values``. Non-list values of list items are left to the
+        Arrow type checks.
+    """
+    if checks.prefix is None and checks.items is None:
+        if pa.types.is_boolean(checks.type) or not set(map(type, values)) & set(
+            booleans
+        ):
+            return set()
+        return {i for i, value in enumerate(values) if isinstance(value, booleans)}
+    rows = [
+        (i, value) for i, value in enumerate(values) if isinstance(value, list | tuple)
+    ]
+    if checks.prefix is not None:
+        bad: set[int] = set()
+        for position, child in enumerate(checks.prefix):
+            picked = [(i, row[position]) for i, row in rows if len(row) > position]
+            hits = _boolean_rows([value for _, value in picked], child, booleans)
+            bad.update(picked[hit][0] for hit in hits)
+        return bad
+    assert checks.items is not None
+    parents = [i for i, row in rows for _ in row]
+    hits = _boolean_rows([v for _, row in rows for v in row], checks.items, booleans)
+    return {parents[hit] for hit in hits}
+
+
 def annotation_to_arrow(
     ann: Annotation,
     *,
@@ -621,13 +709,18 @@ def annotation_to_arrow(
     index = {} if index is None else index
     payload_kind: str = type(ann.payload).__struct_config__.tag
     extent_kind: str = type(ann.extent).__struct_config__.tag
-    schema = arrow_schema(payload_kind, extent_kind, index_columns=tuple(index))
+    schema, plan = _plan(payload_kind, extent_kind, tuple(index))
+    checks = {column.name: column.checks for column in plan}
+    booleans = _boolean_types()
     columns: dict[str, Any] = {}
     for struct in (ann.extent, ann.payload):
         for name in struct.__struct_fields__:
             values = getattr(struct, name)
             if values is msgspec.UNSET:
                 continue
+            # Inference would coerce, e.g., [0.5, True] to [0.5, 1.0]; BOPP rejects it.
+            if bad := _boolean_rows(values, checks[name], booleans):
+                _fail(name, f"type ({checks[name].type}): boolean", len(bad), min(bad))
             if pa.types.is_fixed_size_list(schema.field(name).type):
                 values = [
                     list(value) if value is not None else None for value in values

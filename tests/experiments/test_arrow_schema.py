@@ -1,16 +1,19 @@
 """Check schema-derived Arrow types, constraints and fixture Parquet round trips."""
 
 import json
+import math
 import re
 from pathlib import Path
 
 import msgspec
+import numpy as np
 import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 import pytest
 
 import bopp
+from bopp.exceptions import BoppValidationError
 from bopp.registries.v1 import EXTENT_TYPE_REGISTRY, PAYLOAD_TYPE_REGISTRY
 from experiments import arrow_schema as module
 from experiments.arrow_schema import (
@@ -18,6 +21,7 @@ from experiments.arrow_schema import (
     annotation_to_arrow,
     arrow_schema,
     ecma_to_re2,
+    restore_number_union,
     validate_table,
 )
 from experiments.dlc_chords import chords_to_control_events, read_chords_tsv
@@ -27,6 +31,7 @@ from experiments.dlc_notes import notes_to_score_note, read_notes_tsv
 DATA = Path(__file__).parent / "data"
 SCHEMAS = Path(bopp.__file__).resolve().parents[1] / "schemas/v1"
 EXTENT = "quarters_interval.fraction"
+TIME_FRACTION = "quarters_time.fraction"
 MINIMAL = {
     "mc": [1, 2, 3],
     "mn": [0, 1, 2],
@@ -122,6 +127,287 @@ def test_every_registered_extent(tag):
     schema = arrow_schema("score_note", tag, index_columns=("piece",))
     extent_names = [name for name in source["properties"] if name != "extent_type"]
     assert schema.names[: 1 + len(extent_names)] == ["piece", *extent_names]
+
+
+@pytest.mark.parametrize("extent", ["midi_ticks", "midi_interval"])
+@pytest.mark.parametrize("dtype", [pa.int64(), pa.float64()])
+def test_midi_number_union(extent, dtype):
+    """Accept integer and floating MIDI columns and retain union metadata."""
+    columns = {"tick": pa.array([0, 480], type=dtype), "value": [60, 62]}
+    if extent == "midi_interval":
+        columns["duration"] = pa.array([120, 240], type=dtype)
+    result = validate_table(pa.table(columns), "note_midi", extent, index_columns=())
+    for name in columns.keys() - {"value"}:
+        assert result[name].type == pa.float64()
+        item = json.loads(result.schema.field(name).metadata[b"bopp:items"])
+        assert item == tagged_document("extent", extent)["properties"][name]["items"]
+
+
+@pytest.mark.parametrize("column", ["tick", "duration"])
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf"), -1, 1.5])
+def test_midi_union_constraint_parity(column, value):
+    """Follow BOPP's unbounded ticks and nonnegative durations, including NaN."""
+    extent = "midi_ticks" if column == "tick" else "midi_interval"
+    columns = (
+        {"tick": [value]} if column == "tick" else {"tick": [0], "duration": [value]}
+    )
+    ann = bopp.create(
+        media_id="test:midi",
+        payload_kind="note_midi",
+        extent_kind=extent,
+        value=[60],
+        **columns,
+    )
+    table = pa.table({**columns, "value": [60]})
+    if column == "duration" and (math.isnan(value) or value < 0):
+        with pytest.raises(BoppValidationError):
+            bopp.validate(ann)
+        with pytest.raises(ArrowValidationError, match="duration.*minimum"):
+            validate_table(table, "note_midi", extent, index_columns=())
+    else:
+        assert bopp.validate(ann)
+        result = validate_table(table, "note_midi", extent, index_columns=())
+        assert result[column].type == pa.float64()
+
+
+@pytest.mark.parametrize("nullable", [False, True])
+def test_nullable_number_union(monkeypatch, nullable):
+    """Map only the numeric union, preserving optional nulls and both bounds."""
+    original = module._document
+
+    def document(path):
+        schema = json.loads(json.dumps(original(path)))
+        if path.name == "midi_ticks.json":
+            schema["properties"]["tick"]["items"] = {
+                "type": ["integer", "number", *(["null"] if nullable else [])],
+                "minimum": 0,
+                "maximum": 480,
+            }
+        return schema
+
+    monkeypatch.setattr(module, "_document", document)
+    field = arrow_schema("note_midi", "midi_ticks", index_columns=()).field("tick")
+    assert field.type == pa.float64()
+    assert field.nullable is nullable
+    samples = [(-1, "minimum"), (float("nan"), "minimum"), (481, "maximum")]
+    if not nullable:
+        samples.append((None, "null"))
+    for value, rule in samples:
+        with pytest.raises(ArrowValidationError, match=f"tick.*{rule}"):
+            validate_table(
+                pa.table({"tick": [value], "value": [60]}),
+                "note_midi",
+                "midi_ticks",
+                index_columns=(),
+            )
+    good = [0, None, 480] if nullable else [0, 1.5, 480]
+    result = validate_table(
+        pa.table({"tick": good, "value": [60] * 3}),
+        "note_midi",
+        "midi_ticks",
+        index_columns=(),
+    )
+    assert result["tick"].to_pylist() == good
+
+
+@pytest.mark.parametrize(
+    "types", [["integer", "string"], ["integer", "number", "boolean"]]
+)
+def test_other_unions_remain_unsupported(types):
+    """Do not broaden the supported mappings beyond the numeric union."""
+    with pytest.raises(ValueError, match="Cannot map"):
+        module._compile({"type": types})
+
+
+def test_restore_number_union():
+    """Restore exact Python integer types without changing fractional floats."""
+    restored = restore_number_union([0.0, 480.0, 1.5])
+    assert restored == [0, 480, 1.5]
+    assert [type(value) for value in restored] == [int, int, float]
+    extra = restore_number_union([None, 7, float("nan"), float("inf"), -float("inf")])
+    assert extra[:2] == [None, 7]
+    assert math.isnan(extra[2])
+    assert extra[3:] == [float("inf"), -float("inf")]
+
+
+@pytest.mark.parametrize("extent", ["midi_ticks", "midi_interval"])
+def test_midi_integer_parquet_roundtrip(tmp_path, extent):
+    """Restore integer MIDI extents and the annotation id after Parquet storage."""
+    columns = {"tick": [0, 480, 960]}
+    if extent == "midi_interval":
+        columns["duration"] = [120, 240, 480]
+    ann = bopp.create(
+        media_id="test:midi",
+        payload_kind="note_midi",
+        extent_kind=extent,
+        value=[60.0, 62.0, 64.0],
+        **columns,
+    )
+    assert bopp.validate(ann)
+    path = tmp_path / "midi.parquet"
+    pq.write_table(annotation_to_arrow(ann), path)
+    table = validate_table(pq.read_table(path), "note_midi", extent, index_columns=())
+    restored = {name: restore_number_union(table[name].to_pylist()) for name in columns}
+    assert all(type(value) is int for values in restored.values() for value in values)
+    rebuilt = bopp.create(
+        media_id=ann.media_id,
+        payload_kind="note_midi",
+        extent_kind=extent,
+        value=table["value"].to_pylist(),
+        **restored,
+    )
+    assert bopp.validate(rebuilt)
+    assert rebuilt.id == ann.id
+
+
+@pytest.mark.parametrize("column", ["tick", "duration"])
+@pytest.mark.parametrize("flag", [True, False])
+@pytest.mark.parametrize("flag_first", [False, True], ids=["float-first", "bool-first"])
+def test_midi_union_rejects_booleans(column, flag, flag_first):
+    """Reject booleans in MIDI unions in either order, before any table exists."""
+    extent = "midi_ticks" if column == "tick" else "midi_interval"
+    values = [flag, 0.5] if flag_first else [0.5, flag]
+    columns = (
+        {"tick": values} if column == "tick" else {"tick": [0, 1], "duration": values}
+    )
+    ann = bopp.create(
+        media_id="test:midi",
+        payload_kind="note_midi",
+        extent_kind=extent,
+        value=[60.0, 62.0],
+        **columns,
+    )
+    with pytest.raises(BoppValidationError, match="got `bool`"):
+        bopp.validate(ann)
+    row = 0 if flag_first else 1
+    with pytest.raises(
+        ArrowValidationError,
+        match=rf"'{column}': type \(double\): boolean; 1 offending rows; "
+        rf"first offending row index {row}",
+    ):
+        annotation_to_arrow(ann)
+
+
+def _measure_columns(**overrides):
+    """Return minimal valid score measure columns with a fraction extent."""
+    return {
+        **MINIMAL,
+        "quarter": [[0, 1], [1, 1], [4, 1]],
+        "duration": [[1, 1], [3, 1], [0, 1]],
+        **overrides,
+    }
+
+
+@pytest.mark.parametrize(
+    ("payload", "extent", "columns", "column", "row"),
+    [
+        # number: [0.5, True] became [0.5, 1.0] before the fix
+        (
+            "note_midi",
+            "midi_ticks",
+            {"tick": [0, 1], "value": [60.5, True]},
+            "value",
+            1,
+        ),
+        (
+            "note_midi",
+            "midi_ticks",
+            {"tick": [0, 1], "value": [True, 60.5]},
+            "value",
+            0,
+        ),
+        (
+            "note_midi",
+            "midi_ticks",
+            {"tick": [0, 1], "value": [60.5, np.True_]},
+            "value",
+            1,
+        ),
+        # integer/number union with a NumPy boolean after an int
+        (
+            "note_midi",
+            "midi_ticks",
+            {"tick": [0, np.True_], "value": [60.0, 1.0]},
+            "tick",
+            1,
+        ),
+        # integer: [1, np.True_] became [1, 1] before the fix
+        ("beat", "time", {"time": [0.0, 1.0], "value": [1, True]}, "value", 1),
+        ("beat", "time", {"time": [0.0, 1.0], "value": [1, np.True_]}, "value", 1),
+        # fraction pair items: [1, np.True_] became [1, 1] before the fix
+        (
+            "beat",
+            TIME_FRACTION,
+            {"quarter": [[0, 1], [1, True]], "value": [1, 2]},
+            "quarter",
+            1,
+        ),
+        (
+            "beat",
+            TIME_FRACTION,
+            {"quarter": [[0, 1], [1, np.True_]], "value": [1, 2]},
+            "quarter",
+            1,
+        ),
+        # string
+        ("chord", "time", {"time": [0.0, 1.0], "value": ["C", True]}, "value", 1),
+        ("chord", "time", {"time": [0.0, 1.0], "value": ["C", np.False_]}, "value", 1),
+        # integer list items: [[2], [np.True_]] became [[2], [1]] before the fix
+        (
+            "score_measure",
+            EXTENT,
+            _measure_columns(next=[[2], [True], [-1]]),
+            "next",
+            1,
+        ),
+        (
+            "score_measure",
+            EXTENT,
+            _measure_columns(next=[[2], [1, np.True_], [-1]]),
+            "next",
+            1,
+        ),
+    ],
+)
+def test_booleans_rejected_in_every_column_kind(payload, extent, columns, column, row):
+    """Reject booleans wherever BOPP does, independently of their position."""
+    numpy_bool = any(
+        isinstance(value, np.bool_)
+        for values in columns.values()
+        for item in values
+        for value in (item if isinstance(item, list) else [item])
+    )
+    ann = bopp.create(
+        media_id="test:bool",
+        payload_kind=payload,
+        extent_kind=extent,
+        generate_id=not numpy_bool,
+        **columns,
+    )
+    # msgspec cannot encode NumPy booleans at all; Python booleans fail decoding.
+    with pytest.raises(TypeError if numpy_bool else BoppValidationError):
+        bopp.validate(ann)
+    with pytest.raises(
+        ArrowValidationError,
+        match=rf"'{column}': type \(.*\): boolean; 1 offending rows; "
+        rf"first offending row index {row}",
+    ):
+        annotation_to_arrow(ann)
+
+
+def test_boolean_columns_keep_booleans():
+    """Leave genuine boolean columns and boolean-free numeric columns alone."""
+    columns = _measure_columns(dont_count=[True, None, False])
+    ann = bopp.create(
+        media_id="test:bool",
+        payload_kind="score_measure",
+        extent_kind=EXTENT,
+        **columns,
+    )
+    assert bopp.validate(ann)
+    table = annotation_to_arrow(ann)
+    assert table["dont_count"].to_pylist() == [True, None, False]
+    assert table["next"].to_pylist() == [[2], [1, 3], [-1]]
 
 
 def test_multi_segment_tag():
