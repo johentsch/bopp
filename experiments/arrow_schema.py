@@ -13,13 +13,23 @@ Parquet cannot store Arrow unions. The original union remains in ``bopp:items``
 metadata. This mapping cannot distinguish an integral source float such as
 480.0 from an int. ``restore_number_union`` restores integral floats as ints;
 the benchmark's Vienna ticks are integers, so their round trip is exact.
-Integers outside Arrow's exact float64 cast range are rejected, not rounded.
+Integers outside the exact float64 range (magnitude above 2**53) are rejected
+in float64 columns, not rounded, and integers outside the int64 range in
+integer columns, both with ``ArrowValidationError``. BOPP accepts some of
+these (any int in a number column, up to 2**64 - 1 in an integer column), so
+Parquet validation is stricter there; the benchmark data stays far inside.
 
 Arrow's type inference from Python lists converts a boolean that follows a
 float to 1.0 or 0.0 (and a NumPy boolean that follows an int to 1 or 0), so an
 order-dependent coercion would accept values that BOPP rejects.
-``annotation_to_arrow`` therefore rejects Python and NumPy booleans in every
-non-boolean scalar position, nested items included, before building a table.
+``reject_booleans`` rejects Python and NumPy booleans in every non-boolean
+scalar position, nested items included, whether a row is a list, a tuple or
+a NumPy array (boolean-dtype arrays inside list cells would otherwise be
+inferred as integers), and ``column_to_arrow`` applies it
+before inferring a column's array and reports every Arrow conversion error as
+``ArrowValidationError``. ``annotation_to_arrow`` builds its columns with it;
+callers that build tables from Python values themselves must do the same,
+since validate_table only sees the already coerced Arrow values.
 """
 
 from __future__ import annotations
@@ -29,6 +39,7 @@ import re
 import sys
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from functools import cache
+from itertools import chain
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -554,6 +565,9 @@ def validate_table(
         Input table; optional columns may be absent and types may be wider
         physical representations such as large strings or narrower integers.
         Floats are not accepted for integer columns, as in BOPP decoding.
+        Coercions that happened while the table was built from Python values
+        (e.g. a boolean inferred as 1.0) are invisible here; build columns with
+        column_to_arrow, or call reject_booleans first.
     payload_kind : str
         Registry payload tag.
     extent_kind : str or None, optional
@@ -574,14 +588,7 @@ def validate_table(
         If the requested schema cannot be mapped.
     """
     schema, columns = _plan(payload_kind, extent_kind, tuple(index_columns))
-    names = set(schema.names)
-    for name in table.column_names:
-        if name not in names:
-            _fail(name, "unknown column", table.num_rows, 0 if table.num_rows else None)
-        if table.column_names.count(name) != 1:
-            _fail(
-                name, "duplicate column", table.num_rows, 0 if table.num_rows else None
-            )
+    _check_names(table, schema)
     present = set(table.column_names)
     arrays = []
     for field, column in zip(schema, columns, strict=True):
@@ -595,13 +602,76 @@ def validate_table(
                 )
             arrays.append(pa.nulls(table.num_rows, field.type))
             continue
-        values = table[column.name]
-        if not column.required and values.null_count == len(values):
-            arrays.append(pa.nulls(table.num_rows, field.type))
-            continue
-        _validate_values(values, column.checks, column.name)
-        arrays.append(pc.cast(values, field.type, safe=True))
+        arrays.append(_validated_column(table[column.name], field, column))
     return pa.Table.from_arrays(arrays, schema=schema)
+
+
+def _check_names(table: pa.Table, schema: pa.Schema) -> None:
+    """Reject unknown and duplicate table columns."""
+    names = set(schema.names)
+    for name in table.column_names:
+        if name not in names:
+            _fail(name, "unknown column", table.num_rows, 0 if table.num_rows else None)
+        if table.column_names.count(name) != 1:
+            _fail(
+                name, "duplicate column", table.num_rows, 0 if table.num_rows else None
+            )
+
+
+def _validated_column(
+    values: pa.ChunkedArray, field: pa.Field, column: _Column
+) -> pa.ChunkedArray | pa.Array:
+    """Check one present column and cast it safely to its schema type."""
+    if not column.required and values.null_count == len(values):
+        return pa.nulls(len(values), field.type)
+    _validate_values(values, column.checks, column.name)
+    return pc.cast(values, field.type, safe=True)
+
+
+def validate_columns(
+    table: pa.Table,
+    payload_kind: str,
+    extent_kind: str | None = None,
+    *,
+    index_columns: Sequence[str] = ("corpus", "piece"),
+) -> pa.Table:
+    """
+    Validate a column subset, such as a projection, with validate_table's rules.
+
+    Parameters
+    ----------
+    table : pyarrow.Table
+        Any subset of the schema columns, in any order.
+    payload_kind : str
+        Registry payload tag.
+    extent_kind : str or None, optional
+        Registry extent tag.
+    index_columns : sequence of str, optional
+        Required string index columns.
+
+    Returns
+    -------
+    pyarrow.Table
+        The given columns in table order, checked and safely cast exactly as
+        validate_table checks and casts them.
+
+    Raises
+    ------
+    ArrowValidationError
+        On an unknown or duplicate column, or the first constraint failure of a
+        present column. Absent columns, required or not, are not reported.
+    ValueError
+        If the requested schema cannot be mapped.
+    """
+    schema, columns = _plan(payload_kind, extent_kind, tuple(index_columns))
+    _check_names(table, schema)
+    specs = {column.name: column for column in columns}
+    fields = [schema.field(name) for name in table.column_names]
+    arrays = [
+        _validated_column(table[field.name], field, specs[field.name])
+        for field in fields
+    ]
+    return pa.Table.from_arrays(arrays, schema=pa.schema(fields))
 
 
 def restore_number_union(
@@ -634,11 +704,49 @@ def _boolean_types() -> tuple[type, ...]:
     return (bool,) if numpy is None else (bool, numpy.bool_)
 
 
-def _boolean_rows(
-    values: Sequence[Any], checks: _Checks, booleans: tuple[type, ...]
-) -> set[int]:
+#: Row containers walked by the guards; others are left to Arrow's type checks.
+_ROW_TYPES = frozenset({list, tuple, type(None)})
+
+
+def _numpy_row_may_hold(value: Any) -> bool:
     """
-    Find rows holding a boolean where the item schema admits none.
+    Whether a NumPy array row can hold a boolean or an out-of-range integer.
+
+    Arrow infers a boolean array inside a list column as integers (``[[2],
+    np.array([True])]`` becomes ``[[2], [1]]``), so such rows need the walk.
+    The test is one dtype check per row: boolean and object arrays may hold
+    booleans, unsigned arrays integers above the int64 range; signed integer
+    and float arrays hold neither, whatever their length.
+
+    Parameters
+    ----------
+    value : object
+        One row of a list column.
+
+    Returns
+    -------
+    bool
+        True for a NumPy array of boolean, unsigned or object dtype.
+    """
+    numpy = sys.modules.get("numpy")
+    return (
+        numpy is not None
+        and isinstance(value, numpy.ndarray)
+        and value.dtype.kind in "buO"
+    )
+
+
+def _is_leaf(checks: _Checks) -> bool:
+    """Whether an item schema is a scalar rather than an array."""
+    return checks.prefix is None and checks.items is None
+
+
+def _may_hold(values: Sequence[Any], checks: _Checks, kinds: frozenset[type]) -> bool:
+    """
+    Screen a column for scalars of the given types in non-boolean positions.
+
+    One type-set pass per nesting level, without per-item Python calls. A False
+    result is exact; a True result only selects the exact walk.
 
     Parameters
     ----------
@@ -646,35 +754,227 @@ def _boolean_rows(
         Python values of one column, or of one nesting level of it.
     checks : _Checks
         Compiled item schema of ``values``.
-    booleans : tuple of type
-        Boolean types to reject.
+    kinds : frozenset of type
+        Scalar types to look for.
+
+    Returns
+    -------
+    bool
+        False if no such scalar can occur at a non-boolean scalar position.
+    """
+    types = set(map(type, values))
+    if _is_leaf(checks):
+        return not pa.types.is_boolean(checks.type) and not types.isdisjoint(kinds)
+    if not types <= _ROW_TYPES:
+        return True
+    # Only None and empty rows are falsy here, and neither holds items.
+    flat = chain.from_iterable(filter(None, values))
+    children = (checks.items,) if checks.items is not None else checks.prefix
+    assert children is not None
+    if checks.items is not None and not _is_leaf(checks.items):
+        return _may_hold(list(flat), checks.items, kinds)
+    if not all(map(_is_leaf, children)) or any(
+        pa.types.is_boolean(child.type) for child in children
+    ):
+        return True
+    return not set(map(type, flat)).isdisjoint(kinds)
+
+
+def _offending_rows(
+    values: Sequence[Any],
+    checks: _Checks,
+    offends: Callable[[Any, _Checks], bool],
+) -> set[int]:
+    """
+    Find rows holding a scalar that offends its item schema.
+
+    Parameters
+    ----------
+    values : sequence
+        Python values of one column, or of one nesting level of it.
+    checks : _Checks
+        Compiled item schema of ``values``.
+    offends : callable
+        Test of one scalar against its compiled scalar item schema.
 
     Returns
     -------
     set of int
-        Indices into ``values``. Non-list values of list items are left to the
-        Arrow type checks.
+        Indices into ``values``. NumPy array rows of boolean, unsigned or
+        object dtype are walked as nested lists; other non-list values of list
+        items are left to the Arrow type checks.
     """
-    if checks.prefix is None and checks.items is None:
-        if pa.types.is_boolean(checks.type) or not set(map(type, values)) & set(
-            booleans
-        ):
-            return set()
-        return {i for i, value in enumerate(values) if isinstance(value, booleans)}
+    if _is_leaf(checks):
+        return {i for i, value in enumerate(values) if offends(value, checks)}
     rows = [
-        (i, value) for i, value in enumerate(values) if isinstance(value, list | tuple)
+        (i, value if isinstance(value, list | tuple) else value.tolist())
+        for i, value in enumerate(values)
+        if isinstance(value, list | tuple) or _numpy_row_may_hold(value)
     ]
     if checks.prefix is not None:
         bad: set[int] = set()
         for position, child in enumerate(checks.prefix):
             picked = [(i, row[position]) for i, row in rows if len(row) > position]
-            hits = _boolean_rows([value for _, value in picked], child, booleans)
+            hits = _offending_rows([value for _, value in picked], child, offends)
             bad.update(picked[hit][0] for hit in hits)
         return bad
     assert checks.items is not None
     parents = [i for i, row in rows for _ in row]
-    hits = _boolean_rows([v for _, row in rows for v in row], checks.items, booleans)
+    hits = _offending_rows([v for _, row in rows for v in row], checks.items, offends)
     return {parents[hit] for hit in hits}
+
+
+def _out_of_range(value: Any, checks: _Checks) -> bool:
+    """Whether a Python int exceeds the exact range of its Arrow target."""
+    if type(value) is not int:
+        return False
+    if pa.types.is_floating(checks.type):
+        return abs(value) > 2**53
+    if pa.types.is_integer(checks.type):
+        return not -(2**63) <= value <= 2**63 - 1
+    return False
+
+
+def _range_rule(checks: _Checks) -> str:
+    """Name the range rule of a column's scalar items, as validate_table does."""
+    while not _is_leaf(checks):
+        checks = checks.prefix[0] if checks.prefix is not None else checks.items  # type: ignore[assignment]
+    return "float64 exact range" if pa.types.is_floating(checks.type) else "int64 range"
+
+
+def _column_checks(
+    payload_kind: str,
+    extent_kind: str | None,
+    index_columns: Sequence[str],
+) -> dict[str, _Checks]:
+    """Compiled item schemas of a kind's columns, by name (cached; read only)."""
+    return _checks_by_name(payload_kind, extent_kind, tuple(index_columns))
+
+
+@cache
+def _checks_by_name(
+    payload_kind: str, extent_kind: str | None, index_columns: tuple[str, ...]
+) -> dict[str, _Checks]:
+    """Index a compiled plan by column name once."""
+    plan = _plan(payload_kind, extent_kind, index_columns)[1]
+    return {column.name: column.checks for column in plan}
+
+
+def _checks_of(name: str, checks: Mapping[str, _Checks], size: int) -> _Checks:
+    """Look a column up, reporting unknown names like validate_table."""
+    if name not in checks:
+        _fail(name, "unknown column", size, 0 if size else None)
+    return checks[name]
+
+
+def reject_booleans(
+    columns: Mapping[str, Sequence[Any]],
+    payload_kind: str,
+    extent_kind: str | None = None,
+    *,
+    index_columns: Sequence[str] = ("corpus", "piece"),
+) -> None:
+    """
+    Reject Python and NumPy booleans that Arrow inference would coerce.
+
+    ``pa.array`` turns a boolean that follows a float into 1.0 or 0.0, and a
+    NumPy boolean that follows an int into 1 or 0, so validate_table can no
+    longer see them. Call this on the Python values of every column before
+    building Arrow arrays from them; boolean columns are left alone. Columns
+    are screened with one type-set pass per nesting level, and only a column
+    that holds a boolean is walked item by item.
+
+    Parameters
+    ----------
+    columns : mapping of str to sequence
+        Python values per column, in wire form (fraction pairs and integer
+        lists as lists or tuples, None for nulls); any subset of the columns.
+    payload_kind : str
+        Registry payload tag.
+    extent_kind : str or None, optional
+        Registry extent tag.
+    index_columns : sequence of str, optional
+        Required string index columns.
+
+    Raises
+    ------
+    ArrowValidationError
+        If a boolean occupies a non-boolean scalar position, nested items
+        included, or a column name is unknown.
+    ValueError
+        If the requested schema cannot be mapped.
+    """
+    checks = _column_checks(payload_kind, extent_kind, index_columns)
+    kinds = frozenset(_boolean_types())
+    for name, values in columns.items():
+        item = _checks_of(name, checks, len(values))
+        if not _may_hold(values, item, kinds):
+            continue
+        if bad := _offending_rows(
+            values,
+            item,
+            lambda value, leaf: (
+                type(value) in kinds and not pa.types.is_boolean(leaf.type)
+            ),
+        ):
+            _fail(name, f"type ({item.type}): boolean", len(bad), min(bad))
+
+
+def column_to_arrow(
+    name: str,
+    values: Sequence[Any],
+    payload_kind: str,
+    extent_kind: str | None = None,
+    *,
+    index_columns: Sequence[str] = ("corpus", "piece"),
+) -> pa.Array:
+    """
+    Build one column's Arrow array by inference, guarded against coercions.
+
+    The array is inferred, not built with its schema type: an explicit type
+    would still coerce booleans and would truncate 2.5 to 2 in an integer
+    column, whereas inference plus validate_table rejects such values. The
+    result still needs validate_table (or validate_columns).
+
+    Parameters
+    ----------
+    name : str
+        Column name.
+    values : sequence
+        Python values in wire form, as for reject_booleans.
+    payload_kind : str
+        Registry payload tag.
+    extent_kind : str or None, optional
+        Registry extent tag.
+    index_columns : sequence of str, optional
+        Required string index columns.
+
+    Returns
+    -------
+    pyarrow.Array
+        Inferred array; validate_table checks its type and constraints.
+
+    Raises
+    ------
+    ArrowValidationError
+        For booleans (see reject_booleans), for Python ints outside the exact
+        range of the column's type (``float64 exact range``: magnitude above
+        2**53; ``int64 range``), and for any other value Arrow cannot convert.
+    ValueError
+        If the requested schema cannot be mapped.
+    """
+    reject_booleans(
+        {name: values}, payload_kind, extent_kind, index_columns=index_columns
+    )
+    try:
+        return pa.array(values)
+    except (pa.ArrowInvalid, pa.ArrowTypeError, OverflowError) as err:
+        item = _column_checks(payload_kind, extent_kind, index_columns)[name]
+        if bad := _offending_rows(values, item, _out_of_range):
+            _fail(name, _range_rule(item), len(bad), min(bad))
+        raise ArrowValidationError(
+            f"Column '{name}': type ({item.type}): not convertible ({err})"
+        ) from err
 
 
 def annotation_to_arrow(
@@ -709,28 +1009,33 @@ def annotation_to_arrow(
     index = {} if index is None else index
     payload_kind: str = type(ann.payload).__struct_config__.tag
     extent_kind: str = type(ann.extent).__struct_config__.tag
-    schema, plan = _plan(payload_kind, extent_kind, tuple(index))
-    checks = {column.name: column.checks for column in plan}
-    booleans = _boolean_types()
+    schema = _plan(payload_kind, extent_kind, tuple(index))[0]
     columns: dict[str, Any] = {}
     for struct in (ann.extent, ann.payload):
         for name in struct.__struct_fields__:
             values = getattr(struct, name)
             if values is msgspec.UNSET:
                 continue
-            # Inference would coerce, e.g., [0.5, True] to [0.5, 1.0]; BOPP rejects it.
-            if bad := _boolean_rows(values, checks[name], booleans):
-                _fail(name, f"type ({checks[name].type}): boolean", len(bad), min(bad))
             if pa.types.is_fixed_size_list(schema.field(name).type):
                 values = [
                     list(value) if value is not None else None for value in values
                 ]
             columns[name] = values
     size = len(next(iter(columns.values())))
+    if len({len(values) for values in columns.values()}) != 1:
+        raise ValueError("Annotation columns differ in length")
     for name, value in index.items():
         if not isinstance(value, str):
             raise TypeError(f"Index column '{name}' requires a constant string")
         columns[name] = [value] * size
-    # Infer lists first so invalid fraction lengths receive row diagnostics.
-    table = pa.table(columns)
+    # Infer lists first so invalid fraction lengths receive row diagnostics;
+    # the guard keeps inference from coercing booleans BOPP rejects.
+    table = pa.table(
+        {
+            name: column_to_arrow(
+                name, values, payload_kind, extent_kind, index_columns=tuple(index)
+            )
+            for name, values in columns.items()
+        }
+    )
     return validate_table(table, payload_kind, extent_kind, index_columns=tuple(index))

@@ -858,3 +858,240 @@ def test_dictionary_nulls():
         match=("value.*null.*1 offending rows.*first offending row index 1"),
     ):
         validate_table(pa.table({"value": values}), "dcml_label", index_columns=())
+
+
+@pytest.mark.parametrize(
+    ("ticks", "row"),
+    [([0.5, 2**53 + 1], 1), ([2**53 + 1, 0.5], 0), ([0.5, -(2**53) - 1], 1)],
+    ids=["float-first", "int-first", "negative"],
+)
+def test_union_rejects_inexact_integers(ticks, row):
+    """Ints beyond float64's exact range fail as ArrowValidationError, not raw Arrow.
+
+    BOPP accepts them (documented asymmetry); rounding them silently would not
+    be a faithful copy, so the Parquet side rejects them in either order.
+    """
+    ann = bopp.create(
+        media_id="test:midi",
+        payload_kind="note_midi",
+        extent_kind="midi_ticks",
+        tick=ticks,
+        value=[60.0, 62.0],
+    )
+    assert bopp.validate(ann)
+    with pytest.raises(
+        ArrowValidationError,
+        match=rf"'tick': float64 exact range; 1 offending rows; "
+        rf"first offending row index {row}",
+    ):
+        annotation_to_arrow(ann)
+
+
+def test_union_keeps_exact_integers():
+    """2**53 and below stay exact in a float64 union column and are accepted."""
+    ann = bopp.create(
+        media_id="test:midi",
+        payload_kind="note_midi",
+        extent_kind="midi_ticks",
+        tick=[0.5, 2**53, -(2**53)],
+        value=[60.0, 62.0, 64.0],
+    )
+    table = annotation_to_arrow(ann)
+    assert table["tick"].to_pylist() == [0.5, 2.0**53, -(2.0**53)]
+
+
+@pytest.mark.parametrize(
+    "ticks", [[0, 2**63], [0.5, 2**63], [0, 2**53 + 1]], ids=["int", "float", "2**53"]
+)
+def test_union_huge_integers(ticks):
+    """2**63 (formerly a raw OverflowError) and int-only columns share one rule."""
+    ann = bopp.create(
+        media_id="test:midi",
+        payload_kind="note_midi",
+        extent_kind="midi_ticks",
+        tick=ticks,
+        value=[60.0, 62.0],
+    )
+    with pytest.raises(
+        ArrowValidationError, match=r"'tick': float64 exact range; 1 offending rows"
+    ):
+        annotation_to_arrow(ann)
+
+
+@pytest.mark.parametrize(
+    ("column", "values", "accepted"),
+    [
+        ("tpc", [0, 2**63 - 1], True),
+        ("tpc", [0, 2**63], False),
+        ("tpc", [-(2**63), 1], True),
+        ("tpc", [-(2**63) - 1, 1], False),
+        ("quarter", [[0, 1], [1, 2**63]], False),
+        ("quarter", [[0, 1], [1, 2**63 - 1]], True),
+    ],
+)
+def test_integer_columns_int64_range(column, values, accepted):
+    """Integer columns and fraction items hold int64; beyond it is a clear error."""
+    columns = {
+        "quarter": [[0, 1], [1, 1]],
+        "duration": [[1, 1], [1, 1]],
+        "midi": [60, 61],
+        "tpc": [0, 1],
+        column: values,
+    }
+    ann = bopp.create(
+        media_id="test:int64",
+        payload_kind="score_note",
+        extent_kind=EXTENT,
+        **columns,
+    )
+    if accepted:
+        assert annotation_to_arrow(ann)[column].to_pylist() == values
+        return
+    with pytest.raises(
+        ArrowValidationError,
+        match=rf"'{column}': int64 range; 1 offending rows; first offending row index",
+    ):
+        annotation_to_arrow(ann)
+
+
+def test_column_to_arrow_wraps_conversion_errors():
+    """Mixed values Arrow cannot convert surface as ArrowValidationError."""
+    with pytest.raises(ArrowValidationError, match=r"'midi': type \(int64\)"):
+        module.column_to_arrow("midi", [60, "61"], "score_note", EXTENT)
+    with pytest.raises(ArrowValidationError, match="'act_dur'"):
+        module.column_to_arrow("act_dur", [[1, 4], 3], "score_measure", EXTENT)
+    with pytest.raises(ArrowValidationError, match="'unknown': unknown column"):
+        module.column_to_arrow("unknown", [1], "score_note", EXTENT)
+
+
+def test_reject_booleans_public_guard():
+    """The public guard rejects nested and scalar booleans and keeps bool columns."""
+    module.reject_booleans(
+        {"dont_count": [True, None], "next": [[2], [1, 3]], "act_dur": [[1, 4], None]},
+        "score_measure",
+        EXTENT,
+    )
+    for columns, name in (
+        ({"next": [(2,), (1, np.True_)]}, "next"),
+        ({"act_dur": [[1, 4], [True, 2]]}, "act_dur"),
+        ({"mc_offset": [(0, 1), (np.False_, 1)]}, "mc_offset"),
+        ({"keysig": [0, False]}, "keysig"),
+    ):
+        with pytest.raises(
+            ArrowValidationError,
+            match=rf"'{name}': type \(.*\): boolean; 1 offending rows; "
+            "first offending row index 1",
+        ):
+            module.reject_booleans(columns, "score_measure", EXTENT)
+
+
+@pytest.mark.parametrize("first", [True, False])
+@pytest.mark.parametrize(
+    ("name", "good", "bad"),
+    [
+        # [[2], np.array([True])] became [[2], [1]] before the fix
+        ("next", [2], np.array([True])),
+        ("next", [2], np.array([1, True], dtype=object)),
+        ("next", [2], np.array([1, np.True_], dtype=object)),
+        # [[1, 4], np.array([True, True])] became [[1, 4], [1, 1]]
+        ("act_dur", [1, 4], np.array([True, True])),
+        ("mc_offset", (0, 1), np.array([False, True])),
+    ],
+)
+def test_booleans_in_numpy_array_cells(name, good, bad, first):
+    """Boolean NumPy arrays in list cells are rejected as BOPP rejects them."""
+    values = [bad, good] if first else [good, bad]
+    with pytest.raises(
+        ArrowValidationError,
+        match=rf"'{name}': type \(.*\): boolean; 1 offending rows; "
+        rf"first offending row index {0 if first else 1}",
+    ):
+        module.column_to_arrow(name, values, "score_measure", EXTENT)
+    # BOPP rejects the same cell (msgspec cannot encode NumPy arrays, so it
+    # gets the cell as a list; NumPy booleans in it cannot be encoded either).
+    cells = list(MINIMAL[name])
+    cells[1] = bad.tolist()
+    numpy_bool = any(isinstance(value, np.bool_) for value in cells[1])
+    ann = bopp.create(
+        media_id="test:bool",
+        payload_kind="score_measure",
+        extent_kind=EXTENT,
+        generate_id=False,
+        **_measure_columns(**{name: cells}),
+    )
+    with pytest.raises(TypeError if numpy_bool else BoppValidationError):
+        bopp.validate(ann)
+
+
+def test_numpy_array_cells_without_booleans():
+    """Integer NumPy array cells convert unchanged; the screen is a dtype check."""
+    assert module.column_to_arrow(
+        "next", [[2], np.array([3, -1])], "score_measure", EXTENT
+    ).to_pylist() == [[2], [3, -1]]
+    assert module.column_to_arrow(
+        "act_dur", [np.array([1, 4]), [3, 8]], "score_measure", EXTENT
+    ).to_pylist() == [[1, 4], [3, 8]]
+    assert not module._numpy_row_may_hold(np.array([1, 2]))
+    assert not module._numpy_row_may_hold(np.array([0.5]))
+    assert module._numpy_row_may_hold(np.array([True]))
+    assert module._numpy_row_may_hold(np.array([1], dtype=object))
+    assert module._numpy_row_may_hold(np.array([1], dtype=np.uint64))
+    with pytest.raises(ArrowValidationError, match="'next': int64 range"):
+        module.column_to_arrow(
+            "next", [[2], np.array([2**63], dtype=np.uint64)], "score_measure", EXTENT
+        )
+
+
+def test_boolean_screen_skips_clean_columns(monkeypatch):
+    """Boolean-free columns pass the type-set screen without the per-item walk."""
+    walked = []
+    walk = module._offending_rows
+
+    def recording(values, checks, offends):
+        walked.append(len(values))
+        return walk(values, checks, offends)
+
+    monkeypatch.setattr(module, "_offending_rows", recording)
+    module.reject_booleans(
+        {
+            "quarter": [[0, 1], [1, 2], None],
+            "next": [(2,), (), (1, -1)],
+            "keysig": [0, 1, None],
+        },
+        "score_measure",
+        EXTENT,
+    )
+    assert walked == []
+    with pytest.raises(ArrowValidationError):
+        module.reject_booleans({"next": [(2,), (True,)]}, "score_measure", EXTENT)
+    assert walked
+
+
+def test_validate_columns_matches_validate_table():
+    """A column subset is checked and cast with exactly validate_table's rules."""
+    valid = validate_table(pa.table(MINIMAL), "score_measure", index_columns=())
+    subset = pa.table(
+        {"keysig": pa.array([0, 1, 2], type=pa.int8()), "next": [[2], [3], [-1]]}
+    )
+    result = module.validate_columns(subset, "score_measure", index_columns=())
+    assert result.column_names == ["keysig", "next"]
+    assert result.schema.field("keysig") == valid.schema.field("keysig")
+    assert result.schema.field("next") == valid.schema.field("next")
+    for table, rule in (
+        (pa.table({"keysig": [0, 9, 1]}), "keysig.*maximum"),
+        (pa.table({"next": [[2], [-2], [1]]}), "next.*minimum"),
+        (pa.table({"mc": [1, None, 2]}), "mc.*null"),
+    ):
+        with pytest.raises(ArrowValidationError, match=rule):
+            module.validate_columns(table, "score_measure", index_columns=())
+        name = table.column_names[0]
+        full = valid.set_column(valid.column_names.index(name), name, table.column(0))
+        with pytest.raises(ArrowValidationError, match=rule):
+            validate_table(full, "score_measure", index_columns=())
+    with pytest.raises(ArrowValidationError, match="bogus.*unknown column"):
+        module.validate_columns(
+            pa.table({"bogus": [1]}), "score_measure", index_columns=()
+        )
+    duplicate = pa.Table.from_arrays([pa.array([0]), pa.array([1])], ["mc", "mc"])
+    with pytest.raises(ArrowValidationError, match="mc.*duplicate column"):
+        module.validate_columns(duplicate, "score_measure", index_columns=())
