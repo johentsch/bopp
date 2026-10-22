@@ -1,0 +1,1 @@
+@/home/laser/Documents/Linz/BOPP/CLAUDE.md
