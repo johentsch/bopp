@@ -238,8 +238,11 @@ def score_quarters(mf: MatchFile) -> pd.DataFrame:
     Parameters
     ----------
     mf : MatchFile
-        Parsed file with exactly one time signature. Beats count quarters,
-        while onset_in_beats counts units of the time signature denominator.
+        Parsed file with exactly one time signature. onset_in_beats counts
+        units of the time signature denominator, rounded to four decimals.
+        Beats count denominator units or quarters and offsets count from the
+        beat or from the bar start, depending on the file; the reading that
+        agrees with onset_in_beats is used.
         Bars and anchors are already unfolded (repeats written out), so no
         folding is performed.
 
@@ -248,13 +251,15 @@ def score_quarters(mf: MatchFile) -> pd.DataFrame:
     pandas.DataFrame
         A copy of the score table with Fraction columns quarter (position
         from the start of the piece, bar 0 being an anacrusis) and
-        quarter_duration.
+        quarter_duration, and the boolean column from_onset_in_beats: True
+        where no reading of bar, beat and offset agrees with onset_in_beats,
+        whose value is then used as written.
 
     Raises
     ------
     ValueError
-        If the time signature is missing, repeated or invalid, or any
-        computed position disagrees with onset_in_beats.
+        If the time signature is missing, repeated or invalid, or a position
+        disagrees with an onset_in_beats that may be rounded.
     """
     signatures = mf.scoreprops.loc[mf.scoreprops["name"] == "timeSignature"]
     if len(signatures) != 1:
@@ -265,18 +270,39 @@ def score_quarters(mf: MatchFile) -> pd.DataFrame:
         raise ValueError(f"{mf.path}: Invalid timeSignature {signature['value']!r}")
     num, den = map(int, match.groups())
     pickup = signature["onset_in_beats"] / den
+    # onset_in_beats has four decimals, so tuplet positions are rounded in it
+    tolerance = Fraction(1, 20000) / den
     quarters: list[Fraction] = []
+    fallbacks: list[bool] = []
     for row in mf.snotes.itertuples(index=False):
         start = pickup if row.bar == 0 else Fraction((row.bar - 1) * num, den)
-        quarter = 4 * (start + Fraction(row.beat - 1, 4) + row.offset)
-        if quarter != 4 * row.onset_in_beats / den:
-            raise ValueError(
-                f"{mf.path}: {row.anchor}: quarter disagrees with onset_in_beats"
-            )
-        quarters.append(quarter)
+        expected = row.onset_in_beats / den
+        # Match files are not consistent about the bar:beat:offset triple:
+        # beats count denominator units or quarters, and the offset is counted
+        # from the beat or from the bar start. The candidate that agrees with
+        # onset_in_beats is taken, the closest one if several do.
+        candidates = (
+            start + Fraction(row.beat - 1, den) + row.offset,
+            start + Fraction(row.beat - 1, 4) + row.offset,
+            start + row.offset,
+        )
+        best = min(candidates, key=lambda c: abs(c - expected))
+        fallback = abs(best - expected) > tolerance
+        if fallback:
+            # An inconsistent triple: trust onset_in_beats unless it may be
+            # rounded, i.e. unless it is a dyadic fraction of the beat.
+            denominator = Fraction(row.onset_in_beats).denominator
+            if denominator & (denominator - 1):
+                raise ValueError(
+                    f"{mf.path}: {row.anchor}: quarter disagrees with onset_in_beats"
+                )
+            best = expected
+        quarters.append(4 * best)
+        fallbacks.append(fallback)
     result = mf.snotes.copy()
     result["quarter"] = pd.Series(quarters, index=result.index, dtype=object)
     result["quarter_duration"] = result["duration"].map(lambda duration: 4 * duration)
+    result["from_onset_in_beats"] = pd.Series(fallbacks, index=result.index, dtype=bool)
     return result
 
 
