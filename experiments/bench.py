@@ -28,9 +28,9 @@ measured:
     dominated by Python object construction on both sides; it guarantees that
     every cell stores the same information, its time is secondary.
 ``peak_mb``
-    With ``--memory``: peak RSS growth of a fresh process during one validated
-    decode (``ru_maxrss`` after minus before; the process has imported
-    everything and read nothing yet).
+    With ``--memory``: peak RSS growth in MiB of a fresh process during one
+    validated decode (``VmHWM`` after minus before; the process has imported
+    everything and read nothing yet). Linux only.
 
 Timed operations run ``--repeat`` times (at least once, and stop early after
 ``--budget`` seconds); the result is the median, ``*_min`` the minimum. The
@@ -57,7 +57,6 @@ import multiprocessing
 import os
 import pickle
 import platform
-import resource
 import shutil
 import statistics
 import sys
@@ -211,14 +210,27 @@ def _piece_path(files: list[Path], pair: tuple[str, str], facet: str) -> Path | 
     return None
 
 
+def _hwm_kib() -> int:
+    """Peak RSS of this process image in KiB (VmHWM).
+
+    ``ru_maxrss`` is not used: Linux carries it across ``execve``, so a spawned
+    child would report the parent's peak.
+    """
+    with open("/proc/self/status") as status:
+        for line in status:
+            if line.startswith("VmHWM:"):
+                return int(line.split()[1])
+    raise RuntimeError("VmHWM is not available")
+
+
 def _memory_child(spec: dict[str, str], directory: str, queue: Any) -> None:
     cell = Cell(spec, Path(directory))
     gc.collect()
-    before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    before = _hwm_kib()
     result = cell.decode(True)
-    after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    after = _hwm_kib()
     del result
-    queue.put((after - before) / 1024)  # ru_maxrss is in KiB on Linux
+    queue.put((after - before) / 1024)
 
 
 def peak_mb(spec: dict[str, str], directory: Path) -> float:
