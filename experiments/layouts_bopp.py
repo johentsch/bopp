@@ -142,12 +142,13 @@ def _component(value: str) -> str:
 
 def media_id_to_identity(media_id: str) -> tuple[str, str]:
     """
-    Recover a corpus and piece from the default DLC media identifier.
+    Recover a corpus and piece from a ``<dataset>:<corpus>/<piece>`` media id.
 
     Parameters
     ----------
     media_id : str
-        Identifier in the form ``dlc:<corpus>/<piece>``.
+        Identifier in the form ``<dataset>:<corpus>/<piece>``, the dataset an
+        alphanumeric prefix such as ``dlc``, ``bpsfh`` or ``vienna``.
 
     Returns
     -------
@@ -157,14 +158,22 @@ def media_id_to_identity(media_id: str) -> tuple[str, str]:
     Raises
     ------
     BoppArgumentError
-        If the identifier is not an unambiguous DLC corpus/piece pair.
+        If the identifier is not an unambiguous dataset corpus/piece triple.
     """
-    if not isinstance(media_id, str) or not media_id.startswith("dlc:"):
-        raise BoppArgumentError(f"Expected a DLC media id, got {media_id!r}")
-    parts = media_id[4:].split("/")
+    scheme, colon, rest = media_id.partition(":") if isinstance(media_id, str) else ("", "", "")
+    if not colon or not scheme.isascii() or not scheme.isalnum():
+        raise BoppArgumentError(f"Expected a <dataset>:<corpus>/<piece> media id, got {media_id!r}")
+    parts = rest.split("/")
     if len(parts) != 2:
-        raise BoppArgumentError(f"Expected dlc:<corpus>/<piece>, got {media_id!r}")
+        raise BoppArgumentError(f"Expected <dataset>:<corpus>/<piece>, got {media_id!r}")
     return _component(parts[0]), _component(parts[1])
+
+
+def _parsed_identity(media_id: str) -> tuple[str, str] | None:
+    try:
+        return media_id_to_identity(media_id)
+    except BoppArgumentError:
+        return None
 
 
 def write(
@@ -200,8 +209,9 @@ def write(
         Registered extent kind; defaults to quarters_interval.fraction.
     media_id : callable or None, optional
         Function of (corpus, piece) returning a media id. Defaults to
-        dlc:<corpus>/<piece>. Overrides store identity in annotation sandbox
-        metadata so arbitrary identifiers can also be read without a callback.
+        dlc:<corpus>/<piece>. Identifiers that do not parse back to the same
+        corpus/piece with media_id_to_identity store the identity in annotation
+        sandbox metadata, so arbitrary identifiers can be read without a callback.
 
     Returns
     -------
@@ -234,7 +244,7 @@ def write(
             if media_id is None
             else media_id(corpus, piece),
         )
-        if media_id is not None:
+        if media_id is not None and _parsed_identity(ann.media_id) != (corpus, piece):
             ann.sandbox = {_IDENTITY_KEY: {"corpus": corpus, "piece": piece}}
             ann.id = msgspec.UNSET
             ensure_annotation_id(ann)

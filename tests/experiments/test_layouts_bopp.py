@@ -29,7 +29,7 @@ CSV_FORMATS = ("csv", "csv_upstream")
 # Chopin's chords TSV has none of these events; test_events_absent_from_fixture
 # covers them with synthetic data, test_empty covers empty facets.
 EMPTY_IN_FIXTURE = ("control_events.figured_bass", "control_events.system_text")
-NONEMPTY = [facet for facet in canonical.FACETS if facet not in EMPTY_IN_FIXTURE]
+NONEMPTY = [facet for facet in canonical.DLC_FACETS if facet not in EMPTY_IN_FIXTURE]
 # zstd is a byte layer in front of the same decode, so its round trips run on
 # notes only; zstd on other payloads: test_untyped_without_annotation_conversion
 # (measures), test_events_absent_from_fixture (figured bass, system text).
@@ -68,12 +68,12 @@ def frames(tmp_path_factory):
             target.mkdir(parents=True)
             for piece, table in (("z.piece", source), ("a_piece", source.iloc[:20])):
                 table.to_csv(target / f"{piece}.{directory}.tsv", sep="\t", index=False)
-    return {facet: canonical.load_dlc_facet(root, facet) for facet in canonical.FACETS}
+    return {facet: canonical.load_dlc_facet(root, facet) for facet in canonical.DLC_FACETS}
 
 
 def test_fixture_facets(frames):
     """The pruned round-trip matrix skips exactly the facets the fixture lacks."""
-    assert [facet for facet in canonical.FACETS if frames[facet].empty] == list(
+    assert [facet for facet in canonical.DLC_FACETS if frames[facet].empty] == list(
         EMPTY_IN_FIXTURE
     )
 
@@ -197,17 +197,20 @@ def test_empty(tmp_path, frames, layout, fmt, compression, validate):
     [
         ("dlc:corpus/piece", ("corpus", "piece")),
         ("dlc:corpus_name/opus.1-ä", ("corpus_name", "opus.1-ä")),
+        ("bpsfh:sonatas/01", ("sonatas", "01")),
     ],
 )
 def test_media_identity(media_id, identity):
-    """DLC identity preserves literal punctuation and Unicode."""
+    """Dataset identity preserves literal punctuation and Unicode."""
     assert layouts_bopp.media_id_to_identity(media_id) == identity
 
 
 @pytest.mark.parametrize(
     "media_id",
     [
-        "other:corpus/piece",
+        "bps_fh:corpus/piece",
+        ":corpus/piece",
+        "corpus/piece",
         "dlc:piece",
         "dlc:/piece",
         "dlc:corpus/",

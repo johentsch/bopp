@@ -15,6 +15,7 @@ from bopp.exceptions import BoppValidationError
 from experiments import layouts_parquet as parquet
 from experiments.arrow_schema import ArrowValidationError, arrow_schema
 from experiments.canonical import (
+    DLC_FACETS,
     FACETS,
     annotation_to_frame,
     frames_equal,
@@ -42,10 +43,10 @@ def frames(tmp_path_factory):
             target.mkdir(parents=True, exist_ok=True)
             subset = source if piece == "a.piece" else source.iloc[:20]
             subset.to_csv(target / f"{piece}.{directory}.tsv", sep="\t", index=False)
-    return {facet: load_dlc_facet(root, facet) for facet in FACETS}
+    return {facet: load_dlc_facet(root, facet) for facet in DLC_FACETS}
 
 
-@pytest.mark.parametrize("facet", FACETS)
+@pytest.mark.parametrize("facet", DLC_FACETS)
 @pytest.mark.parametrize("layout", LAYOUTS)
 @pytest.mark.parametrize("compression", ["zstd", "none"])
 @pytest.mark.parametrize("validate", [True, False])
@@ -64,7 +65,7 @@ def test_roundtrip(tmp_path, frames, facet, layout, compression, validate):
     assert table.column_names == list(original.columns)
 
 
-@pytest.mark.parametrize("facet", FACETS)
+@pytest.mark.parametrize("facet", DLC_FACETS)
 @pytest.mark.parametrize("layout", LAYOUTS)
 @pytest.mark.parametrize("validate", [True, False])
 def test_projection_and_selection(tmp_path, frames, facet, layout, validate):
@@ -570,7 +571,7 @@ def test_invalid_values(tmp_path, frames, layout, column, bad):
     assert frames_equal(loaded, frame[["corpus", "piece", "mn"]]) == []
 
 
-@pytest.mark.parametrize("facet", FACETS)
+@pytest.mark.parametrize("facet", DLC_FACETS)
 @pytest.mark.parametrize("layout", LAYOUTS)
 def test_polars(tmp_path, frames, facet, layout):
     """Polars collects the same rows and scalar values, including empty facets."""

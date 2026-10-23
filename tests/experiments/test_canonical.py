@@ -13,6 +13,7 @@ from bopp.exceptions import BoppArgumentError
 from bopp.registries.v1 import PAYLOAD_TYPE_REGISTRY
 from experiments import canonical
 from experiments.canonical import (
+    DLC_FACETS,
     FACETS,
     annotation_to_frame,
     assert_frames_equal,
@@ -58,7 +59,7 @@ def source_annotation(facet, source=None):
 
 def test_facet_registry():
     """Expose exactly the benchmark facets and their source readers."""
-    assert set(FACETS) == {
+    assert set(DLC_FACETS) == {
         "notes",
         "measures",
         "labels",
@@ -324,7 +325,7 @@ def test_load_labels_closes_a_final_empty_duration(tmp_path):
         load_dlc_facet(root, "labels")
 
 
-@pytest.mark.parametrize("facet", list(FACETS))
+@pytest.mark.parametrize("facet", list(DLC_FACETS))
 def test_empty_facet(tmp_path, facet):
     """Empty roots and absent kinds still expose every schema column."""
     source = source_frame("control_events.chord").drop(columns=["corpus", "piece"])

@@ -10,11 +10,12 @@ piece is the reader's order. No reader failure is suppressed.
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from enum import Enum
 from fractions import Fraction
 from functools import cache
 from math import copysign, isnan
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 import msgspec
 import numpy as np
@@ -34,7 +35,8 @@ from experiments.dlc_notes import notes_to_score_note
 class _Facet(TypedDict):
     facet_dir: str
     payload_kind: str
-    reader: Callable[..., Any]
+    reader: Callable[..., Any] | None
+    extent_kind: NotRequired[str]
 
 
 #: Source directory, payload kind and piece reader for each benchmark facet.
@@ -71,9 +73,35 @@ FACETS: dict[str, _Facet] = {
         )
     },
 }
+#: Facets of the other benchmark datasets. They have no DLC facet directory or
+#: reader (``load_dlc_facets`` rejects them); ``experiments.bench`` builds their
+#: tables from experiments.bpsfh and experiments.vienna_payloads.
+OTHER_FACETS: dict[str, _Facet] = {
+    f"{dataset}.{name}": {
+        "facet_dir": "",
+        "payload_kind": payload_kind,
+        "reader": None,
+        "extent_kind": extent_kind,
+    }
+    for dataset, name, payload_kind, extent_kind in (
+        ("bpsfh", "notes", "score_note", "quarters_interval.float"),
+        ("bpsfh", "chords", "music21_chord", "quarters_interval.float"),
+        ("bpsfh", "phrases", "segment_open", "quarters_interval.float"),
+        ("vienna", "score_notes", "score_note", "quarters_interval.fraction"),
+        ("vienna", "performance_notes", "performance_note", "midi_interval"),
+        ("vienna", "pedal", "pedal", "midi_ticks"),
+    )
+}
+DLC_FACETS = tuple(FACETS)
+FACETS.update(OTHER_FACETS)
 _EXTENT_KIND = "quarters_interval.fraction"
 _MAX_DIFFERENCES = 20
 _SCALAR_TYPES = {int, float, str, bool, Fraction, type(None)}
+
+
+def facet_extent_kind(facet: str) -> str:
+    """Extent kind of a facet's canonical table."""
+    return FACETS[facet].get("extent_kind", _EXTENT_KIND)
 
 
 def _unwrap(info: mi.Type) -> mi.Type:
@@ -87,18 +115,33 @@ def _unwrap(info: mi.Type) -> mi.Type:
     return info
 
 
+def _number(value: Any) -> int | float:
+    """Keep an int as int and a float as float, rejecting other types."""
+    if type(value) not in (int, float):
+        raise BoppArgumentError(f"Expected an int or float, got {value!r}")
+    return value
+
+
 def _converter(info: mi.Type) -> Callable[[Any], Any]:
     """Choose canonical cell conversion from the generated column item type."""
     column = _unwrap(info)
     if not isinstance(column, mi.ListType):
         raise BoppArgumentError("Canonical facets require parallel array columns")
     item = _unwrap(column.item_type)
+    if isinstance(item, mi.UnionType) and {type(t) for t in item.types} - {
+        mi.NoneType
+    } == {mi.IntType, mi.FloatType}:
+        # integer/number unions (MIDI ticks) keep each value's own type
+        return _number
     if isinstance(item, mi.TupleType) and len(item.item_types) == 2:
         return lambda value: Fraction(*value)
     if isinstance(item, mi.ListType) and isinstance(
         _unwrap(item.item_type), mi.IntType
     ):
         return lambda value: tuple(int(v) for v in value)
+    if isinstance(item, mi.EnumType):
+        # typed decoding yields enum members, the wire format their values
+        return lambda value: value.value if isinstance(value, Enum) else value
     for schema_type, scalar_type in (
         (mi.IntType, int),
         (mi.FloatType, float),
@@ -344,7 +387,7 @@ def load_dlc_facets(
     """
     requested = list(dict.fromkeys(facets))
     for facet in requested:
-        if facet not in FACETS:
+        if facet not in DLC_FACETS:
             raise BoppArgumentError(f"Unknown DLC facet: {facet!r}")
     groups: dict[str, list[str]] = {}
     for facet in requested:

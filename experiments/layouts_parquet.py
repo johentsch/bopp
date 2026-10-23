@@ -45,6 +45,7 @@ Different layouts of one facet must not share a directory.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from fractions import Fraction
 from pathlib import Path
@@ -145,6 +146,15 @@ def frame_to_table(
     ).select(schema.names)
 
 
+def _number_union(field: pa.Field) -> bool:
+    """Whether a float64 field stores a BOPP integer/number item union."""
+    items = (field.metadata or {}).get(b"bopp:items")
+    if not pa.types.is_floating(field.type) or items is None:
+        return False
+    kinds = json.loads(items).get("type", [])
+    return isinstance(kinds, list) and {"integer", "number"} <= set(kinds)
+
+
 def table_to_frame(table: pa.Table) -> pd.DataFrame:
     """
     Restore canonical Python cells without pandas numeric inference.
@@ -159,6 +169,9 @@ def table_to_frame(table: pa.Table) -> pd.DataFrame:
     pandas.DataFrame
         Object columns in input order. Integer pairs become Fraction, integer
         lists become tuples, nulls become None, and scalars retain Python types.
+        Integer/number union columns (float64 with ``bopp:items`` metadata)
+        restore integral floats as ints, see
+        ``arrow_schema.restore_number_union``.
     """
     columns = {}
     for field, column in zip(table.schema, table.columns, strict=True):
@@ -167,6 +180,8 @@ def table_to_frame(table: pa.Table) -> pd.DataFrame:
             values = [None if v is None else Fraction(*v) for v in values]
         elif pa.types.is_list(field.type) or pa.types.is_large_list(field.type):
             values = [None if v is None else tuple(v) for v in values]
+        elif _number_union(field):
+            values = validation.restore_number_union(values)
         columns[field.name] = pd.Series(values, dtype=object)
     return pd.DataFrame(columns, dtype=object)
 
