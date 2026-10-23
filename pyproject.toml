@@ -43,6 +43,7 @@ experiments = [
     "openpyxl>=3.1",
     "pytest-benchmark",
     "psutil>=5.9",
+    "tomli_w",
 ]
 
 [tool.hatch.version]

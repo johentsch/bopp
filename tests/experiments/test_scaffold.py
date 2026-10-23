@@ -27,7 +27,8 @@ def test_experiments_dependencies():
         for req in requirements
     }
     assert names == {
-        "pandas", "polars", "pyarrow", "openpyxl", "pytest-benchmark", "psutil"
+        "pandas", "polars", "pyarrow", "openpyxl", "pytest-benchmark", "psutil",
+        "tomli-w",
     }
 
 
