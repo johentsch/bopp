@@ -309,6 +309,7 @@ def load_dlc_facets(
     *,
     corpora: Sequence[str] | None = None,
     pieces: Sequence[str] | None = None,
+    errors: list[tuple[str, str, str, Exception]] | None = None,
 ) -> dict[str, pd.DataFrame]:
     """
     Load several DLC facets, parsing every source TSV exactly once.
@@ -324,6 +325,11 @@ def load_dlc_facets(
     corpora, pieces : sequence of str or None, optional
         Corpus directory names and piece basenames to select. None selects all;
         an empty sequence selects none. Piece names apply across selected corpora.
+    errors : list or None, optional
+        None (default) lets reader errors propagate. A list instead collects
+        ``(facet_dir, corpus, piece, exception)`` for every piece whose reader
+        raised BoppArgumentError, and that piece contributes no rows to the
+        facets of that directory.
 
     Returns
     -------
@@ -334,7 +340,7 @@ def load_dlc_facets(
     Raises
     ------
     BoppArgumentError
-        If a facet is unknown. Reader errors propagate unchanged.
+        If a facet is unknown. Reader errors propagate unless collected.
     """
     requested = list(dict.fromkeys(facets))
     for facet in requested:
@@ -347,9 +353,15 @@ def load_dlc_facets(
     for facet_dir, group in groups.items():
         for corpus, piece, path in _piece_paths(root, facet_dir, corpora, pieces):
             source = _read_piece(path, corpus, piece)
-            annotations = _piece_annotations(
-                facet_dir, group, source, path, corpus, piece
-            )
+            try:
+                annotations = _piece_annotations(
+                    facet_dir, group, source, path, corpus, piece
+                )
+            except BoppArgumentError as err:
+                if errors is None:
+                    raise
+                errors.append((facet_dir, corpus, piece, err))
+                continue
             for facet, annotation in annotations.items():
                 if annotation is not None:
                     frames[facet].append(
