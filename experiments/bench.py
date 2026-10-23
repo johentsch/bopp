@@ -38,12 +38,16 @@ garbage collector runs before every repetition and stays enabled during it.
 
 Usage::
 
-    python -m experiments.bench --dlc <tree or release zip> --out <workdir>
+    python -m experiments.bench --source <DLC tree or release zip> --out <workdir>
+    python -m experiments.bench --dataset bpsfh --source <BPS_FH_Dataset> --out <workdir>
+    python -m experiments.bench --dataset vienna --source <vienna4x22/match> --out <workdir>
     python -m experiments.bench report <workdir>/results.jsonl
 
-``--dlc`` accepts a DLC checkout-like tree or a release zip, which is split
-with ``dlc_release.split_release`` into ``<workdir>/dlc``. Pieces whose reader
-fails are skipped and listed in ``<workdir>/skipped.tsv``. Results append to
+A DLC release zip is split with ``dlc_release.split_release`` into
+``<workdir>/dlc``; DLC pieces whose reader fails are skipped and listed in
+``<workdir>/skipped.tsv``. BPS-FH tables come from ``experiments.bpsfh`` and
+Vienna tables from ``experiments.vienna_payloads``; what the readers report
+about the source goes to ``<workdir>/<dataset>-source.json``. Results append to
 ``<workdir>/results.jsonl``, one JSON object per cell, and ``report`` renders
 them as markdown.
 """
@@ -61,6 +65,7 @@ import shutil
 import statistics
 import sys
 import time
+from collections import Counter
 from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
@@ -70,11 +75,17 @@ import pandas as pd
 import polars as pl
 import pyarrow as pa
 
-from experiments import arrow_schema, canonical, dlc_release
+from experiments import (
+    arrow_schema,
+    bpsfh,
+    canonical,
+    dlc_release,
+    vienna_match,
+    vienna_payloads,
+)
 from experiments import layouts_bopp as bopp_layouts
 from experiments import layouts_parquet as parquet_layouts
 
-_EXTENT_KIND = "quarters_interval.fraction"
 SYSTEMS = ("bopp", "parquet")
 
 
@@ -138,6 +149,7 @@ class Cell:
         self.dir = directory
         self.facet = spec["facet"]
         self.payload_kind = canonical.FACETS[self.facet]["payload_kind"]
+        self.extent_kind = canonical.facet_extent_kind(self.facet)
 
     @property
     def _bopp_kwargs(self) -> dict[str, str]:
@@ -149,13 +161,21 @@ class Cell:
 
     def write(self, frame: pd.DataFrame) -> list[Path]:
         if self.spec["system"] == "bopp":
-            return bopp_layouts.write(frame, self.facet, self.dir, **self._bopp_kwargs)
+            return bopp_layouts.write(
+                frame,
+                self.facet,
+                self.dir,
+                extent_kind=self.extent_kind,
+                media_id=media_id_function(self.facet),
+                **self._bopp_kwargs,
+            )
         return parquet_layouts.write(
             frame,
             self.facet,
             self.dir,
             layout=self.spec["layout"],
             compression=self.spec["compression"],
+            extent_kind=self.extent_kind,
         )
 
     def decode(self, validate: bool) -> Any:
@@ -164,25 +184,39 @@ class Cell:
                 self.dir, validate=validate, **self._bopp_kwargs
             )
         table = parquet_layouts.read_table(
-            self.dir, self.facet, layout=self.spec["layout"]
+            self.dir,
+            self.facet,
+            layout=self.spec["layout"],
+            extent_kind=self.extent_kind,
         )
         if validate:
-            table = arrow_schema.validate_table(table, self.payload_kind, _EXTENT_KIND)
+            table = arrow_schema.validate_table(
+                table, self.payload_kind, self.extent_kind
+            )
         return table
 
     def piece(self, path: Path | None, pair: tuple[str, str]) -> Any:
         if self.spec["system"] == "parquet":
             table = parquet_layouts.read_table(
-                self.dir, self.facet, layout=self.spec["layout"], pieces=[pair]
+                self.dir,
+                self.facet,
+                layout=self.spec["layout"],
+                pieces=[pair],
+                extent_kind=self.extent_kind,
             )
-            return arrow_schema.validate_table(table, self.payload_kind, _EXTENT_KIND)
+            return arrow_schema.validate_table(
+                table, self.payload_kind, self.extent_kind
+            )
         if self.spec["layout"] == "per_item":
             return bopp_layouts.decode_only(path, validate=True, **self._bopp_kwargs)
         return self.decode(True)
 
     def polars(self) -> pl.DataFrame:
         return parquet_layouts.polars_load(
-            self.dir, self.facet, layout=self.spec["layout"]
+            self.dir,
+            self.facet,
+            layout=self.spec["layout"],
+            extent_kind=self.extent_kind,
         )
 
     def load(self) -> pd.DataFrame:
@@ -191,7 +225,11 @@ class Cell:
                 self.dir, self.facet, validate=True, **self._bopp_kwargs
             )
         return parquet_layouts.load(
-            self.dir, self.facet, layout=self.spec["layout"], validate=True
+            self.dir,
+            self.facet,
+            layout=self.spec["layout"],
+            validate=True,
+            extent_kind=self.extent_kind,
         )
 
 
@@ -270,30 +308,33 @@ def measure(
     row["write_s"] = time.perf_counter() - t0
     row["files"] = len(files)
     row["bytes"] = sum(path.stat().st_size for path in files)
-    for key, validate in (("decode_s", False), ("validated_s", True)):
-        row[key], row[f"{key[:-2]}_min_s"], _ = timed(
-            lambda validate=validate: cell.decode(validate), repeat, budget
-        )
-    pair = _median_piece(frame)
-    row["piece"] = "/".join(pair)
-    if spec["system"] == "bopp" and spec["layout"] == "collection":
-        row["piece_s"], row["piece_note"] = row["validated_s"], "whole file"
-    else:
-        path = _piece_path(files, pair, spec["facet"])
-        row["piece_s"], _, _ = timed(
-            lambda: cell.piece(path, pair), max(repeat, 5), budget
-        )
-    if spec["system"] == "parquet":
-        row["polars_s"], _, _ = timed(cell.polars, repeat, budget)
-    if roundtrip:
-        t0 = time.perf_counter()
-        loaded = cell.load()
-        row["load_s"] = time.perf_counter() - t0
-        differences = canonical.frames_equal(frame, loaded)
-        row["roundtrip"] = "ok" if not differences else "; ".join(differences[:3])
-        del loaded
-    if memory:
-        row["peak_mb"] = peak_mb(spec, directory)
+    try:
+        for key, validate in (("decode_s", False), ("validated_s", True)):
+            row[key], row[f"{key[:-2]}_min_s"], _ = timed(
+                lambda validate=validate: cell.decode(validate), repeat, budget
+            )
+        pair = _median_piece(frame)
+        row["piece"] = "/".join(pair)
+        if spec["system"] == "bopp" and spec["layout"] == "collection":
+            row["piece_s"], row["piece_note"] = row["validated_s"], "whole file"
+        else:
+            path = _piece_path(files, pair, spec["facet"])
+            row["piece_s"], _, _ = timed(
+                lambda: cell.piece(path, pair), max(repeat, 5), budget
+            )
+        if spec["system"] == "parquet":
+            row["polars_s"], _, _ = timed(cell.polars, repeat, budget)
+        if roundtrip:
+            t0 = time.perf_counter()
+            loaded = cell.load()
+            row["load_s"] = time.perf_counter() - t0
+            differences = canonical.frames_equal(frame, loaded)
+            row["roundtrip"] = "ok" if not differences else "; ".join(differences[:3])
+            del loaded
+        if memory:
+            row["peak_mb"] = peak_mb(spec, directory)
+    except Exception as err:  # noqa: BLE001 (a failing cell is a result)
+        row["error"] = f"{type(err).__name__}: {err}"[:300]
     return row
 
 
@@ -313,45 +354,153 @@ def environment() -> dict[str, Any]:
     }
 
 
-def prepare(
-    dlc: Path, work: Path, facets: list[str], corpora: list[str] | None
-) -> dict[str, pd.DataFrame]:
-    """Build (or reuse) the canonical tables, skipping pieces whose reader fails."""
-    cache = work / (
-        "canonical.pkl" if corpora is None else f"canonical-{'+'.join(corpora)}.pkl"
+def dataset_of(facet: str) -> str:
+    """Dataset a facet belongs to: dlc, bpsfh or vienna."""
+    return facet.split(".", 1)[0] if facet in canonical.OTHER_FACETS else "dlc"
+
+
+def media_id_function(facet: str) -> Callable[[str, str], str] | None:
+    """Media id builder of a facet's dataset; None keeps the DLC default."""
+    dataset = dataset_of(facet)
+    if dataset == "dlc":
+        return None
+    return lambda corpus, piece: f"{dataset}:{corpus}/{piece}"
+
+
+DATASETS = {
+    "dlc": canonical.DLC_FACETS,
+    **{
+        dataset: tuple(f for f in canonical.OTHER_FACETS if dataset_of(f) == dataset)
+        for dataset in ("bpsfh", "vienna")
+    },
+}
+"""Facets of each benchmark dataset."""
+
+
+def _frames(annotations: list[tuple[str, str, Any]]) -> pd.DataFrame:
+    return pd.concat(
+        [
+            canonical.annotation_to_frame(ann, corpus=corpus, piece=piece)
+            for corpus, piece, ann in sorted(annotations, key=lambda t: t[:2])
+        ],
+        ignore_index=True,
     )
-    if cache.exists():
-        tables = pickle.loads(cache.read_bytes())
-        if all(facet in tables for facet in facets):
-            return {facet: tables[facet] for facet in facets}
-    if dlc.suffix == ".zip":
+
+
+def _bpsfh_tables(source: Path) -> tuple[dict[str, pd.DataFrame], dict[str, Any]]:
+    inverted: list[tuple[str, int]] = []
+    inverted_chords: list[tuple[str, int]] = []
+    respelled: list[tuple[str, int]] = []
+    rows: dict[str, list] = {f: [] for f in DATASETS["bpsfh"]}
+    for piece in bpsfh.pieces(source):
+        for facet, ann in (
+            ("bpsfh.notes", bpsfh.read_notes(source, piece, respelled=respelled)),
+            (
+                "bpsfh.chords",
+                bpsfh.read_chords(source, piece, inverted=inverted_chords),
+            ),
+            ("bpsfh.phrases", bpsfh.read_phrases(source, piece, inverted=inverted)),
+        ):
+            rows[facet].append((bpsfh.CORPUS, piece, ann))
+    notes = {
+        "inverted_phrases": inverted,
+        "inverted_chords": inverted_chords,
+        "respelled_notes": respelled,
+    }
+    return {facet: _frames(anns) for facet, anns in rows.items()}, notes
+
+
+def _vienna_tables(source: Path) -> tuple[dict[str, pd.DataFrame], dict[str, Any]]:
+    dropped: Counter = Counter()
+    rows: dict[str, list] = {f: [] for f in DATASETS["vienna"]}
+    fallbacks = {}
+    for piece in vienna_payloads.pieces(source):
+        ann = vienna_payloads.score_note_annotation(
+            source, piece, dropped_attributes=dropped
+        )
+        rows["vienna.score_notes"].append((vienna_payloads.CORPUS, piece, ann))
+        fallbacks[piece] = int(
+            vienna_match.score_notes(source, piece)["from_onset_in_beats"].sum()
+        )
+    for path in sorted(Path(source).glob("*.match")):
+        performance, pedal = vienna_payloads.performance_annotations(path)
+        rows["vienna.performance_notes"].append(
+            (vienna_payloads.CORPUS, path.stem, performance)
+        )
+        rows["vienna.pedal"].append((vienna_payloads.CORPUS, path.stem, pedal))
+    notes = {
+        "dropped_attributes": dict(dropped),
+        "positions_from_onset_in_beats": fallbacks,
+    }
+    return {facet: _frames(anns) for facet, anns in rows.items()}, notes
+
+
+def _dlc_tables(
+    source: Path, work: Path, corpora: list[str] | None
+) -> tuple[dict[str, pd.DataFrame], dict[str, Any]]:
+    if source.suffix == ".zip":
         tree = work / "dlc"
         if not tree.exists():
-            print(f"splitting {dlc} into {tree}", flush=True)
-            dlc_release.split_release(dlc, tree)
-        dlc = tree
+            print(f"splitting {source} into {tree}", flush=True)
+            dlc_release.split_release(source, tree)
+        source = tree
     errors: list[tuple[str, str, str, Exception]] = []
-    t0 = time.perf_counter()
     tables = canonical.load_dlc_facets(
-        dlc, list(canonical.FACETS), corpora=corpora, errors=errors
-    )
-    print(
-        f"canonical tables in {time.perf_counter() - t0:.0f}s, {len(errors)} pieces skipped",
-        flush=True,
+        source, list(canonical.DLC_FACETS), corpora=corpora, errors=errors
     )
     pd.DataFrame(
         [(d, c, p, f"{type(e).__name__}: {e}") for d, c, p, e in errors],
         columns=["facet_dir", "corpus", "piece", "error"],
     ).to_csv(work / "skipped.tsv", sep="\t", index=False)
+    return tables, {"skipped_pieces": len(errors)}
+
+
+def prepare(
+    dataset: str,
+    source: Path,
+    work: Path,
+    facets: list[str],
+    corpora: list[str] | None = None,
+) -> dict[str, pd.DataFrame]:
+    """
+    Build (or reuse) the canonical tables of a dataset.
+
+    DLC pieces whose reader fails are skipped and listed in ``skipped.tsv``.
+    What the readers report about the source (skipped pieces, BPS-FH phrases
+    swapped and notes respelled, Vienna attributes without a column) is written
+    to ``<dataset>-source.json``.
+    """
+    name = dataset if corpora is None else f"{dataset}-{'+'.join(corpora)}"
+    cache = work / f"canonical-{name}.pkl"
+    if cache.exists():
+        tables = pickle.loads(cache.read_bytes())
+        if all(facet in tables for facet in facets):
+            return {facet: tables[facet] for facet in facets}
+    t0 = time.perf_counter()
+    if dataset == "dlc":
+        tables, notes = _dlc_tables(source, work, corpora)
+    elif dataset == "bpsfh":
+        tables, notes = _bpsfh_tables(source)
+    else:
+        tables, notes = _vienna_tables(source)
+    print(f"canonical tables in {time.perf_counter() - t0:.0f}s: {notes}", flush=True)
+    (work / f"{dataset}-source.json").write_text(json.dumps(notes, indent=1))
     cache.write_bytes(pickle.dumps(tables))
     return {facet: tables[facet] for facet in facets}
 
 
 def run(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--dlc", type=Path, required=True)
+    parser.add_argument("--dataset", choices=sorted(DATASETS), default="dlc")
+    parser.add_argument(
+        "--source",
+        "--dlc",
+        type=Path,
+        required=True,
+        help="DLC tree or release zip, BPS_FH_Dataset directory, or Vienna match directory",
+    )
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--facets", nargs="*", default=list(canonical.FACETS))
+    parser.add_argument("--facets", nargs="*", default=None)
     parser.add_argument("--corpora", nargs="*", default=None)
     parser.add_argument("--systems", nargs="*", default=list(SYSTEMS))
     parser.add_argument("--repeat", type=int, default=5)
@@ -361,7 +510,9 @@ def run(argv: list[str] | None = None) -> None:
     parser.add_argument("--keep", action="store_true", help="keep cell directories")
     args = parser.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
-    tables = prepare(args.dlc, args.out, args.facets, args.corpora)
+    if args.facets is None:
+        args.facets = list(DATASETS[args.dataset])
+    tables = prepare(args.dataset, args.source, args.out, args.facets, args.corpora)
     env = environment()
     results = args.out / "results.jsonl"
     with results.open("a") as stream:
@@ -387,7 +538,16 @@ def run(argv: list[str] | None = None) -> None:
                     shutil.rmtree(args.out / "cells" / facet / cell_name(spec))
 
 
+def _fmt(value: Any, spec: str, scale: float = 1.0) -> str:
+    return "" if value is None or pd.isna(value) else format(value * scale, spec)
+
+
 def _line(row: dict[str, Any]) -> str:
+    if "error" in row:
+        return (
+            f"{row['facet']:<28} {cell_name(row):<36} "
+            f"{row['bytes'] / 2**20:8.1f} MiB {row['error']}"
+        )
     return (
         f"{row['facet']:<28} {cell_name(row):<36} {row['bytes'] / 2**20:8.1f} MiB "
         f"decode {row['decode_s']:7.3f}s validated {row['validated_s']:7.3f}s "
@@ -415,15 +575,17 @@ def report(path: Path) -> str:
         )
         out.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|---|")
         for _, r in group.iterrows():
-            piece = f"{r['piece_s'] * 1e3:.1f}" + (
+            piece = _fmt(r.get("piece_s"), ".1f", 1e3) + (
                 " (whole)" if r.get("piece_note") == "whole file" else ""
             )
-            polars = "" if pd.isna(r.get("polars_s")) else f"{r['polars_s']:.3f}"
-            load = "" if pd.isna(r.get("load_s")) else f"{r['load_s']:.1f}"
+            error = r.get("error")
+            status = r.get("roundtrip", "") if not isinstance(error, str) else error
             out.append(
-                f"| {cell_name(r)} | {r['bytes'] / 2**20:.1f} | {r['files']} | {r['write_s']:.1f} "
-                f"| {r['decode_s']:.3f} | {r['validated_s']:.3f} | {piece} | {polars} | {load} "
-                f"| {r.get('roundtrip', '')} |"
+                f"| {cell_name(r)} | {r['bytes'] / 2**20:.1f} | {r['files']} "
+                f"| {r['write_s']:.1f} | {_fmt(r.get('decode_s'), '.3f')} "
+                f"| {_fmt(r.get('validated_s'), '.3f')} | {piece} "
+                f"| {_fmt(r.get('polars_s'), '.3f')} | {_fmt(r.get('load_s'), '.1f')} "
+                f"| {status} |"
             )
     return "\n".join(out)
 
