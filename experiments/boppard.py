@@ -9,7 +9,9 @@ A ``.boppard`` file holds many BOPP annotations ("members") in one object:
   the TimeToShare manifest entry.
 - ``shards`` concatenate the members that share payload type, extent type and
   every scalar field, so that each shard is one ordinary BOPP ``Annotation``
-  (loadable and filterable by upstream bopp). The reserved grouping
+  (loadable and filterable by upstream bopp). A member lacking an optional
+  column gets None there (recorded in ``Member.absent``) if the column accepts
+  None; otherwise members are sharded by column set as well. The reserved grouping
   ``boppard.timeline`` links every row to its timeline: ids index
   ``timelines`` and the labels map timeline ids to those indices. Only when a
   shard holds several members on the same timeline (two annotators, two
@@ -82,6 +84,9 @@ class Member(msgspec.Struct, omit_defaults=True):
     parents: list[str] | msgspec.UnsetType = msgspec.UNSET
     metadata: Any = msgspec.UNSET
     sandbox: dict[str, Any] | msgspec.UnsetType = msgspec.UNSET
+    absent: list[str] = []
+    """Optional columns (``facet.field``) the member did not have; the shard
+    holds None for its rows there."""
 
 
 class Shard(msgspec.Struct):
@@ -126,12 +131,11 @@ def _split_facet(data: dict[str, Any] | None) -> tuple[dict, dict]:
 
 
 def _member_key(raw: dict[str, Any]) -> bytes:
-    """Everything that must be equal for two annotations to share a shard."""
+    """Everything but the column set that must be equal to share a shard."""
     key: dict[str, Any] = {"bopp_version": raw["bopp_version"]}
     for facet in _FACETS:
-        columns, scalars = _split_facet(raw.get(facet))
         if facet in raw:
-            key[facet] = {"scalars": scalars, "columns": sorted(columns)}
+            key[facet] = _split_facet(raw[facet])[1]
     key["groupings"] = [
         {"name": g["name"], "labels": g.get("labels")} for g in raw.get("groupings", [])
     ]
@@ -200,7 +204,11 @@ def pack(
         if any(g["name"] in _RESERVED for g in raw.get("groupings", [])):
             raise BoppArgumentError(f"Grouping names {_RESERVED} are reserved")
         groups.setdefault(_member_key(raw), []).append((timeline_id, raw))
-    shards = [_shard(group, index, collection_id) for group in groups.values()]
+    shards = [
+        shard
+        for group in groups.values()
+        for shard in _shards(group, index, collection_id)
+    ]
     boppard = Boppard(
         collection_id=collection_id,
         timelines=list(timelines),
@@ -212,6 +220,27 @@ def pack(
     return boppard
 
 
+def _column_set(raw: dict[str, Any]) -> tuple:
+    return tuple(
+        (facet, tuple(sorted(_split_facet(raw.get(facet))[0]))) for facet in _FACETS
+    )
+
+
+def _shards(
+    group: list[tuple[str, dict[str, Any]]], index: dict[str, int], collection_id: str
+) -> list[Shard]:
+    """One shard, None-filling absent optional columns; else one per column set."""
+    try:
+        return [_shard(group, index, collection_id)]
+    except msgspec.ValidationError:
+        by_columns: dict[tuple, list] = {}
+        for item in group:
+            by_columns.setdefault(_column_set(item[1]), []).append(item)
+        if len(by_columns) == 1:
+            raise
+        return [_shard(g, index, collection_id) for g in by_columns.values()]
+
+
 def _shard(
     group: list[tuple[str, dict[str, Any]]], index: dict[str, int], collection_id: str
 ) -> Shard:
@@ -220,6 +249,10 @@ def _shard(
         "media_id": collection_id,
         "bopp_version": first["bopp_version"],
     }
+    union: dict[str, dict[str, None]] = {f: {} for f in _FACETS}
+    for _, raw in group:
+        for facet in _FACETS:
+            union[facet].update(dict.fromkeys(_split_facet(raw.get(facet))[0]))
     members = []
     timeline_ids: list[int] = []
     member_ids: list[int] = []
@@ -228,13 +261,20 @@ def _shard(
             (len(v) for f in _FACETS for v in _split_facet(raw.get(f))[0].values()),
             default=0,
         )
+        absent = []
         for facet in _FACETS:
             if facet not in raw:
                 continue
             columns, scalars = _split_facet(raw[facet])
-            target = shard.setdefault(facet, {**scalars, **{k: [] for k in columns}})
-            for name, values in columns.items():
-                target[name].extend(values)
+            target = shard.setdefault(
+                facet, {**scalars, **{k: [] for k in union[facet]}}
+            )
+            for name in union[facet]:
+                if name in columns:
+                    target[name].extend(columns[name])
+                else:
+                    target[name].extend([None] * rows)
+                    absent.append(f"{facet}.{name}")
         for position, grouping in enumerate(raw.get("groupings", [])):
             target = shard.setdefault("_own", [])
             if len(target) <= position:
@@ -250,6 +290,7 @@ def _shard(
                 parents=raw.get("parents", msgspec.UNSET),
                 metadata=raw.get("metadata", msgspec.UNSET),
                 sandbox=raw.get("sandbox", msgspec.UNSET),
+                absent=absent,
             )
         )
     used = sorted({m.timeline for m in members}, key=index.__getitem__)
@@ -284,6 +325,17 @@ def _member_rows(shard: Shard) -> list[list[int]]:
     return [rows[key] for key in keys]
 
 
+def _slice(struct: Any, rows: list[int], absent: set[str], facet: str) -> dict:
+    config = type(struct).__struct_config__
+    out: dict[str, Any] = {config.tag_field: config.tag} if config.tag else {}
+    for name in struct.__struct_fields__:
+        value = getattr(struct, name)
+        if value is msgspec.UNSET or f"{facet}.{name}" in absent:
+            continue
+        out[name] = [value[i] for i in rows] if isinstance(value, list) else value
+    return out
+
+
 def split(
     boppard: Boppard, *, timelines: Iterable[str] | None = None
 ) -> list[Annotation]:
@@ -297,8 +349,10 @@ def split(
     media = {t.id: t.media_id for t in boppard.timelines}
     out = []
     for shard in boppard.shards:
-        raw = msgspec.to_builtins(shard.annotation)
-        own = [g for g in raw.get("groupings", []) if g["name"] not in _RESERVED]
+        if wanted is not None and not any(m.timeline in wanted for m in shard.members):
+            continue
+        ann = shard.annotation
+        own = [g for g in ann.groupings if g.name not in _RESERVED]
         for member, rows in zip(shard.members, _member_rows(shard), strict=True):
             if wanted is not None and member.timeline not in wanted:
                 continue
@@ -306,9 +360,10 @@ def split(
                 raise BoppValidationError(
                     f"Member {member.id} has {len(rows)} rows, expected {member.rows}"
                 )
+            absent = set(member.absent)
             rebuilt: dict[str, Any] = {
                 "media_id": media[member.timeline],
-                "bopp_version": raw["bopp_version"],
+                "bopp_version": ann.bopp_version,
                 "id": member.id,
             }
             for name in ("parents", "metadata", "sandbox"):
@@ -316,18 +371,17 @@ def split(
                 if value is not msgspec.UNSET:
                     rebuilt[name] = value
             for facet in _FACETS:
-                if facet in raw:
-                    rebuilt[facet] = {
-                        k: [v[i] for i in rows] if isinstance(v, list) else v
-                        for k, v in raw[facet].items()
-                    }
+                struct = getattr(ann, facet)
+                if struct is not msgspec.UNSET:
+                    rebuilt[facet] = _slice(struct, rows, absent, facet)
             if own:
                 rebuilt["groupings"] = [
-                    {**g, "ids": [g["ids"][i] for i in rows]} for g in own
+                    {**msgspec.to_builtins(g), "ids": [g.ids[i] for i in rows]}
+                    for g in own
                 ]
-            ann = msgspec.convert(rebuilt, Annotation)
-            validate_annotation_id(ann)
-            out.append(ann)
+            rebuilt_ann = msgspec.convert(msgspec.to_builtins(rebuilt), Annotation)
+            validate_annotation_id(rebuilt_ann)
+            out.append(rebuilt_ann)
     return out
 
 

@@ -242,3 +242,31 @@ def test_upstream_filter_by_on_timeline_grouping(vienna):
     assert filtered.payload.match == original.payload.match
     assert filtered.parents == [shard.annotation.id]
     assert filtered.media_id == "vienna:excerpt" and filtered.id != original.id
+
+
+def _variant(ann, media_id, **payload):
+    out = msgspec.structs.replace(
+        ann, media_id=media_id, payload=msgspec.structs.replace(ann.payload, **payload)
+    )
+    msgspec.structs.force_setattr(out, "id", bopp.core.compute_annotation_id(out))
+    return out
+
+
+@pytest.mark.parametrize(
+    ("column", "shards"), [("gracenote", 1), ("staff", 2)], ids=["nullable", "not_null"]
+)
+def test_absent_optional_column(vienna, column, shards):
+    """Without an optional column a member joins the shard if the column takes None."""
+    members, timelines = vienna
+    score = members[0][1]
+    rows = len(score.payload.midi)
+    full = _variant(score, score.media_id, gracenote=[None] * rows, staff=[1] * rows)
+    reduced = _variant(full, "vienna:other", **{column: msgspec.UNSET})
+    timelines = [timelines[0], bd.Timeline(id="other", media_id="vienna:other")]
+    packed = bd.pack(
+        [(PIECE, full), ("other", reduced)], timelines, collection_id="vienna:excerpt"
+    )
+    assert len(packed.shards) == shards
+    if shards == 1:
+        assert packed.shards[0].members[1].absent == [f"payload.{column}"]
+    assert [a.id for a in bd.split(packed)] == [full.id, reduced.id]
