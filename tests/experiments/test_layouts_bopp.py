@@ -341,7 +341,7 @@ def test_overrides(tmp_path, frames, layout, fmt, compression, validate):
 
 @pytest.mark.parametrize("facet", NONEMPTY)
 def test_csv_upstream_bytes(tmp_path, frames, facet):
-    """csv_upstream is upstream's exact bytes; csv adds only the id line."""
+    """csv_upstream is upstream's exact bytes; csv is identical now that upstream writes the id."""
     frame = frames[facet][frames[facet].corpus == "a_corpus"]
     upstream = layouts_bopp.write(
         frame, facet, tmp_path / "upstream", layout="per_item", fmt="csv_upstream"
@@ -365,10 +365,9 @@ def test_csv_upstream_bytes(tmp_path, frames, facet):
         with_id = tmp_path / "injected" / corpus / name
         assert plain in upstream and with_id in injected
         assert plain.read_bytes() == expected
-        id_line = f'# id = "{ann.id}"\n'.encode()
-        assert len(id_line) == 46
-        assert with_id.read_bytes() == b"# ---\n" + id_line + expected[6:]
-        assert load_bopp_csv(plain).id is msgspec.UNSET
+        assert f'# id = "{ann.id}"\n'.encode() in expected
+        assert with_id.read_bytes() == expected
+        assert load_bopp_csv(plain).id == ann.id
         assert load_bopp_csv(with_id).id == ann.id
 
 
@@ -386,7 +385,7 @@ def test_csv_crlf(tmp_path, frames, monkeypatch):
     for path in paths:
         data = path.read_bytes()
         lines = data.splitlines(keepends=True)
-        assert lines[1].startswith(b'# id = "') and lines[1].endswith(b'"\r\n')
+        assert sum(line.startswith(b'# id = "') for line in lines) == 1
         assert all(line.endswith(b"\r\n") for line in lines)
         assert data.count(b"\n") == data.count(b"\r\n")
     for validate in (True, False):

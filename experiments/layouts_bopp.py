@@ -16,12 +16,12 @@ JSONL streams lines after whole-file decompression when compressed and skips
 blank lines.
 
 CSV uses upstream's Polars schema parsing, without whole-file compression.
-Upstream's save_bopp_csv omits the annotation id. Format ``csv`` therefore
-inserts the original id as the first TOML frontmatter line (keeping the file's
-own line endings), so that validate=True includes load_bopp_csv's content-id
-check like JSON and MessagePack. Format ``csv_upstream`` keeps upstream's bytes
-exactly (same ``.csv`` file extension); having no id, its validate=True arm is
-the typed decode only.
+Upstream's save_bopp_csv wrote no annotation id until October 2026; format
+``csv`` then inserted the original id as the first TOML frontmatter line
+(keeping the file's own line endings), so that validate=True included
+load_bopp_csv's content-id check like JSON and MessagePack. Upstream now writes
+the id itself, so the insertion is a no-op and ``csv`` and ``csv_upstream``
+(upstream's exact bytes) are identical.
 """
 
 from __future__ import annotations
@@ -68,13 +68,11 @@ FORMAT_NOTES: dict[str, str] = {
         "decoded and validated like bopp.io.load_bopp_json."
     ),
     "csv": (
-        "Upstream save_bopp_csv bytes plus the annotation id inserted into the "
-        "TOML frontmatter (46 bytes per file, 47 with CRLF), so validate=True "
-        "includes load_bopp_csv's content-id check."
+        "Upstream save_bopp_csv bytes; inserts the annotation id into the TOML "
+        "frontmatter only if upstream did not write it (it does now)."
     ),
     "csv_upstream": (
-        "Exactly upstream save_bopp_csv/load_bopp_csv; the file has no id, so "
-        "validate=True is the typed decode only, without a content-id check."
+        "Exactly upstream save_bopp_csv/load_bopp_csv."
     ),
 }
 """One-sentence deviation from upstream's writers/loaders; empty for none."""

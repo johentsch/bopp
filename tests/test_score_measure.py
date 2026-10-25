@@ -327,7 +327,7 @@ def test_roundtrip(tmp_path, frame, source, save, load, suffix):
 
 @pytest.mark.parametrize("columns", [MINIMAL, FULL], ids=["minimal", "full"])
 def test_csv_roundtrip(tmp_path, columns):
-    """CSV preserves nested next lists and nullable columns, but omits the id."""
+    """CSV preserves nested next lists and nullable columns, and the id."""
     annotation = create_annotation(columns)
     path = tmp_path / "score_measure.csv"
     save_bopp_csv(annotation, path)
@@ -337,7 +337,7 @@ def test_csv_roundtrip(tmp_path, columns):
     assert wire(loaded.extent) == wire(annotation.extent)
     assert loaded.media_id == annotation.media_id
     assert annotation.id is not msgspec.UNSET
-    assert loaded.id is msgspec.UNSET
+    assert loaded.id == annotation.id
 
 
 @pytest.mark.parametrize("name", ["numbering_offset", "volta", "barline", "dont_count"])

@@ -1,3 +1,5 @@
+import builtins
+import io
 from unittest.mock import patch
 
 import msgspec
@@ -5,11 +7,19 @@ import pandas as pd
 import pytest
 
 from bopp.core import compute_annotation_id, create
-from bopp.exceptions import BoppArgumentError, BoppRegistryError, BoppValidationError
+from bopp.exceptions import (
+    BoppArgumentError,
+    BoppIOError,
+    BoppRegistryError,
+    BoppValidationError,
+)
 from bopp.io import (
+    AnnotationDataFrame,
     _build_csv_converters,
+    _open_or_yield_text_stream,
     _parse_complex_cell,
     _prepare_annotation_for_save,
+    _read_bytes_from_source,
     load_bopp_csv,
     load_bopp_json,
     load_bopp_msgpack,
@@ -17,6 +27,10 @@ from bopp.io import (
     save_bopp_json,
     save_bopp_msgpack,
 )
+from bopp.models.v1.annotation import Annotation
+from bopp.models.v1.extent.times import Times
+from bopp.models.v1.grouping import Grouping
+from bopp.models.v1.payload.onset import OnsetPayload
 from bopp.util import _get_tag, from_dataframe
 
 
@@ -38,6 +52,101 @@ def test_json_roundtrip(tmp_path):
     assert loaded.media_id == ann.media_id
     assert _get_tag(loaded.payload) == _get_tag(ann.payload)
     assert getattr(loaded, "sandbox", None) == {"user_note": "json_test", "flag": True}
+
+
+def test_json_stream_and_string_io():
+    ann = create(
+        bopp_version="1.0",
+        media_id="track:json_stream_test",
+        payload_kind="onset",
+        extent_kind="time",
+        time=[0.1, 0.5],
+        value=[1, 1],
+    )
+
+    # 1. Text stream (StringIO)
+    buf_text = io.StringIO()
+    save_bopp_json(ann, buf_text)
+    buf_text.seek(0)
+    assert not buf_text.closed
+    loaded_from_text = load_bopp_json(buf_text)
+    assert loaded_from_text.id == ann.id
+    assert not buf_text.closed
+
+    # 2. Raw JSON string via StringIO
+    raw_json_str = buf_text.getvalue()
+    loaded_from_str = load_bopp_json(io.StringIO(raw_json_str))
+    assert loaded_from_str.id == ann.id
+
+    # 3. Binary stream (BytesIO)
+    buf_bin = io.BytesIO()
+    save_bopp_json(ann, buf_bin)
+    buf_bin.seek(0)
+    assert not buf_bin.closed
+    loaded_from_bin = load_bopp_json(buf_bin)
+    assert loaded_from_bin.id == ann.id
+    assert not buf_bin.closed
+
+    # 4. Raw bytes
+    loaded_from_bytes = load_bopp_json(buf_bin.getvalue())
+    assert loaded_from_bytes.id == ann.id
+
+
+def test_msgpack_stream_and_bytes_io():
+    ann = create(
+        bopp_version="1.0",
+        media_id="track:msgpack_stream_test",
+        payload_kind="onset",
+        extent_kind="time",
+        time=[0.2, 0.6],
+        value=[1, 1],
+    )
+
+    # Binary stream (BytesIO)
+    buf = io.BytesIO()
+    save_bopp_msgpack(ann, buf)
+    assert not buf.closed
+    buf.seek(0)
+
+    loaded_from_stream = load_bopp_msgpack(buf)
+    assert loaded_from_stream.id == ann.id
+    assert not buf.closed
+
+    # Raw bytes
+    loaded_from_bytes = load_bopp_msgpack(buf.getvalue())
+    assert loaded_from_bytes.id == ann.id
+
+
+def test_csv_stream_and_string_io():
+    ann = create(
+        bopp_version="1.0",
+        media_id="track:csv_stream_test",
+        payload_kind="onset",
+        extent_kind="time",
+        time=[0.1, 0.4],
+        value=[1, 1],
+        sandbox={"user_note": "csv_stream"},
+    )
+
+    # 1. Text stream (StringIO)
+    buf = io.StringIO()
+    save_bopp_csv(ann, buf)
+    assert not buf.closed
+    buf.seek(0)
+
+    loaded_stream = load_bopp_csv(buf)
+    assert loaded_stream.id == ann.id
+    assert not buf.closed
+
+    # 2. Raw CSV string via StringIO
+    raw_csv = buf.getvalue()
+    loaded_str = load_bopp_csv(io.StringIO(raw_csv))
+    assert loaded_str.id == ann.id
+    assert getattr(loaded_str, "sandbox", None) == {"user_note": "csv_stream"}
+
+    # 3. Raw CSV string via StringIO with Pandas backend
+    loaded_pandas = load_bopp_csv(io.StringIO(raw_csv), backend="pandas")
+    assert loaded_pandas.id == ann.id
 
 
 def test_load_bopp_json_missing_id(tmp_path):
@@ -121,6 +230,52 @@ def test_csv_roundtrip(tmp_path):
     assert loaded.media_id == ann.media_id
     assert _get_tag(loaded.payload) == _get_tag(ann.payload)
     assert getattr(loaded, "sandbox", None) == {"user_note": "csv_test", "count": 10}
+
+
+def test_csv_roundtrip_with_groupings(tmp_path):
+    ann = Annotation(
+        media_id="track:csv_groupings",
+        bopp_version="1.0",
+        extent=Times(time=[0.1, 0.4]),
+        payload=OnsetPayload(value=[1, 2]),
+        groupings=[
+            Grouping(name="voices", ids=[0, 1], labels={"v1": 0, "v2": 1}),
+            Grouping(name="phrases", ids=[10, 10]),
+        ],
+    )
+    file_path = tmp_path / "test_groupings.csv"
+
+    save_bopp_csv(ann, file_path, backend="polars")
+
+    loaded = load_bopp_csv(file_path, backend="polars")
+    assert loaded.media_id == ann.media_id
+    assert len(loaded.groupings) == 2
+    assert loaded.groupings[0].name == "voices"
+    assert loaded.groupings[0].ids == [0, 1]
+    assert loaded.groupings[0].labels == {"v1": 0, "v2": 1}
+    assert loaded.groupings[1].name == "phrases"
+    assert loaded.groupings[1].ids == [10, 10]
+
+
+def test_csv_roundtrip_with_groupings_pandas(tmp_path):
+    ann = Annotation(
+        media_id="track:csv_groupings_pd",
+        bopp_version="1.0",
+        extent=Times(time=[0.1, 0.4]),
+        payload=OnsetPayload(value=[1, 2]),
+        groupings=[
+            Grouping(name="voices", ids=[0, 1]),
+        ],
+    )
+    file_path = tmp_path / "test_groupings_pd.csv"
+
+    save_bopp_csv(ann, file_path, backend="pandas")
+
+    loaded = load_bopp_csv(file_path, backend="pandas")
+    assert loaded.media_id == ann.media_id
+    assert len(loaded.groupings) == 1
+    assert loaded.groupings[0].name == "voices"
+    assert loaded.groupings[0].ids == [0, 1]
 
 
 def test_csv_roundtrip_object_payload(tmp_path):
@@ -299,11 +454,11 @@ def test_csv_roundtrip_complex_types_polars(tmp_path, ann_factory):
 )
 def test_csv_roundtrip_polars_mixed_int_float(tmp_path, kwargs):
     """Number columns holding ints and floats are written and read back as floats."""
-    ann = create(media_id="track:mixed", **kwargs)
+    ann = create(media_id="track:mixed", generate_id=False, **kwargs)
     file_path = tmp_path / "mixed.csv"
 
-    save_bopp_csv(ann, file_path, backend="polars")
-    loaded = load_bopp_csv(file_path, backend="polars")
+    save_bopp_csv(ann, file_path, backend="polars", generate_id=False, validate_id=False)
+    loaded = load_bopp_csv(file_path, backend="polars", validate_id=False)
 
     for facet in ("payload", "extent", "confidence"):
         original = getattr(ann, facet, None)
@@ -370,10 +525,12 @@ def test_load_bopp_csv_invalid_schema(tmp_path):
 
 
 def test_csv_column_validation_rules():
-    # Rule 1: Column format does not have 3 colon-separated parts
+    header = {"media_id": "track:col_rules", "bopp_version": "1.0"}
+
+    # Rule 1: Column format does not have 3 colon-separated parts or group.N.ids
     df_invalid_format = pd.DataFrame({"payload:onset": [1, 2]})
     with pytest.raises(BoppValidationError, match="Invalid column format"):
-        from_dataframe(df_invalid_format)
+        from_dataframe(df_invalid_format, header)
 
     # Rule 2: Facet has multiple types
     df_mixed_types = pd.DataFrame({
@@ -382,21 +539,21 @@ def test_csv_column_validation_rules():
         "payload:onset:value": [1, 1],
     })
     with pytest.raises(BoppValidationError, match="Mixed types for facet 'extent'"):
-        from_dataframe(df_mixed_types)
+        from_dataframe(df_mixed_types, header)
 
     # Rule 3: Unrecognized facet or type
     df_invalid_type = pd.DataFrame({
         "payload:nonexistent_type:value": [1, 2]
     })
     with pytest.raises(BoppValidationError, match="Unrecognized type 'nonexistent_type'"):
-        from_dataframe(df_invalid_type)
+        from_dataframe(df_invalid_type, header)
 
     # Rule 4: Field does not exist on target type struct
     df_invalid_field = pd.DataFrame({
         "payload:onset:invalid_field_name": [1, 2]
     })
     with pytest.raises(BoppValidationError, match="Field 'invalid_field_name' in column .* does not exist"):
-        from_dataframe(df_invalid_field)
+        from_dataframe(df_invalid_field, header)
 
 
 def test_save_and_load_with_validate_id_false(tmp_path):
@@ -441,7 +598,8 @@ def test_save_bopp_csv_unknown_dataframe_type(tmp_path):
     class MockUnsupportedDataFrame:
         pass
 
-    with patch("bopp.io.to_dataframe", return_value=MockUnsupportedDataFrame()):
+    mock_ann_df = AnnotationDataFrame(df=MockUnsupportedDataFrame(), header={"media_id": "test"})
+    with patch("bopp.io.to_dataframe", return_value=mock_ann_df):
         with pytest.raises(BoppArgumentError, match="Unknown dataframe type"):
             save_bopp_csv(ann, file_path)
 
@@ -459,7 +617,11 @@ def test_save_bopp_csv_polars(tmp_path):
     )
     file_path = tmp_path / "polars_test.csv"
 
-    with patch("bopp.io.to_dataframe", return_value=polars.DataFrame({"payload:onset:value": [1]})):
+    mock_ann_df = AnnotationDataFrame(
+        df=polars.DataFrame({"payload:onset:value": [1]}),
+        header={"media_id": "track:polars_test"},
+    )
+    with patch("bopp.io.to_dataframe", return_value=mock_ann_df):
         save_bopp_csv(ann, file_path)
 
     assert file_path.exists()
@@ -508,6 +670,26 @@ def test_load_bopp_csv_non_target_columns(tmp_path):
     assert loaded.media_id == "track:extra_col"
 
 
+def test_load_bopp_csv_crlf_newlines(tmp_path):
+    """Verify CSV files with CRLF (\\r\\n) line endings load correctly across platforms."""
+    csv_content = (
+        b"# ---\r\n"
+        b'# bopp_version = "1.0"\r\n'
+        b'# media_id = "track:crlf_test"\r\n'
+        b"# ---\r\n"
+        b"payload:onset:value,extent:time:time\r\n"
+        b"1,0.1\r\n"
+        b"2,0.5\r\n"
+    )
+    file_path = tmp_path / "crlf.csv"
+    file_path.write_bytes(csv_content)
+
+    loaded = load_bopp_csv(file_path, validate_id=False)
+    assert loaded.media_id == "track:crlf_test"
+    assert loaded.payload.value == [1, 2]
+    assert loaded.extent.time == [0.1, 0.5]
+
+
 def test_parse_complex_and_str_cell():
     # Empty or whitespace strings evaluate safely to None for complex fields
     assert _parse_complex_cell(None) is None  # type: ignore[arg-type]
@@ -519,6 +701,12 @@ def test_parse_complex_and_str_cell():
 
     # Plain string literals not formatted as containers are left untouched
     assert _parse_complex_cell("unbracketed_val") == "unbracketed_val"
+
+
+def test_parse_complex_cell_non_str():
+    # Non-string, non-None values return None safely
+    assert _parse_complex_cell(123) is None  # type: ignore[arg-type]
+    assert _parse_complex_cell(object()) is None  # type: ignore[arg-type]
 
 
 def test_build_csv_converters_error_and_edge_cases():
@@ -579,3 +767,112 @@ def test_prepare_annotation_for_save_id_variations():
     # Strictly validate existing ID when generate_id=False and validate_id=True
     _prepare_annotation_for_save(ann, validate_id=True, generate_id=False)
     assert ann.id == expected_id
+
+
+def test_read_bytes_from_source_invalid():
+    with pytest.raises(BoppIOError, match="Unsupported source type for binary read"):
+        _read_bytes_from_source(12345)  # type: ignore[arg-type]
+
+
+def test_read_bytes_from_source_buffer_types():
+    data = b'{"bopp_version": "1.0", "media_id": "track:buf_test", "payload": {"payload_type": "onset", "time": [0.1], "value": [1]}}'
+
+    # bytearray
+    loaded_bytearray = load_bopp_json(bytearray(data), validate_id=False)
+    assert loaded_bytearray.media_id == "track:buf_test"
+
+    # memoryview
+    mv = memoryview(data)
+    assert _read_bytes_from_source(mv) == data
+    loaded_mv = load_bopp_json(mv, validate_id=False)
+    assert loaded_mv.media_id == "track:buf_test"
+
+    # text stream returning str from read()
+    text_stream = io.StringIO(data.decode("utf-8"))
+    assert _read_bytes_from_source(text_stream) == data
+
+    # binary stream returning bytes from read()
+    bin_stream = io.BytesIO(data)
+    assert _read_bytes_from_source(bin_stream) == data
+
+
+def test_load_bopp_csv_invalid_source_type():
+    with pytest.raises(BoppIOError, match="Unsupported source type for text stream"):
+        load_bopp_csv(12345)  # type: ignore[arg-type]
+
+    with pytest.raises(BoppIOError, match="Unsupported source type for text stream"):
+        with _open_or_yield_text_stream(b"binary data"):  # type: ignore[arg-type]
+            pass
+
+
+class _NonSeekableTextStream:
+    """A text stream wrapper that deliberately lacks a 'seek' method."""
+
+    def __init__(self, content: str) -> None:
+        self._lines = content.splitlines(keepends=True)
+        self._pos = 0
+
+    def readline(self) -> str:
+        if self._pos < len(self._lines):
+            line = self._lines[self._pos]
+            self._pos += 1
+            return line
+        return ""
+
+    def read(self) -> str:
+        content = "".join(self._lines[self._pos:])
+        self._pos = len(self._lines)
+        return content
+
+
+def test_load_bopp_csv_non_seekable_stream():
+    csv_content = (
+        "# ---\n"
+        '# bopp_version = "1.0"\n'
+        '# media_id = "track:non_seekable"\n'
+        "# ---\n"
+        "payload:onset:value,extent:time:time\n"
+        "1,0.1\n"
+        "2,0.5\n"
+    )
+    stream = _NonSeekableTextStream(csv_content)
+    assert not hasattr(stream, "seek")
+
+    loaded = load_bopp_csv(stream, validate_id=False)  # type: ignore[arg-type]
+    assert loaded.media_id == "track:non_seekable"
+    assert loaded.payload.value == [1, 2]
+    assert loaded.extent.time == [0.1, 0.5]
+
+
+def test_load_bopp_csv_unsupported_backend():
+    csv_content = (
+        "# ---\n"
+        '# bopp_version = "1.0"\n'
+        '# media_id = "track:invalid_backend"\n'
+        "# ---\n"
+        "payload:onset:value,extent:time:time\n"
+        "1,0.1\n"
+    )
+    with pytest.raises(BoppArgumentError, match="Unsupported backend: unknown"):
+        load_bopp_csv(io.StringIO(csv_content), backend="unknown")  # type: ignore[arg-type]
+
+
+def test_load_bopp_csv_pandas_missing():
+    csv_content = (
+        "# ---\n"
+        '# bopp_version = "1.0"\n'
+        '# media_id = "track:pandas_missing"\n'
+        "# ---\n"
+        "payload:onset:value,extent:time:time\n"
+        "1,0.1\n"
+    )
+    real_import = builtins.__import__
+
+    def mock_import(name, *args, **kwargs):
+        if name == "pandas":
+            raise ImportError("No module named 'pandas'")
+        return real_import(name, *args, **kwargs)
+
+    with patch("builtins.__import__", side_effect=mock_import):
+        with pytest.raises(BoppIOError, match="pandas is required for backend='pandas'"):
+            load_bopp_csv(io.StringIO(csv_content), backend="pandas")

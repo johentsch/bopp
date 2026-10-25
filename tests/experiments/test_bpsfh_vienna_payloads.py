@@ -147,7 +147,8 @@ def test_bench_vienna(match_dir, tmp_path):
     by_cell = {bench.cell_name(row): row for row in rows}
     # CSV stores int|float ticks as floats: the id check fails, the plain load differs
     assert "ID mismatch" in by_cell["bopp-per_item-csv-none"]["error"]
-    assert by_cell["bopp-per_item-csv_upstream-none"]["roundtrip"].startswith("Row 0")
+    # upstream's CSV header carries the id now, so csv_upstream fails the same way
+    assert "ID mismatch" in by_cell["bopp-per_item-csv_upstream-none"]["error"]
     others = [r for name, r in by_cell.items() if "csv" not in name]
     assert {r["roundtrip"] for r in others} == {"ok"}
     assert json.loads((tmp_path / "vienna-source.json").read_text())[

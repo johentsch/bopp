@@ -261,7 +261,7 @@ def test_csv_roundtrip(tmp_path):
     assert_annotation(loaded, labels)
     assert loaded.payload.value[3] == "V" + "\\" * 2
     assert annotation.id is not msgspec.UNSET
-    assert loaded.id is msgspec.UNSET
+    assert loaded.id == annotation.id
 
 
 def test_csv_empty_label(tmp_path):

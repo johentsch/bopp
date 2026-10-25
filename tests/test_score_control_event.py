@@ -218,11 +218,8 @@ def test_roundtrip_id(tmp_path, kind, save, load, suffix):
     path = tmp_path / f"{kind}.{suffix}"
     save(annotation, path)
     loaded = load(path)
-    if suffix == "csv":
-        # The CSV frontmatter does not carry the id.
-        assert loaded.id is msgspec.UNSET
-    else:
-        assert loaded.id == annotation.id
+    # Upstream's CSV frontmatter carries the id too.
+    assert loaded.id == annotation.id
 
 
 def test_csv_roundtrip_nullable_int(tmp_path):
